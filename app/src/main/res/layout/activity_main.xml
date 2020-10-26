@@ -68,14 +68,14 @@
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:layout_gravity="center"
-                            android:src="@drawable/feed" />
+                            android:src="@drawable/phone" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:fontFamily="@font/montserrat_bold"
-                            android:text="Feed"
+                            android:text="Status"
                             android:textAlignment="center" />
 
                     </LinearLayout>
@@ -103,14 +103,14 @@
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:layout_gravity="center"
-                            android:src="@drawable/play" />
+                            android:src="@drawable/summary" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:fontFamily="@font/montserrat_bold"
-                            android:text="Video"
+                            android:text="Summary"
                             android:textAlignment="center" />
 
                     </LinearLayout>
@@ -146,14 +146,14 @@
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:layout_gravity="center"
-                            android:src="@drawable/message" />
+                            android:src="@drawable/statistics" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:fontFamily="@font/montserrat_bold"
-                            android:text="Message"
+                            android:text="Statistics"
                             android:textAlignment="center" />
 
                     </LinearLayout>
@@ -181,14 +181,14 @@
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:layout_gravity="center"
-                            android:src="@drawable/music" />
+                            android:src="@drawable/testing" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:fontFamily="@font/montserrat_bold"
-                            android:text="Music"
+                            android:text="Testing"
                             android:textAlignment="center" />
 
                     </LinearLayout>
@@ -224,14 +224,14 @@
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:layout_gravity="center"
-                            android:src="@drawable/notification" />
+                            android:src="@drawable/route"/>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:fontFamily="@font/montserrat_bold"
-                            android:text="Notification"
+                            android:text="Map"
                             android:textAlignment="center" />
 
                     </LinearLayout>
@@ -259,14 +259,14 @@
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:layout_gravity="center"
-                            android:src="@drawable/setting" />
+                            android:src="@drawable/forcing" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:fontFamily="@font/montserrat_bold"
-                            android:text="Setting"
+                            android:text="Forcing"
                             android:textAlignment="center" />
 
                     </LinearLayout>
