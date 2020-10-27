@@ -1,20 +1,20 @@
 <resources>
     <string name="app_name">netPerf</string>
     <string name="get_information">Get Information</string>
-    <string name="hard_soft_info">Hardware and Software Information</string>
-    <string name="serial">SERIAL: </string>
-    <string name="model">MODEL: </string>
-    <string name="id">ID: </string>
-    <string name="manufacturer">MANUFACTURER: </string>
-    <string name="brand">BRAND: </string>
-    <string name="type">TYPE: </string>
-    <string name="user">USER: </string>
-    <string name="base">BASE: </string>
-    <string name="incremental">INCREMENTAL: </string>
-    <string name="sdk">SDK: </string>
-    <string name="board">BOARD: </string>
-    <string name="host">HOST: </string>
-    <string name="fingerprint">FINGERPRINT: </string>
-    <string name="versioncode">VERSION CODE: </string>
+    <string name="hard_soft_info">Device information</string>
+    <string name="serial">Serial </string>
+    <string name="model">Model </string>
+    <string name="id">Id </string>
+    <string name="manufacturer">Manufacturer </string>
+    <string name="brand">Brand </string>
+    <string name="type">Type </string>
+    <string name="user">User </string>
+    <string name="base">Base </string>
+    <string name="incremental">Incremental </string>
+    <string name="sdk">SDK </string>
+    <string name="board">Board </string>
+    <string name="host">Host </string>
+    <string name="fingerprint">Fingerprint </string>
+    <string name="versioncode">Version code </string>
 
 </resources>

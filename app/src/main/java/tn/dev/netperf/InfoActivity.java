@@ -6,16 +6,10 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
 
 public class InfoActivity extends AppCompatActivity {
     // text view to display information
-    private TextView textViewSetInformation;
-    private Calendar calendar;
-    private SimpleDateFormat dateFormat;
-    private String date;
+    private TextView textViewSetInformation, tx1, tx2, tx3, tx4;
 
 
     @Override
@@ -23,17 +17,27 @@ public class InfoActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info);
-        textViewSetInformation = findViewById(R.id.textViewSetInformation);
-        calendar = Calendar.getInstance();
-        dateFormat = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
-        date = dateFormat.format(calendar.getTime());
+       // textViewSetInformation = findViewById(R.id.textViewSetInformation);
 
-        String information = getHardwareAndSoftwareInfo();
-        textViewSetInformation.setText(information);
+        tx1 = findViewById(R.id.tx1);
+        tx2 = findViewById(R.id.tx2);
+        tx3 = findViewById(R.id.tx3);
+        tx4 = findViewById(R.id.tx4);
+
+       // String information = getHardwareAndSoftwareInfo();
+       // textViewSetInformation.setText(information);
+
+
+        tx1.setText(getString(R.string.versioncode));
+        tx2.setText(Build.VERSION.RELEASE);
+
+        tx3.setText(getString(R.string.manufacturer));
+        tx4.setText(Build.MANUFACTURER);
+
+
     }
 
-
-
+/*
     private String getHardwareAndSoftwareInfo() {
 
         return getString(R.string.serial) + " " + Build.SERIAL + "\n" +
@@ -48,8 +52,8 @@ public class InfoActivity extends AppCompatActivity {
                 getString(R.string.sdk) + " " + Build.VERSION.SDK + "\n" +
                 getString(R.string.board) + " " + Build.BOARD + "\n" +
                 getString(R.string.host) + " " + Build.HOST + "\n" +
-                getString(R.string.fingerprint) + " " + Build.FINGERPRINT + "\n" +
-                getString(R.string.versioncode) + " " + Build.VERSION.RELEASE;
-    }
+                getString(R.string.fingerprint) + " " + Build.FINGERPRINT;
 
+    }
+*/
 }
