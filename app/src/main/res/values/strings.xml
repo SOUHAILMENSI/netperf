@@ -6,10 +6,10 @@
     <string name="model">Model </string>
     <string name="id">Id </string>
     <string name="manufacturer">Manufacturer </string>
-    <string name="brand">Brand </string>
-    <string name="type">Type </string>
-    <string name="user">User </string>
-    <string name="base">Base </string>
+    <string name="btrystatus">Status </string>
+    <string name="chargeplug">Type </string>
+    <string name="btry_health">Health </string>
+    <string name="txbtry">Level </string>
     <string name="serviceProvider">Provider </string>
     <string name="simState">State </string>
     <string name="mcc_mnc">MCC/MNC </string>
@@ -23,5 +23,6 @@
     <string name="system">System</string>
     <string name="internet">Internet</string>
     <string name="sim_info">SIM information</string>
+    <string name="tempraturebtry">Temprature</string>
 
 </resources>

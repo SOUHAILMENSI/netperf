@@ -4,12 +4,14 @@ package tn.dev.netperf;
 import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkInfo;
+import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -35,7 +37,8 @@ public class InfoActivity extends AppCompatActivity {
     // text view to display information
     private TextView tx1, version, tx3, manufacturer, tx5, imei, tx7, txsystem, tx9,
             bluetooth, tx11, ip, tx13, imsi, tx15, internet, tx18, txcallstt, tx20, txradiotype,
-            tx22, simState,tx24,serviceProvider,tx26,mcc_mnc;
+            tx22, simState,tx24,serviceProvider,tx26,mcc_mnc,txbtry,txvlebtry,btry_health,btry_health_val,
+            chargeplug,chargeplug_val, btrystatus,btrystatus_val,tempraturebtry,tempraturebtry_val;
     String PhoneType = "";
     String NetworkType = "";
     String Callstte = "";
@@ -46,7 +49,6 @@ public class InfoActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 100;
     TelephonyManager telephonyManager;
     private BroadcastReceiver MyReceiver = null;
-
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -83,10 +85,18 @@ public class InfoActivity extends AppCompatActivity {
         serviceProvider= findViewById(R.id.tx25);
         tx26 = findViewById(R.id.tx26);
         mcc_mnc= findViewById(R.id.tx27);
-
-
+        btry_health=findViewById(R.id.txbtry_health);
+        btry_health_val=findViewById(R.id.txbtry_health_val);
+        chargeplug = findViewById(R.id.chargeplug);
+        chargeplug_val =findViewById(R.id.chargeplug_val);
+        btrystatus=findViewById(R.id.btrystatus);
+        btrystatus_val =findViewById(R.id.btrystatus_val);
+        tempraturebtry=findViewById(R.id.tempraturebtry);
+        tempraturebtry_val =findViewById(R.id.tempraturebtry_val);
 
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
+        txvlebtry = findViewById(R.id.txvlebtry);
+        txbtry = findViewById(R.id.txbtry);
 
         tx1.setText(getString(R.string.versioncode));
         version.setText(Build.VERSION.RELEASE);
@@ -104,6 +114,11 @@ public class InfoActivity extends AppCompatActivity {
         tx22.setText(getString(R.string.simState));
         tx24.setText(getString(R.string.serviceProvider));
         tx26.setText(getString(R.string.mcc_mnc));
+        txbtry.setText(getString(R.string.txbtry));
+        btry_health.setText(getString(R.string.btry_health));
+        chargeplug.setText(getString(R.string.chargeplug));
+        btrystatus.setText(getString(R.string.btrystatus));
+        tempraturebtry.setText(getString(R.string.tempraturebtry));
 
 
         telephonyManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
@@ -185,6 +200,10 @@ public class InfoActivity extends AppCompatActivity {
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
+
+
+        this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+
         /**************************************OnCreate Ends here **********************************************/
 
     }
@@ -396,5 +415,68 @@ public class InfoActivity extends AppCompatActivity {
         return SimState;
 
     }
+
+    /**************************************Batterie*********************************************/
+
+    private BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver(){
+        @Override
+        public void onReceive(Context ctxt, Intent intent) {
+            int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
+            txvlebtry.setText(String.valueOf(level) + "%");
+            int health = intent.getIntExtra(BatteryManager.EXTRA_HEALTH, 0);
+
+            if (health==BatteryManager.BATTERY_HEALTH_COLD){
+                btry_health_val.setText("Cold");
+            }
+            if (health==BatteryManager.BATTERY_HEALTH_DEAD){
+                btry_health_val.setText("Dead");
+            }
+            if (health==BatteryManager.BATTERY_HEALTH_GOOD){
+                btry_health_val.setText("Good");
+            }
+            if (health==BatteryManager.BATTERY_HEALTH_OVERHEAT){
+                btry_health_val.setText("Overheat");
+            }
+            if (health==BatteryManager.BATTERY_HEALTH_OVER_VOLTAGE){
+                btry_health_val.setText("Over voltage");
+            }
+            if (health==BatteryManager.BATTERY_HEALTH_UNKNOWN){
+                btry_health_val.setText("Unknown");
+            }
+
+            int temprature = (intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0))/10;
+            tempraturebtry_val.setText(temprature+"°C");
+            int chargeplug =intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0);
+
+            if (chargeplug==BatteryManager.BATTERY_PLUGGED_AC){
+                chargeplug_val.setText("AC Adapter");
+            }
+            if (chargeplug==BatteryManager.BATTERY_PLUGGED_USB){
+                chargeplug_val.setText("USB");
+            }
+            if (chargeplug==BatteryManager.BATTERY_PLUGGED_WIRELESS){
+                chargeplug_val.setText("Wireless");
+            }
+
+            int status = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0);
+
+            if (status==BatteryManager.BATTERY_STATUS_CHARGING){
+                btrystatus_val.setText("Charging");
+            }
+            if (status==BatteryManager.BATTERY_STATUS_DISCHARGING){
+                btrystatus_val.setText("Discharging");
+            }
+            if (status==BatteryManager.BATTERY_STATUS_FULL){
+                btrystatus_val.setText("Full");
+            }
+            if (status==BatteryManager.BATTERY_STATUS_NOT_CHARGING){
+                btrystatus_val.setText("Not charging");
+            }
+            if (status==BatteryManager.BATTERY_STATUS_UNKNOWN){
+                btrystatus_val.setText("Unkonwn");
+            }
+
+        }
+    };
 
 }
