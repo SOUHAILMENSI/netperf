@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">netPerf</string>
-    <string name="get_information">Get Information</string>
+    <string name="battery_info">Battery information</string>
     <string name="hard_soft_info">Device information</string>
     <string name="serial">Serial </string>
     <string name="model">Model </string>
@@ -10,11 +10,18 @@
     <string name="type">Type </string>
     <string name="user">User </string>
     <string name="base">Base </string>
-    <string name="incremental">Incremental </string>
-    <string name="sdk">SDK </string>
-    <string name="board">Board </string>
-    <string name="host">Host </string>
-    <string name="fingerprint">Fingerprint </string>
+    <string name="serviceProvider">Provider </string>
+    <string name="simState">State </string>
+    <string name="mcc_mnc">MCC/MNC </string>
+    <string name="radioType">Phone radio </string>
+    <string name="callstate">State </string>
     <string name="versioncode">Version code </string>
+    <string name="IMEI"> IMEI</string>
+    <string name="IMSI"> IMSI</string>
+    <string name="IPaddress"> IP address </string>
+    <string name="Bluetooth_mac">Bluetooth mac</string>
+    <string name="system">System</string>
+    <string name="internet">Internet</string>
+    <string name="sim_info">SIM information</string>
 
 </resources>
