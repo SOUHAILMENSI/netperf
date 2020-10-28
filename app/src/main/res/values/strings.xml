@@ -16,5 +16,10 @@
     <string name="host">Host </string>
     <string name="fingerprint">Fingerprint </string>
     <string name="versioncode">Version code </string>
+    <string name="IMEI"> IMEI</string>
+    <string name="IMSI"> IMSI</string>
+    <string name="IPaddress"> IP address </string>
+    <string name="Bluetooth_mac">Bluetooth mac</string>
+    <string name="system">System</string>
 
 </resources>

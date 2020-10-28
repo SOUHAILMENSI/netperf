@@ -16,6 +16,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     int Permission_All = 1;
     public CardView card1, card2, card3;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,8 +32,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         card3.setOnClickListener(this);
 
 
-        String[] Permissions = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.MEDIA_CONTENT_CONTROL, Manifest.permission.CAMERA, Manifest.permission
-                .READ_PHONE_STATE, Manifest.permission.READ_PHONE_NUMBERS, Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET, Manifest.permission.READ_EXTERNAL_STORAGE,};
+        String[] Permissions = {Manifest.permission.READ_SMS,Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.CAMERA, Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_PHONE_NUMBERS,
+                Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET,
+                Manifest.permission.READ_EXTERNAL_STORAGE,};
         if (!hasPermissions(this, Permissions)) {
             ActivityCompat.requestPermissions(this, Permissions, Permission_All);
         }
