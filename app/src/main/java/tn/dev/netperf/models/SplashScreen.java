@@ -1,9 +1,12 @@
-package tn.dev.netperf;
+package tn.dev.netperf.models;
 
 import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import tn.dev.netperf.MainActivity;
+import tn.dev.netperf.R;
 
 public class SplashScreen extends AppCompatActivity {
 

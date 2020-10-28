@@ -32,7 +32,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".SplashScreen"
+        <activity android:name=".models.SplashScreen"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,7 +41,7 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name = "MyReceiver">
+        <receiver android:name = ".models.MyReceiver">
             <intent-filter>
                 <action android:name = "android.net.conn.CONNECTIVITY_CHANGE" />
                 <action android:name = "android.net.wifi.WIFI_STATE_CHANGED" />
