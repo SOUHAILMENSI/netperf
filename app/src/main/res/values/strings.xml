@@ -2,9 +2,6 @@
     <string name="app_name">netPerf</string>
     <string name="battery_info">Battery information</string>
     <string name="hard_soft_info">Device information</string>
-    <string name="serial">Serial </string>
-    <string name="model">Model </string>
-    <string name="id">Id </string>
     <string name="manufacturer">Manufacturer </string>
     <string name="btrystatus">Status </string>
     <string name="chargeplug">Type </string>
@@ -13,16 +10,32 @@
     <string name="serviceProvider">Provider </string>
     <string name="simState">State </string>
     <string name="mcc_mnc">MCC/MNC </string>
-    <string name="radioType">Phone radio </string>
+    <string name="radioType">Phone type </string>
     <string name="callstate">State </string>
     <string name="versioncode">Version code </string>
     <string name="IMEI"> IMEI</string>
     <string name="IMSI"> IMSI</string>
     <string name="IPaddress"> IP address </string>
     <string name="Bluetooth_mac">Bluetooth mac</string>
-    <string name="system">System</string>
+    <string name="system">Packet technology</string>
     <string name="internet">Internet</string>
     <string name="sim_info">SIM information</string>
     <string name="tempraturebtry">Temprature</string>
+
+
+    <string-array name="radiosystem">
+        <item>GSM</item>
+        <item>UMTS</item>
+        <item>LTE</item>
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment1">Hello blank fragment1</string>
+    <string name="hello_blank_fragment2">Hello blank fragment2</string>
+    <string name="hello_blank_fragment3">Hello blank fragment3</string>
+    <string name="GPs_info">GPS information</string>
+    <string name="latitude">Latitude</string>
+    <string name="langitude">Langitude</string>
+    <string name="locality">Locality</string>
+
 
 </resources>

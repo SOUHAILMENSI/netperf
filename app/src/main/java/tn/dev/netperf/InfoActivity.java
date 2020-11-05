@@ -7,28 +7,31 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkInfo;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
+
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Collections;
 import java.util.List;
 
-import tn.dev.netperf.models.MyReceiver;
+import tn.dev.netperf.models.*;
 
 import static android.Manifest.permission.READ_PHONE_NUMBERS;
 import static android.Manifest.permission.READ_PHONE_STATE;
@@ -45,12 +48,13 @@ public class InfoActivity extends AppCompatActivity {
     String NetworkType = "";
     String Callstte = "";
     String SimState = "";
-
+    MediaPlayer player;
     SwipeRefreshLayout swipeRefreshLayout;
 
     private static final int PERMISSION_REQUEST_CODE = 100;
     TelephonyManager telephonyManager;
     private BroadcastReceiver MyReceiver = null;
+
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -122,6 +126,11 @@ public class InfoActivity extends AppCompatActivity {
         btrystatus.setText(getString(R.string.btrystatus));
         tempraturebtry.setText(getString(R.string.tempraturebtry));
 
+        if (player == null) {
+            player = MediaPlayer.create(this, R.raw.ns_packet_technology_changed);
+            player.setVolume(5, 5);
+        }
+
 
         telephonyManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -173,17 +182,10 @@ public class InfoActivity extends AppCompatActivity {
         bluetooth.setText(bluMac);
         broadcastIntent();
 
-/*
-        if (getConnectivityStatusString(this) == "No internet is available") {
-            internet.setTextColor(Color.RED);
-            internet.setText(getConnectivityStatusString(this));
-        } else {
-            internet.setText(getConnectivityStatusString(this));
-        }*/
 
         /*********************************Current network*****************************/
 
-        //    txsystem.setText(getNeworkType());
+
         txradiotype.setText(getRadioType());
         simState.setText(getSimState());
 
@@ -219,8 +221,11 @@ public class InfoActivity extends AppCompatActivity {
 
         PhoneStateListener callStateListener1 = new PhoneStateListener() {
 
+
             public void onDataConnectionStateChanged(int state, int networkType) {
+                player.release();
                 super.onDataConnectionStateChanged(state, networkType);
+
                 switch (state) {
                     case TelephonyManager.DATA_DISCONNECTED:
                         internet.setText("Disconnected");
@@ -298,15 +303,27 @@ public class InfoActivity extends AppCompatActivity {
                     case (TelephonyManager.NETWORK_TYPE_UNKNOWN):
                         txsystem.setText("UNKNOWN");
                         break;
-
                 }
+                Toast.makeText(getApplicationContext(), "Packet technology " + txsystem.getText(), Toast.LENGTH_LONG).show();
+
+
+                    player = MediaPlayer.create(InfoActivity.this, R.raw.ns_packet_technology_changed);
+                    player.setVolume(5, 5);
+                    player.start();
+
+
             }
+
         };
         telephonyManager.listen(callStateListener1, PhoneStateListener.LISTEN_DATA_CONNECTION_STATE);
+
+
+
 
         /**************************************OnCreate Ends here **********************************************/
 
     }
+
 
     private static String getMobileIPAddress() {
         try {
@@ -375,13 +392,13 @@ public class InfoActivity extends AppCompatActivity {
 
     }
 
-
+/*
     @Override
     protected void onPause() {
         super.onPause();
         unregisterReceiver(MyReceiver);
 
-    }
+    }*/
 
     /***************************************Call Status******************************************************/
 
@@ -509,5 +526,6 @@ public class InfoActivity extends AppCompatActivity {
 
         }
     };
+
 
 }
