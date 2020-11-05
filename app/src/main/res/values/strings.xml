@@ -2,9 +2,6 @@
     <string name="app_name">netPerf</string>
     <string name="battery_info">Battery information</string>
     <string name="hard_soft_info">Device information</string>
-    <string name="serial">Serial </string>
-    <string name="model">Model </string>
-    <string name="id">Id </string>
     <string name="manufacturer">Manufacturer </string>
     <string name="btrystatus">Status </string>
     <string name="chargeplug">Type </string>
@@ -13,16 +10,83 @@
     <string name="serviceProvider">Provider </string>
     <string name="simState">State </string>
     <string name="mcc_mnc">MCC/MNC </string>
-    <string name="radioType">Phone radio </string>
+    <string name="radioType">Phone type </string>
     <string name="callstate">State </string>
     <string name="versioncode">Version code </string>
     <string name="IMEI"> IMEI</string>
     <string name="IMSI"> IMSI</string>
     <string name="IPaddress"> IP address </string>
     <string name="Bluetooth_mac">Bluetooth mac</string>
-    <string name="system">System</string>
+    <string name="system">Packet technology</string>
     <string name="internet">Internet</string>
     <string name="sim_info">SIM information</string>
     <string name="tempraturebtry">Temprature</string>
+
+
+    <string-array name="radiosystem">
+        <item>GSM</item>
+        <item>UMTS</item>
+        <item>LTE</item>
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment1">Hello blank fragment1</string>
+    <string name="hello_blank_fragment2">Hello blank fragment2</string>
+    <string name="hello_blank_fragment3">Hello blank fragment3</string>
+    <string name="GPs_info">GPS information</string>
+    <string name="latitude">Latitude</string>
+    <string name="langitude">Langitude</string>
+    <string name="locality">Locality</string>
+    <string name="gpsnotready">GPS not Ready</string>
+    <string name="gpsready">GPS Ready</string>
+
+    <string name="idle">Idle</string>
+    <string name="connected">Connected</string>
+
+    <string name="disconnected">Disconnected</string>
+    <string name="connecting">Connecting</string>
+    <string name="suspended">Suspended</string>
+    <string name="unknown">Unknown</string>
+
+
+
+    <string name="xRTT">1xRTT</string>
+    <string name="cdma">CDMA</string>
+    <string name="edge">EDGE</string>
+    <string name="ehrpd">EHRPD</string>
+    <string name="evdo0">EVDO 0</string>
+    <string name="evdoA">EVDO A</string>
+    <string name="evdoB">EVDO B</string>
+    <string name="gprs">GPRS</string>
+    <string name="gsm">GSM</string>
+    <string name="HSDPA">HSDPA</string>
+    <string name="hspa">HSPA</string>
+    <string name="hspaplus">HSPA+</string>
+    <string name="hsupa">HSUPA</string>
+    <string name="iwlan">IWLAN</string>
+    <string name="iden">IDEN</string>
+    <string name="lte">LTE</string>
+    <string name="tdcdma">TD-SCDMA</string>
+    <string name="umts">UMTS</string>
+
+
+
+    <string name="percentage">%</string>
+    <string name="cold">Cold</string>
+    <string name="dead">Dead</string>
+    <string name="good">Good</string>
+    <string name="overheat">Overheat</string>
+    <string name="overVoltage">Over voltage</string>
+    <string name="degreecel">°C</string>
+    <string name="acadapter">AC Adapter</string>
+    <string name="USB">USB</string>
+    <string name="Wireless">Wireless</string>
+
+    <string name="Charging">Charging</string>
+    <string name="Discharging">Discharging</string>
+    <string name="Full">Full</string>
+    <string name="notchargin">Not charging</string>
+
+
+
 
 </resources>

@@ -6,10 +6,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
+
 import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -22,13 +24,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        card1 = (CardView) findViewById(R.id.c1);
+        card1 = findViewById(R.id.c1);
         card1.setOnClickListener(this);
 
-        card2 = (CardView) findViewById(R.id.c2);
+        card2 = findViewById(R.id.c2);
         card2.setOnClickListener(this);
 
-        card3 = (CardView) findViewById(R.id.c3);
+        card3 = findViewById(R.id.c3);
         card3.setOnClickListener(this);
 
 

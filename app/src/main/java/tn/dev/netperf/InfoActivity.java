@@ -7,21 +7,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkInfo;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -45,12 +47,13 @@ public class InfoActivity extends AppCompatActivity {
     String NetworkType = "";
     String Callstte = "";
     String SimState = "";
-
+    MediaPlayer player;
     SwipeRefreshLayout swipeRefreshLayout;
 
     private static final int PERMISSION_REQUEST_CODE = 100;
     TelephonyManager telephonyManager;
     private BroadcastReceiver MyReceiver = null;
+
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -122,7 +125,6 @@ public class InfoActivity extends AppCompatActivity {
         btrystatus.setText(getString(R.string.btrystatus));
         tempraturebtry.setText(getString(R.string.tempraturebtry));
 
-
         telephonyManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ActivityCompat.checkSelfPermission(this, READ_SMS) != PackageManager.PERMISSION_GRANTED &&
@@ -130,17 +132,17 @@ public class InfoActivity extends AppCompatActivity {
                     ActivityCompat.checkSelfPermission(this, READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{READ_SMS, READ_PHONE_NUMBERS, READ_PHONE_STATE}, PERMISSION_REQUEST_CODE);
             } else {
-                imei.setText("" + telephonyManager.getImei());
-                imsi.setText("" + telephonyManager.getSubscriberId());
-                serviceProvider.setText("" + telephonyManager.getSimOperatorName());
-                mcc_mnc.setText("" + telephonyManager.getSimOperator());
+                imei.setText(telephonyManager.getImei());
+                imsi.setText(telephonyManager.getSubscriberId());
+                serviceProvider.setText(telephonyManager.getSimOperatorName());
+                mcc_mnc.setText(telephonyManager.getSimOperator());
             }
         } else {
 
-            imei.setText("" + telephonyManager.getImei());
-            imsi.setText("" + telephonyManager.getSubscriberId());
-            serviceProvider.setText("" + telephonyManager.getSimOperatorName());
-            mcc_mnc.setText("" + telephonyManager.getSimOperator());
+            imei.setText( telephonyManager.getImei());
+            imsi.setText(telephonyManager.getSubscriberId());
+            serviceProvider.setText(telephonyManager.getSimOperatorName());
+            mcc_mnc.setText(telephonyManager.getSimOperator());
 
         }
 
@@ -173,17 +175,10 @@ public class InfoActivity extends AppCompatActivity {
         bluetooth.setText(bluMac);
         broadcastIntent();
 
-/*
-        if (getConnectivityStatusString(this) == "No internet is available") {
-            internet.setTextColor(Color.RED);
-            internet.setText(getConnectivityStatusString(this));
-        } else {
-            internet.setText(getConnectivityStatusString(this));
-        }*/
 
-        /*********************************Current network*****************************/
+        /*******************************Current network*****************************/
 
-        //    txsystem.setText(getNeworkType());
+
         txradiotype.setText(getRadioType());
         simState.setText(getSimState());
 
@@ -208,105 +203,120 @@ public class InfoActivity extends AppCompatActivity {
             public void onCallStateChanged(int callstat, String incomingNumber) {
 
                 if (callstat == TelephonyManager.CALL_STATE_IDLE) {
-                    txcallstt.setText("Idle");
+                    txcallstt.setText(R.string.idle);
                 } else {
-                    txcallstt.setText("Connected");
+                    txcallstt.setText(R.string.connected);
                 }
 
             }
         };
         telephonyManager.listen(callStateListener, PhoneStateListener.LISTEN_CALL_STATE);
-
+        if (player != null) {
+            player.release();
+        }
         PhoneStateListener callStateListener1 = new PhoneStateListener() {
+
 
             public void onDataConnectionStateChanged(int state, int networkType) {
                 super.onDataConnectionStateChanged(state, networkType);
+
                 switch (state) {
                     case TelephonyManager.DATA_DISCONNECTED:
-                        internet.setText("Disconnected");
+                        internet.setText(R.string.disconnected);
                         break;
                     case TelephonyManager.DATA_CONNECTING:
-                        internet.setText("Connecting");
+                        internet.setText(R.string.connecting);
                         break;
                     case TelephonyManager.DATA_CONNECTED:
-                        internet.setText("Connected");
+                        internet.setText(R.string.connected);
                         break;
                     case TelephonyManager.DATA_SUSPENDED:
-                        internet.setText("Suspended");
+                        internet.setText(R.string.suspended);
                         break;
                     default:
-                        internet.setText(" Unknown " + state);
-                        break;
-                }
-
-                switch (networkType) {
-                    case (TelephonyManager.NETWORK_TYPE_1xRTT):
-                        txsystem.setText("1xRTT");
-                        break;
-                    case (TelephonyManager.NETWORK_TYPE_CDMA):
-                        txsystem.setText("CDMA");
-                        break;
-                    case (TelephonyManager.NETWORK_TYPE_EDGE):
-                        txsystem.setText("EDGE");
-                        break;
-                    case (TelephonyManager.NETWORK_TYPE_EHRPD):
-                        txsystem.setText("EHRPD");
-                        break;
-                    case (TelephonyManager.NETWORK_TYPE_EVDO_0):
-                        txsystem.setText("EVDO 0");
-                        break;
-                    case (TelephonyManager.NETWORK_TYPE_EVDO_A):
-                        txsystem.setText("EVDO A");
-                        break;
-                    case (TelephonyManager.NETWORK_TYPE_EVDO_B):
-                        txsystem.setText("EVDO B");
-                        break;
-                    case (TelephonyManager.NETWORK_TYPE_GPRS):
-                        txsystem.setText("GPRS");
-                        break;
-                    case (TelephonyManager.NETWORK_TYPE_GSM):
-                        txsystem.setText("GSM");
-                        break;
-                    case (TelephonyManager.NETWORK_TYPE_HSDPA):
-                        txsystem.setText("HSDPA");
-                        break;
-                    case (TelephonyManager.NETWORK_TYPE_HSPA):
-                        txsystem.setText("HSPA");
-                        break;
-                    case (TelephonyManager.NETWORK_TYPE_HSPAP):
-                        txsystem.setText("HSPA+");
-                        break;
-                    case (TelephonyManager.NETWORK_TYPE_HSUPA):
-                        txsystem.setText("HSUPA");
-                        break;
-                    case (TelephonyManager.NETWORK_TYPE_IWLAN):
-                        txsystem.setText("IWLAN");
-                        break;
-                    case (TelephonyManager.NETWORK_TYPE_IDEN):
-                        txsystem.setText("IDEN");
-                        break;
-                    case (TelephonyManager.NETWORK_TYPE_LTE):
-                        txsystem.setText("LTE");
-                        break;
-                    case (TelephonyManager.NETWORK_TYPE_TD_SCDMA):
-                        txsystem.setText("TD-SCDMA");
-                        break;
-                    case (TelephonyManager.NETWORK_TYPE_UMTS):
-                        txsystem.setText("UMTS");
-                        break;
-
-                    case (TelephonyManager.NETWORK_TYPE_UNKNOWN):
-                        txsystem.setText("UNKNOWN");
+                        internet.setText(R.string.unknown+ state);
                         break;
 
                 }
+                if (networkType != 0) {
+
+                    switch (networkType) {
+                        case (TelephonyManager.NETWORK_TYPE_1xRTT):
+                            txsystem.setText(R.string.xRTT);
+                            break;
+                        case (TelephonyManager.NETWORK_TYPE_CDMA):
+                            txsystem.setText(R.string.cdma);
+                            break;
+                        case (TelephonyManager.NETWORK_TYPE_EDGE):
+                            txsystem.setText(R.string.edge);
+                            break;
+                        case (TelephonyManager.NETWORK_TYPE_EHRPD):
+                            txsystem.setText(R.string.ehrpd);
+                            break;
+                        case (TelephonyManager.NETWORK_TYPE_EVDO_0):
+                            txsystem.setText(R.string.evdo0);
+                            break;
+                        case (TelephonyManager.NETWORK_TYPE_EVDO_A):
+                            txsystem.setText(R.string.evdoA);
+                            break;
+                        case (TelephonyManager.NETWORK_TYPE_EVDO_B):
+                            txsystem.setText(R.string.evdoB);
+                            break;
+                        case (TelephonyManager.NETWORK_TYPE_GPRS):
+                            txsystem.setText(R.string.gprs);
+                            break;
+                        case (TelephonyManager.NETWORK_TYPE_GSM):
+                            txsystem.setText(R.string.gsm);
+                            break;
+                        case (TelephonyManager.NETWORK_TYPE_HSDPA):
+                            txsystem.setText(R.string.HSDPA);
+                            break;
+                        case (TelephonyManager.NETWORK_TYPE_HSPA):
+                            txsystem.setText(R.string.hspa);
+                            break;
+                        case (TelephonyManager.NETWORK_TYPE_HSPAP):
+                            txsystem.setText(R.string.hspaplus);
+                            break;
+                        case (TelephonyManager.NETWORK_TYPE_HSUPA):
+                            txsystem.setText(R.string.hsupa);
+                            break;
+                        case (TelephonyManager.NETWORK_TYPE_IWLAN):
+                            txsystem.setText(R.string.iwlan);
+                            break;
+                        case (TelephonyManager.NETWORK_TYPE_IDEN):
+                            txsystem.setText(R.string.iden);
+                            break;
+                        case (TelephonyManager.NETWORK_TYPE_LTE):
+                            txsystem.setText(R.string.lte);
+                            break;
+                        case (TelephonyManager.NETWORK_TYPE_TD_SCDMA):
+                            txsystem.setText(R.string.tdcdma);
+                            break;
+                        case (TelephonyManager.NETWORK_TYPE_UMTS):
+                            txsystem.setText(R.string.umts);
+                            break;
+
+                        case (TelephonyManager.NETWORK_TYPE_UNKNOWN):
+                            txsystem.setText(R.string.unknown);
+                            break;
+                    }
+
+                    player = MediaPlayer.create(InfoActivity.this, R.raw.ns_packet_technology_changed);
+                    player.setVolume(5, 5);
+                    player.start();
+                    Toast.makeText(getApplicationContext(), "Packet technology changed " + txsystem.getText(), Toast.LENGTH_LONG).show();
+                }
+
             }
+
         };
         telephonyManager.listen(callStateListener1, PhoneStateListener.LISTEN_DATA_CONNECTION_STATE);
 
-        /**************************************OnCreate Ends here **********************************************/
+
+        /*************************************OnCreate Ends here **********************************************/
 
     }
+
 
     private static String getMobileIPAddress() {
         try {
@@ -337,8 +347,8 @@ public class InfoActivity extends AppCompatActivity {
 
                         return;
                     }
-                    imei.setText("" + telephonyManager.getImei());
-                    imsi.setText("" + telephonyManager.getSubscriberId());
+                    imei.setText(telephonyManager.getImei());
+                    imsi.setText(telephonyManager.getSubscriberId());
                 } else {
                     Toast.makeText(this, "Enable needed permission from settings", Toast.LENGTH_SHORT).show();
                 }
@@ -375,13 +385,13 @@ public class InfoActivity extends AppCompatActivity {
 
     }
 
-
+/*
     @Override
     protected void onPause() {
         super.onPause();
         unregisterReceiver(MyReceiver);
 
-    }
+    }*/
 
     /***************************************Call Status******************************************************/
 
@@ -453,61 +463,62 @@ public class InfoActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context ctxt, Intent intent) {
             int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
-            txvlebtry.setText(String.valueOf(level) + "%");
+            txvlebtry.setText(String.valueOf(level)+"%" );
             int health = intent.getIntExtra(BatteryManager.EXTRA_HEALTH, 0);
 
             if (health == BatteryManager.BATTERY_HEALTH_COLD) {
-                btry_health_val.setText("Cold");
+                btry_health_val.setText(R.string.cold);
             }
             if (health == BatteryManager.BATTERY_HEALTH_DEAD) {
-                btry_health_val.setText("Dead");
+                btry_health_val.setText(R.string.dead);
             }
             if (health == BatteryManager.BATTERY_HEALTH_GOOD) {
-                btry_health_val.setText("Good");
+                btry_health_val.setText(R.string.good);
             }
             if (health == BatteryManager.BATTERY_HEALTH_OVERHEAT) {
-                btry_health_val.setText("Overheat");
+                btry_health_val.setText(R.string.overheat);
             }
             if (health == BatteryManager.BATTERY_HEALTH_OVER_VOLTAGE) {
-                btry_health_val.setText("Over voltage");
+                btry_health_val.setText(R.string.overVoltage);
             }
             if (health == BatteryManager.BATTERY_HEALTH_UNKNOWN) {
-                btry_health_val.setText("Unknown");
+                btry_health_val.setText(R.string.unknown);
             }
 
             int temprature = (intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0)) / 10;
-            tempraturebtry_val.setText(temprature + "°C");
+            tempraturebtry_val.setText(temprature + R.string.degreecel);
             int chargeplug = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0);
 
             if (chargeplug == BatteryManager.BATTERY_PLUGGED_AC) {
-                chargeplug_val.setText("AC Adapter");
+                chargeplug_val.setText(R.string.acadapter);
             }
             if (chargeplug == BatteryManager.BATTERY_PLUGGED_USB) {
-                chargeplug_val.setText("USB");
+                chargeplug_val.setText(R.string.USB);
             }
             if (chargeplug == BatteryManager.BATTERY_PLUGGED_WIRELESS) {
-                chargeplug_val.setText("Wireless");
+                chargeplug_val.setText(R.string.Wireless);
             }
 
             int status = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0);
 
             if (status == BatteryManager.BATTERY_STATUS_CHARGING) {
-                btrystatus_val.setText("Charging");
+                btrystatus_val.setText(R.string.Charging);
             }
             if (status == BatteryManager.BATTERY_STATUS_DISCHARGING) {
-                btrystatus_val.setText("Discharging");
+                btrystatus_val.setText(R.string.Discharging);
             }
             if (status == BatteryManager.BATTERY_STATUS_FULL) {
-                btrystatus_val.setText("Full");
+                btrystatus_val.setText(R.string.Full);
             }
             if (status == BatteryManager.BATTERY_STATUS_NOT_CHARGING) {
-                btrystatus_val.setText("Not charging");
+                btrystatus_val.setText(R.string.notchargin);
             }
             if (status == BatteryManager.BATTERY_STATUS_UNKNOWN) {
-                btrystatus_val.setText("Unkonwn");
+                btrystatus_val.setText(R.string.unknown);
             }
 
         }
     };
+
 
 }
