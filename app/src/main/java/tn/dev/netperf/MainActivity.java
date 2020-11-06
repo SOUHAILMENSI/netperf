@@ -16,7 +16,7 @@ import androidx.core.app.ActivityCompat;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     int Permission_All = 1;
-    public CardView card1, card2, card3;
+    public CardView card1, card2, card3, card4, card5,card6;
 
 
     @Override
@@ -32,6 +32,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         card3 = findViewById(R.id.c3);
         card3.setOnClickListener(this);
+
+        card4 = findViewById(R.id.c4);
+        card4.setOnClickListener(this);
+        card5 = findViewById(R.id.c5);
+        card5.setOnClickListener(this);
+        card6 = findViewById(R.id.c6);
+        card6.setOnClickListener(this);
+
 
 
         String[] Permissions = {Manifest.permission.READ_SMS,Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION,
@@ -68,11 +76,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(i);
                 break;
             case R.id.c2:
-                i = new Intent(this, SumActivity.class);
+                i = new Intent(this, SummActivity.class);
                 startActivity(i);
                 break;
             case R.id.c3:
                 i = new Intent(this, StatsActivity.class);
+                startActivity(i);
+                break;
+            case R.id.c4:
+                i = new Intent(this, TestActivity.class);
+                startActivity(i);
+                break;
+            case R.id.c5:
+                i = new Intent(this, MapActivity.class);
+                startActivity(i);
+                break;
+            case R.id.c6:
+                i = new Intent(this, ForceActivity.class);
                 startActivity(i);
                 break;
         }

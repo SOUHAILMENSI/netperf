@@ -35,9 +35,7 @@
     <string name="GPs_info">GPS information</string>
     <string name="latitude">Latitude</string>
     <string name="langitude">Langitude</string>
-    <string name="locality">Locality</string>
-    <string name="gpsnotready">GPS not Ready</string>
-    <string name="gpsready">GPS Ready</string>
+    <string name="time">DateTime</string>
 
     <string name="idle">Idle</string>
     <string name="connected">Connected</string>
@@ -46,7 +44,6 @@
     <string name="connecting">Connecting</string>
     <string name="suspended">Suspended</string>
     <string name="unknown">Unknown</string>
-
 
 
     <string name="xRTT">1xRTT</string>
@@ -69,14 +66,12 @@
     <string name="umts">UMTS</string>
 
 
-
     <string name="percentage">%</string>
     <string name="cold">Cold</string>
     <string name="dead">Dead</string>
     <string name="good">Good</string>
     <string name="overheat">Overheat</string>
     <string name="overVoltage">Over voltage</string>
-    <string name="degreecel">°C</string>
     <string name="acadapter">AC Adapter</string>
     <string name="USB">USB</string>
     <string name="Wireless">Wireless</string>
@@ -87,6 +82,10 @@
     <string name="notchargin">Not charging</string>
 
 
+    <string name="lte_cellular_info">LTE Cellular Info\n\n</string>
+    <string name="umts_cellular_info">UMTS Cellular Info\n\n</string>
+    <string name="gsm_cellular_info">GSM Cellular Info\n\n</string>
+    <string name="cdma_cellular_info">CDMA Cellular Info\n\n</string>
 
 
 </resources>

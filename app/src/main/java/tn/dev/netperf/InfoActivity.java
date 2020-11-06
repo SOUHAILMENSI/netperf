@@ -30,7 +30,7 @@ import java.net.NetworkInterface;
 import java.util.Collections;
 import java.util.List;
 
-import tn.dev.netperf.models.MyReceiver;
+import tn.dev.netperf.Utils.MyReceiver;
 
 import static android.Manifest.permission.READ_PHONE_NUMBERS;
 import static android.Manifest.permission.READ_PHONE_STATE;
@@ -195,7 +195,7 @@ public class InfoActivity extends AppCompatActivity {
         });
 
 
-        this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        this.registerReceiver((BroadcastReceiver)this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
 
         PhoneStateListener callStateListener = new PhoneStateListener() {
@@ -385,13 +385,13 @@ public class InfoActivity extends AppCompatActivity {
 
     }
 
-/*
+
     @Override
     protected void onPause() {
         super.onPause();
         unregisterReceiver(MyReceiver);
 
-    }*/
+    }
 
     /***************************************Call Status******************************************************/
 
@@ -486,7 +486,7 @@ public class InfoActivity extends AppCompatActivity {
             }
 
             int temprature = (intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0)) / 10;
-            tempraturebtry_val.setText(temprature + R.string.degreecel);
+            tempraturebtry_val.setText(temprature +"°C");
             int chargeplug = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0);
 
             if (chargeplug == BatteryManager.BATTERY_PLUGGED_AC) {

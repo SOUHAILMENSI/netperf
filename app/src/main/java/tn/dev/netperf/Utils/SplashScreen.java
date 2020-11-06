@@ -1,4 +1,4 @@
-package tn.dev.netperf.models;
+package tn.dev.netperf.Utils;
 
 import android.content.Intent;
 import android.os.Handler;

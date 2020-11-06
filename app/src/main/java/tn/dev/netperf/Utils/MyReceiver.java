@@ -1,4 +1,4 @@
-package tn.dev.netperf.models;
+package tn.dev.netperf.Utils;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
