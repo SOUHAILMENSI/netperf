@@ -1,4 +1,4 @@
-package tn.dev.netperf;
+package tn.dev.netperf.Activities;
 
 import android.Manifest;
 import android.content.Context;
@@ -12,6 +12,8 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
+
+import tn.dev.netperf.R;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 

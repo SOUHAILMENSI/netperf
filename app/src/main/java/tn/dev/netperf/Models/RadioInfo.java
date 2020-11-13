@@ -1,4 +1,4 @@
-package tn.dev.netperf.Utils;
+package tn.dev.netperf.Models;
 
 
 import android.annotation.SuppressLint;
@@ -18,7 +18,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
-import tn.dev.netperf.SummActivity;
+import tn.dev.netperf.Activities.SummActivity;
 
 public class RadioInfo {
 
@@ -229,15 +229,15 @@ public class RadioInfo {
                 getLteRsrp.setAccessible(true);
                 lte_RSRP = (int) getLteRsrp.invoke(signalStrength);*/
 
-                Method getLteRsrq = signalStrength.getClass().getDeclaredMethod("getLteRsrq");
+                @SuppressLint("SoonBlockedPrivateApi") Method getLteRsrq = signalStrength.getClass().getDeclaredMethod("getLteRsrq");
                 getLteRsrq.setAccessible(true);
                 lte_RSRQ = (int) getLteRsrq.invoke(signalStrength);
 
-                Method getLteRssnr = signalStrength.getClass().getDeclaredMethod("getLteRssnr");
+                @SuppressLint("SoonBlockedPrivateApi") Method getLteRssnr = signalStrength.getClass().getDeclaredMethod("getLteRssnr");
                 getLteRssnr.setAccessible(true);
                 lte_SINR = (int) getLteRssnr.invoke(signalStrength);
 
-                Method getLteCqi = signalStrength.getClass().getDeclaredMethod("getLteCqi");
+                @SuppressLint("SoonBlockedPrivateApi") Method getLteCqi = signalStrength.getClass().getDeclaredMethod("getLteCqi");
                 getLteRssnr.setAccessible(true);
                 lte_CQI = (int) getLteCqi.invoke(signalStrength);
 

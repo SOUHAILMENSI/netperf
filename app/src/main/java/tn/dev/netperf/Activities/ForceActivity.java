@@ -1,14 +1,16 @@
-package tn.dev.netperf;
+package tn.dev.netperf.Activities;
 
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class TestActivity extends AppCompatActivity {
+import tn.dev.netperf.R;
+
+public class ForceActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_test);
+        setContentView(R.layout.activity_force);
     }
 }

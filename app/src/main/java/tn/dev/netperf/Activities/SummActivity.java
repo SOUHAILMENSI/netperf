@@ -1,4 +1,4 @@
-package tn.dev.netperf;
+package tn.dev.netperf.Activities;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +22,8 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.util.Locale;
 
-import tn.dev.netperf.Utils.RadioInfo;
+import tn.dev.netperf.R;
+import tn.dev.netperf.Models.RadioInfo;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;

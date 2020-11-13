@@ -1,4 +1,4 @@
-package tn.dev.netperf;
+package tn.dev.netperf.Activities;
 
 import android.Manifest;
 import android.content.BroadcastReceiver;
@@ -11,13 +11,16 @@ import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import tn.dev.netperf.Utils.GPS_Service;
+import tn.dev.netperf.R;
+
+import tn.dev.netperf.Services.GpsService;
 
 
 public class MapActivity extends AppCompatActivity {
@@ -29,9 +32,7 @@ public class MapActivity extends AppCompatActivity {
     MediaPlayer player = null;
 
     private LocationManager locationManager;
-
-
-    private BroadcastReceiver broadcastReceiver;
+    private BroadcastReceiver broadcastReceiver = null;
 
 
     @Override
@@ -83,21 +84,17 @@ public class MapActivity extends AppCompatActivity {
         this.Statusvalue = findViewById(R.id.Statusvalue);
 
 
-        if (!runtime_permissions())
+        if (!runtime_permissions()) {
             configure_location();
-
-
-
-
+        }
 
 
         /**********************************onCreate(Bundle savedInstanceState) Ends here****************************/
 
     }
 
-
     private void configure_location() {
-        Intent i = new Intent(getApplicationContext(), GPS_Service.class);
+        Intent i = new Intent(getApplicationContext(), GpsService.class);
         startService(i);
 
 
@@ -107,15 +104,7 @@ public class MapActivity extends AppCompatActivity {
     private boolean runtime_permissions() {
         if (Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 100);
-
             Statusvalue.setText(R.string.disconnected);
-
-            if (player != null) {
-                release();
-                play(R.raw.ns_gps_disconnected);
-
-            }
-            play(R.raw.ns_gps_disconnected);
 
             return true;
         }
@@ -165,4 +154,6 @@ public class MapActivity extends AppCompatActivity {
         player.release();
 
     }
+
+
 }

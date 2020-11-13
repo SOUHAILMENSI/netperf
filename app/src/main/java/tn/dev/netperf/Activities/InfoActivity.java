@@ -1,4 +1,4 @@
-package tn.dev.netperf;
+package tn.dev.netperf.Activities;
 
 
 import android.Manifest;
@@ -14,6 +14,7 @@ import android.net.NetworkInfo;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.widget.TextView;
@@ -23,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.net.InetAddress;
@@ -30,6 +32,7 @@ import java.net.NetworkInterface;
 import java.util.Collections;
 import java.util.List;
 
+import tn.dev.netperf.R;
 import tn.dev.netperf.Utils.MyReceiver;
 
 import static android.Manifest.permission.READ_PHONE_NUMBERS;
@@ -197,7 +200,6 @@ public class InfoActivity extends AppCompatActivity {
 
         this.registerReceiver((BroadcastReceiver)this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
-
         PhoneStateListener callStateListener = new PhoneStateListener() {
 
             public void onCallStateChanged(int callstat, String incomingNumber) {
@@ -351,6 +353,10 @@ public class InfoActivity extends AppCompatActivity {
                     imsi.setText(telephonyManager.getSubscriberId());
                 } else {
                     Toast.makeText(this, "Enable needed permission from settings", Toast.LENGTH_SHORT).show();
+
+                    Intent i = new Intent(Settings.ACTION_APPLICATION_SETTINGS);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(i);
                 }
             }
         }
@@ -389,7 +395,9 @@ public class InfoActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(MyReceiver);
+       unregisterReceiver(MyReceiver);
+        unregisterReceiver(mBatInfoReceiver);
+
 
     }
 

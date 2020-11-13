@@ -1,4 +1,4 @@
-package tn.dev.netperf.Utils;
+package tn.dev.netperf.Services;
 
 import android.annotation.SuppressLint;
 import android.app.Service;
@@ -16,7 +16,7 @@ import androidx.annotation.Nullable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class GPS_Service extends Service {
+public class GpsService extends Service {
 
     private LocationListener listener;
     private LocationManager locationManager;
@@ -31,9 +31,6 @@ public class GPS_Service extends Service {
     @SuppressLint("MissingPermission")
     @Override
     public void onCreate() {
-
-
-
         listener = new LocationListener() {
 
             @Override
@@ -49,35 +46,24 @@ public class GPS_Service extends Service {
                 i.putExtra("time", sdf.format(date));
                 sendBroadcast(i);
             }
-
             @Override
             public void onStatusChanged(String s, int i, Bundle bundle) {
 
             }
-
             @Override
             public void onProviderEnabled(String s) {
             }
-
             @Override
             public void onProviderDisabled(String s) {
                 Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(i);
-
             }
-
-
         };
-
         locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-
         //noinspection MissingPermission
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 1, listener);
-
-
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 0, listener);
     }
-
     @SuppressLint("MissingPermission")
     @Override
     public void onDestroy() {

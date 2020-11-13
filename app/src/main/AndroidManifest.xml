@@ -13,6 +13,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
+
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -21,25 +23,23 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ForceActivity"/>
-        <activity android:name=".TestActivity" />
-        <activity android:name=".SummActivity" />
-        <activity android:name=".InfoActivity" />
-        <activity android:name=".StatsActivity" />
-        <activity android:name=".MapActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".Activities.ForceActivity" />
+        <activity android:name=".Activities.TestActivity" />
+        <activity android:name=".Activities.SummActivity" />
+        <activity android:name=".Activities.InfoActivity" />
+        <activity android:name=".Activities.StatsActivity" />
+        <activity android:name=".Activities.MapActivity" />
+        <activity android:name=".Activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".Utils.SplashScreen"
+            android:name=".Activities.SplashScreen"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -49,13 +49,16 @@
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
             </intent-filter>
+
         </receiver>
 
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <service android:name=".Utils.GPS_Service"/>
+        <service
+        android:name=".Services.GpsService"
+        android:permission="android.permission.BIND_JOB_SERVICE" />
 
     </application>
 
