@@ -18,7 +18,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
+import tn.dev.netperf.Activities.StatsActivity;
 import tn.dev.netperf.Activities.SummActivity;
+import tn.dev.netperf.R;
 
 public class RadioInfo {
 
@@ -253,7 +255,7 @@ public class RadioInfo {
                 getCellSignalStrength();
                 getCellIdentity();
 
-                ((SummActivity) mcontext).mSectionsPagerAdapter.notifyDataSetChanged();
+              ((SummActivity) mcontext).mSectionsPagerAdapter.notifyDataSetChanged();
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -282,7 +284,6 @@ public class RadioInfo {
                 if (cellInfo instanceof CellInfoLte) {
 
                     CellInfoLte lteinfo = (CellInfoLte) cellInfo;
-
 
                     lte_MCC = lteinfo.getCellIdentity().getMcc();
                     lte_MNC = lteinfo.getCellIdentity().getMnc();
@@ -315,7 +316,8 @@ public class RadioInfo {
                 }
             }
 
-            ((SummActivity) mcontext).mSectionsPagerAdapter.notifyDataSetChanged();
+           ((SummActivity) mcontext).mSectionsPagerAdapter.notifyDataSetChanged();
+
         }
 
     }

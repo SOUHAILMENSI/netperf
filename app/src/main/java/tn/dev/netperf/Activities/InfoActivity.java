@@ -2,6 +2,7 @@ package tn.dev.netperf.Activities;
 
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -58,6 +59,7 @@ public class InfoActivity extends AppCompatActivity {
     private BroadcastReceiver MyReceiver = null;
 
 
+    @SuppressLint("MissingPermission")
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -307,9 +309,12 @@ public class InfoActivity extends AppCompatActivity {
                     player.setVolume(5, 5);
                     player.start();
                     Toast.makeText(getApplicationContext(), "Packet technology changed " + txsystem.getText(), Toast.LENGTH_LONG).show();
+
+
                 }
 
             }
+
 
         };
         telephonyManager.listen(callStateListener1, PhoneStateListener.LISTEN_DATA_CONNECTION_STATE);
@@ -337,6 +342,7 @@ public class InfoActivity extends AppCompatActivity {
         return "";
     }
 
+    @SuppressLint("MissingPermission")
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -344,7 +350,7 @@ public class InfoActivity extends AppCompatActivity {
             case PERMISSION_REQUEST_CODE: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     recreate();
-                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED ) {
                         ActivityCompat.requestPermissions(this, new String[]{READ_PHONE_STATE}, PERMISSION_REQUEST_CODE);
 
                         return;
