@@ -11,7 +11,7 @@
     <string name="simState">State </string>
     <string name="mcc_mnc">MCC/MNC </string>
     <string name="radioType">Phone type </string>
-    <string name="callstate">State </string>
+    <string name="callstate">Logging state </string>
     <string name="versioncode">Version code </string>
     <string name="IMEI"> IMEI</string>
     <string name="IMSI"> IMSI</string>

@@ -193,7 +193,8 @@
                     android:layout_height="wrap_content"
                     android:baselineAligned="false"
                     android:orientation="horizontal"
-                    android:weightSum="2">
+                    android:weightSum="2"
+                    android:layout_marginTop="15dp">
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -339,7 +340,8 @@
                     android:layout_height="wrap_content"
                     android:baselineAligned="false"
                     android:orientation="horizontal"
-                    android:weightSum="2">
+                    android:weightSum="2"
+                    android:layout_marginTop="20dp">
 
                     <LinearLayout
                         android:layout_width="0dp"

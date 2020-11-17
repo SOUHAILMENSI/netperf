@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.lang.reflect.Method;
@@ -30,7 +31,7 @@ import tn.dev.netperf.R;
 
 public class StatsActivity extends AppCompatActivity {
     private TextView txsys, tx1, tx2, tx3, tx4, tx5, tx6, tx7, tx8, tx9,
-            tx10, tx11, tx12, tx13, tx14, tx15, tx16, tx17, tx18, tx19, tx20, tx21, tx22,txband,txbandval;
+            tx10, tx11, tx12, tx13, tx14, tx15, tx16, tx17, tx18, tx19, tx20, tx21, tx22, txband, txbandval;
 
 
     private TelephonyManager telephonyManagerToListen = null;
@@ -45,6 +46,9 @@ public class StatsActivity extends AppCompatActivity {
     private int lte_SINR = Integer.MAX_VALUE;
     private int lte_CQI = Integer.MAX_VALUE;
     private int lte_Earfcn = Integer.MAX_VALUE;
+    private double lte_bandwith = Double.MAX_VALUE;
+   // private int[] lte_band ;
+
 
     private int Lte_Asu = Integer.MAX_VALUE;
     private int lte_dbm = Integer.MAX_VALUE;
@@ -118,6 +122,7 @@ public class StatsActivity extends AppCompatActivity {
     private PhoneStateListener mPhoneStateListener = new PhoneStateListener() {
 
 
+        @RequiresApi(api = Build.VERSION_CODES.P)
         @Override
         public void onSignalStrengthsChanged(SignalStrength signalStrength) {
 
@@ -203,16 +208,6 @@ public class StatsActivity extends AppCompatActivity {
                     gsm_Arfcn = gsmInfo.getCellIdentity().getArfcn();
                     gsm_Bsic = gsmInfo.getCellIdentity().getBsic();
 
-
-                    tx2.setText(gsm_MCC + "/" + gsm_MNC);
-                    tx4.setText(gsm_CID);
-                    tx6.setText(gsm_LAC);
-                    tx8.setText(gsm_Arfcn);
-                    tx10.setText(gsm_Bsic);
-
-                    tx12.setText("");
-
-
                 } else if (cellInfo instanceof CellInfoWcdma) {
                     CellInfoWcdma wcdmaInfo = (CellInfoWcdma) cellInfo;
                     wcdma_MCC = wcdmaInfo.getCellIdentity().getMcc();
@@ -245,6 +240,17 @@ public class StatsActivity extends AppCompatActivity {
                 wcdma_ASU = wcdmaInfo.getCellSignalStrength().getAsuLevel();
                 // NeighboringCellInfo neighboringCellInfo = new NeighboringCellInfo();
                 // wcdm_RSCP = neighboringCellInfo.getNetworkType();
+
+                tx13.setText("RSSI");
+                tx14.setText(String.valueOf(wcdma_RSSI));
+                tx15.setText("ASU");
+                tx16.setText(String.valueOf(wcdma_ASU));
+                tx17.setText("EcIo");
+                tx18.setText(String.valueOf(getWcdma_EcNo()));
+                tx19.setText("RSCP");
+                tx20.setText(String.valueOf(getwcdm_RSCP()));
+
+
             } else if (cellInfo instanceof CellInfoGsm) {
                 CellInfoGsm gsmInfo = (CellInfoGsm) cellInfo;
                 gsm_Asu = gsmInfo.getCellSignalStrength().getAsuLevel();
@@ -256,20 +262,28 @@ public class StatsActivity extends AppCompatActivity {
                 tx18.setText(String.valueOf(gsm_Asu));
                 tx19.setText("Rxlev");
                 tx20.setText(String.valueOf(gsm_rxlev));
-                tx21.setVisibility(View.GONE);
-                tx22.setVisibility(View.GONE);
+
             } else if (cellInfo instanceof CellInfoLte) {
                 CellInfoLte lteInfo = (CellInfoLte) cellInfo;
                 Lte_Asu = lteInfo.getCellSignalStrength().getAsuLevel();
                 lte_dbm = lteInfo.getCellSignalStrength().getDbm();
                 Log.e("LTEASU/DBM", "" + Lte_Asu + "\n" + lte_dbm);
 
+                tx13.setText("RSRP");
+                tx14.setText(String.valueOf(lte_dbm));
+                tx15.setText("RSRQ");
+                tx16.setText(String.valueOf(lte_RSRQ));
+                tx17.setText("SINR");
+                tx18.setText(String.valueOf(getLteSINR()));
+                tx19.setText("CQI");
+                tx20.setText(String.valueOf(lte_CQI));
+
             }
         }
     }
 
 
-    @TargetApi(Build.VERSION_CODES.N)
+    @androidx.annotation.RequiresApi(api = Build.VERSION_CODES.P)
     private void getCellIdentity() {
         @SuppressLint("MissingPermission") List<CellInfo> cellInfoList = telephonyManagerToListen.getAllCellInfo();
 
@@ -289,10 +303,32 @@ public class StatsActivity extends AppCompatActivity {
                 lte_PCI = lteinfo.getCellIdentity().getPci();
                 lte_TAC = lteinfo.getCellIdentity().getTac();
                 lte_Earfcn = lteinfo.getCellIdentity().getEarfcn();
-                GetEnB();
-                getSectorId();
+                lte_bandwith = lteinfo.getCellIdentity().getBandwidth();
+              // lte_band = lteinfo.getCellIdentity().getBands();
 
-            } else if (cellInfo instanceof CellInfoGsm) {
+
+                txsys.setText("LTE");
+                tx1.setText("MCC/MNC");
+                tx2.setText(lte_MCC + "/" + lte_MNC);
+                tx3.setText("CID");
+                tx4.setText(String.valueOf(lte_CI));
+                tx5.setText("TAC");
+                tx6.setText(String.valueOf(lte_TAC));
+                tx7.setText("EARFCN");
+                tx8.setText(String.valueOf(lte_Earfcn));
+                tx9.setText("PCI");
+                tx10.setText(String.valueOf(lte_PCI));
+                tx11.setText("DL/UL Freq");
+                tx12.setText(getGsmDLfrequency() + "/" + getGsmULfrequency());
+                txband.setText("Band (bandwith)");
+                txbandval.setText(String.valueOf(lte_bandwith ));
+                tx21.setVisibility(View.VISIBLE);
+                tx22.setVisibility(View.VISIBLE);
+                tx21.setText("eNB/Sector ID");
+                tx22.setText(GetEnB()+"/"+getSectorId());
+
+            }
+            else if (cellInfo instanceof CellInfoGsm) {
                 CellInfoGsm gsmInfo = (CellInfoGsm) cellInfo;
 
                 gsm_MCC = gsmInfo.getCellIdentity().getMcc();
@@ -316,17 +352,39 @@ public class StatsActivity extends AppCompatActivity {
                 tx11.setText("DL/UL Freq");
                 tx12.setText(getGsmDLfrequency() + "/" + getGsmULfrequency());
                 txband.setText("Band (bandwith)");
-                txbandval.setText(getGsmDLband().get(0) +" ("+getGsmDLband().get(1)+")");
+                txbandval.setText(getGsmDLband().get(0) + " (" + getGsmDLband().get(1) + ")");
+                tx21.setVisibility(View.GONE);
+                tx22.setVisibility(View.GONE);
 
-            } else if (cellInfo instanceof CellInfoWcdma) {
+            }
+            else if (cellInfo instanceof CellInfoWcdma) {
                 CellInfoWcdma wcdmaInfo = (CellInfoWcdma) cellInfo;
 
                 wcdma_MCC = wcdmaInfo.getCellIdentity().getMcc();
                 wcdma_MNC = wcdmaInfo.getCellIdentity().getMnc();
-                wcdma_CID = wcdmaInfo.getCellIdentity().getCid() % 65536;
+                wcdma_CID = wcdmaInfo.getCellIdentity().getCid();
                 wcdma_LAC = wcdmaInfo.getCellIdentity().getLac();
                 wcdma_PSC = wcdmaInfo.getCellIdentity().getPsc();
                 wcdma_Uarfcn = wcdmaInfo.getCellIdentity().getUarfcn();
+
+
+                txsys.setText("WCDMA");
+                tx1.setText("MCC/MNC");
+                tx2.setText(wcdma_MCC + "/" + wcdma_MNC);
+                tx3.setText("CID");
+                tx4.setText(String.valueOf(getWcdma_CID()));
+                tx5.setText("LAC");
+                tx6.setText(String.valueOf(wcdma_LAC));
+                tx7.setText("UARFCN");
+                tx8.setText(String.valueOf(wcdma_Uarfcn));
+                tx9.setText("PSC");
+                tx10.setText(String.valueOf(wcdma_PSC));
+                tx11.setText("DL/UL Freq");
+                tx12.setText(getGsmDLfrequency() + "/" + getGsmULfrequency());
+                txband.setText("Band (bandwith)");
+                txbandval.setText(getGsmDLband().get(0) + " (" + getGsmDLband().get(1) + ")");
+                tx21.setVisibility(View.GONE);
+                tx22.setVisibility(View.GONE);
             }
         }
     }
@@ -421,6 +479,9 @@ public class StatsActivity extends AppCompatActivity {
         return wcdma_Ecno = wcdma_RSCP - wcdma_RSSI;
     }
 
+    public int getWcdma_CID() {
+        return wcdma_CID % 65536;
+    }
 
     public int getLteCI() {
         return lte_CI;
@@ -443,7 +504,6 @@ public class StatsActivity extends AppCompatActivity {
         return ULfreq;
     }
 
-
     private Double getGsmDLfrequency() {
         double DLfreq = 0;
         return DLfreq = getGsmULfrequency() + 45;
@@ -456,15 +516,13 @@ public class StatsActivity extends AppCompatActivity {
         String gsm_dLband = null;
         String gsm_bandwith = null;
 
-        if (gsm_Arfcn>= 0 && gsm_Arfcn <= 124 || gsm_Arfcn>= 975 && gsm_Arfcn <= 1023)
-        {
-            gsm_dLband ="900";
-            gsm_bandwith="34.6";
+        if (gsm_Arfcn >= 0 && gsm_Arfcn <= 124 || gsm_Arfcn >= 975 && gsm_Arfcn <= 1023) {
+            gsm_dLband = "900";
+            gsm_bandwith = "34.6";
 
-        } else if (gsm_Arfcn>= 515 && gsm_Arfcn <= 885 )
-        {
-            gsm_dLband ="1800";
-            gsm_bandwith="74.6";
+        } else if (gsm_Arfcn >= 515 && gsm_Arfcn <= 885) {
+            gsm_dLband = "1800";
+            gsm_bandwith = "74.6";
         }
         gsmband_bandwith.add(gsm_dLband);
         gsmband_bandwith.add(gsm_bandwith);
