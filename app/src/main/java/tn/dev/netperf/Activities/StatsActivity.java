@@ -31,7 +31,7 @@ import tn.dev.netperf.R;
 
 public class StatsActivity extends AppCompatActivity {
     private TextView txsys, tx1, tx2, tx3, tx4, tx5, tx6, tx7, tx8, tx9,
-            tx10, tx11, tx12, tx13, tx14, tx15, tx16, tx17, tx18, tx19, tx20, tx21, tx22, txband, txbandval;
+            tx10, tx11, tx12, tx13, tx14, tx15, tx16, tx17, tx18, tx19, tx20, tx21, tx22, txband, txbandval,txmodul,txmodulval;
 
 
     private TelephonyManager telephonyManagerToListen = null;
@@ -107,6 +107,8 @@ public class StatsActivity extends AppCompatActivity {
         tx22 = findViewById(R.id.txradio22);
         txband = findViewById(R.id.txradioband);
         txbandval = findViewById(R.id.txradiobandval);
+        txmodul=findViewById(R.id.txmodulation);
+        txmodulval = findViewById(R.id.txmodulval);
 
 
         /*******************************OnCreate ends here *******************************************/
@@ -242,26 +244,26 @@ public class StatsActivity extends AppCompatActivity {
                 // wcdm_RSCP = neighboringCellInfo.getNetworkType();
 
                 tx13.setText("RSSI");
-                tx14.setText(String.valueOf(wcdma_RSSI));
+                tx14.setText(wcdma_RSSI + " dBm");
                 tx15.setText("ASU");
-                tx16.setText(String.valueOf(wcdma_ASU));
+                tx16.setText(wcdma_ASU + " dBm");
                 tx17.setText("EcIo");
-                tx18.setText(String.valueOf(getWcdma_EcNo()));
+                tx18.setText(getWcdma_EcNo() + " dB");
                 tx19.setText("RSCP");
-                tx20.setText(String.valueOf(getwcdm_RSCP()));
+                tx20.setText(getwcdm_RSCP() + " dBm");
 
 
             } else if (cellInfo instanceof CellInfoGsm) {
                 CellInfoGsm gsmInfo = (CellInfoGsm) cellInfo;
                 gsm_Asu = gsmInfo.getCellSignalStrength().getAsuLevel();
                 tx13.setText("RSSI");
-                tx14.setText(String.valueOf(gsm_RSSI));
+                tx14.setText(gsm_RSSI + " dBm");
                 tx15.setText("BER");
                 tx16.setText(String.valueOf(gsm_Berror));
                 tx17.setText("ASU");
-                tx18.setText(String.valueOf(gsm_Asu));
+                tx18.setText(String.valueOf(gsm_Asu +" dBm"));
                 tx19.setText("Rxlev");
-                tx20.setText(String.valueOf(gsm_rxlev));
+                tx20.setText(gsm_rxlev +" dBm");
 
             } else if (cellInfo instanceof CellInfoLte) {
                 CellInfoLte lteInfo = (CellInfoLte) cellInfo;
@@ -270,11 +272,11 @@ public class StatsActivity extends AppCompatActivity {
                 Log.e("LTEASU/DBM", "" + Lte_Asu + "\n" + lte_dbm);
 
                 tx13.setText("RSRP");
-                tx14.setText(String.valueOf(lte_dbm));
+                tx14.setText(lte_dbm + " dBm");
                 tx15.setText("RSRQ");
-                tx16.setText(String.valueOf(lte_RSRQ));
+                tx16.setText(lte_RSRQ + " dB");
                 tx17.setText("SINR");
-                tx18.setText(String.valueOf(getLteSINR()));
+                tx18.setText(getLteSINR() + " dB");
                 tx19.setText("CQI");
                 tx20.setText(String.valueOf(lte_CQI));
 
@@ -326,6 +328,8 @@ public class StatsActivity extends AppCompatActivity {
                 tx22.setVisibility(View.VISIBLE);
                 tx21.setText("eNB/Sector ID");
                 tx22.setText(GetEnB()+"/"+getSectorId());
+                txmodul.setText("Modulation");
+                txmodulval.setText(getLTEmodulation());
 
             }
             else if (cellInfo instanceof CellInfoGsm) {
@@ -355,6 +359,8 @@ public class StatsActivity extends AppCompatActivity {
                 txbandval.setText(getGsmDLband().get(0) + " (" + getGsmDLband().get(1) + ")");
                 tx21.setVisibility(View.GONE);
                 tx22.setVisibility(View.GONE);
+                txmodul.setVisibility(View.GONE);
+                txmodulval.setVisibility(View.GONE);
 
             }
             else if (cellInfo instanceof CellInfoWcdma) {
@@ -385,6 +391,8 @@ public class StatsActivity extends AppCompatActivity {
                 txbandval.setText(getGsmDLband().get(0) + " (" + getGsmDLband().get(1) + ")");
                 tx21.setVisibility(View.GONE);
                 tx22.setVisibility(View.GONE);
+                txmodul.setVisibility(View.GONE);
+                txmodulval.setVisibility(View.GONE);
             }
         }
     }
@@ -467,7 +475,7 @@ public class StatsActivity extends AppCompatActivity {
     public int getwcdm_RSCP() {
 
         try {
-            wcdma_RSCP = wcdma_ASU - 115;
+            wcdma_RSCP =  wcdma_ASU - 95 ;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -517,11 +525,11 @@ public class StatsActivity extends AppCompatActivity {
         String gsm_bandwith = null;
 
         if (gsm_Arfcn >= 0 && gsm_Arfcn <= 124 || gsm_Arfcn >= 975 && gsm_Arfcn <= 1023) {
-            gsm_dLband = "900";
+            gsm_dLband = "GSM-900";
             gsm_bandwith = "34.6";
 
         } else if (gsm_Arfcn >= 515 && gsm_Arfcn <= 885) {
-            gsm_dLband = "1800";
+            gsm_dLband = "GSM-1800";
             gsm_bandwith = "74.6";
         }
         gsmband_bandwith.add(gsm_dLband);
@@ -531,5 +539,21 @@ public class StatsActivity extends AppCompatActivity {
         return gsmband_bandwith;
     }
 
+    public String getLTEmodulation(){
+        String modulation =null;
+
+        if (lte_CQI==0){
+            modulation ="Out of range";
+        }else if (lte_CQI>=1 && lte_CQI <= 3){
+            modulation = "QPSK";
+        }else if (lte_CQI>=4 && lte_CQI <= 6){
+            modulation ="16QAM";
+        }else if (lte_CQI>=7 && lte_CQI <= 11){
+            modulation ="64QAM";
+        }else if (lte_CQI>=12){
+            modulation ="256QAM";
+        }
+        return modulation;
+    }
 
 }

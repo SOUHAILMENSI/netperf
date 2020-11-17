@@ -191,10 +191,10 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
                     android:baselineAligned="false"
                     android:orientation="horizontal"
-                    android:weightSum="2"
-                    android:layout_marginTop="15dp">
+                    android:weightSum="2">
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -295,7 +295,6 @@
                     </LinearLayout>
 
 
-
                 </LinearLayout>
 
                 <LinearLayout
@@ -332,7 +331,6 @@
                     </LinearLayout>
 
 
-
                 </LinearLayout>
 
                 <LinearLayout
@@ -340,8 +338,44 @@
                     android:layout_height="wrap_content"
                     android:baselineAligned="false"
                     android:orientation="horizontal"
-                    android:weightSum="2"
-                    android:layout_marginTop="20dp">
+                    android:weightSum="2">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:id="@+id/txmodulation"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:id="@+id/txmodulval"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black" />
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -479,6 +513,7 @@
 
 
                 </LinearLayout>
+
 
             </LinearLayout>
         </ScrollView>
