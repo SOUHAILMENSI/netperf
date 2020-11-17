@@ -31,7 +31,7 @@ import tn.dev.netperf.R;
 
 public class StatsActivity extends AppCompatActivity {
     private TextView txsys, tx1, tx2, tx3, tx4, tx5, tx6, tx7, tx8, tx9,
-            tx10, tx11, tx12, tx13, tx14, tx15, tx16, tx17, tx18, tx19, tx20, tx21, tx22, txband, txbandval,txmodul,txmodulval;
+            tx10, tx11, tx12, tx13, tx14, tx15, tx16, tx17, tx18, tx19, tx20, tx21, tx22, txband, txbandval, txmodul, txmodulval;
 
 
     private TelephonyManager telephonyManagerToListen = null;
@@ -46,8 +46,6 @@ public class StatsActivity extends AppCompatActivity {
     private int lte_SINR = Integer.MAX_VALUE;
     private int lte_CQI = Integer.MAX_VALUE;
     private int lte_Earfcn = Integer.MAX_VALUE;
-    private double lte_bandwith = Double.MAX_VALUE;
-   // private int[] lte_band ;
 
 
     private int Lte_Asu = Integer.MAX_VALUE;
@@ -75,6 +73,7 @@ public class StatsActivity extends AppCompatActivity {
     private int wcdma_RSCP = Integer.MAX_VALUE;
     private int wcdma_ASU = Integer.MAX_VALUE;
     private int wcdma_Ecno = Integer.MAX_VALUE;
+
 
 
     @Override
@@ -107,7 +106,7 @@ public class StatsActivity extends AppCompatActivity {
         tx22 = findViewById(R.id.txradio22);
         txband = findViewById(R.id.txradioband);
         txbandval = findViewById(R.id.txradiobandval);
-        txmodul=findViewById(R.id.txmodulation);
+        txmodul = findViewById(R.id.txmodulation);
         txmodulval = findViewById(R.id.txmodulval);
 
 
@@ -144,7 +143,7 @@ public class StatsActivity extends AppCompatActivity {
 
                 @SuppressLint("SoonBlockedPrivateApi") Method getLteRssnr = signalStrength.getClass().getDeclaredMethod("getLteRssnr");
                 getLteRssnr.setAccessible(true);
-                lte_SINR = (int) getLteRssnr.invoke(signalStrength);
+                lte_SINR = (int) ((int) getLteRssnr.invoke(signalStrength) / 10D);
 
                 @SuppressLint("SoonBlockedPrivateApi") Method getLteCqi = signalStrength.getClass().getDeclaredMethod("getLteCqi");
                 getLteRssnr.setAccessible(true);
@@ -240,8 +239,6 @@ public class StatsActivity extends AppCompatActivity {
                 CellInfoWcdma wcdmaInfo = (CellInfoWcdma) cellInfo;
                 wcdma_RSSI = wcdmaInfo.getCellSignalStrength().getDbm();
                 wcdma_ASU = wcdmaInfo.getCellSignalStrength().getAsuLevel();
-                // NeighboringCellInfo neighboringCellInfo = new NeighboringCellInfo();
-                // wcdm_RSCP = neighboringCellInfo.getNetworkType();
 
                 tx13.setText("RSSI");
                 tx14.setText(wcdma_RSSI + " dBm");
@@ -261,9 +258,9 @@ public class StatsActivity extends AppCompatActivity {
                 tx15.setText("BER");
                 tx16.setText(String.valueOf(gsm_Berror));
                 tx17.setText("ASU");
-                tx18.setText(String.valueOf(gsm_Asu +" dBm"));
+                tx18.setText(String.valueOf(gsm_Asu + " dBm"));
                 tx19.setText("Rxlev");
-                tx20.setText(gsm_rxlev +" dBm");
+                tx20.setText(gsm_rxlev + " dBm");
 
             } else if (cellInfo instanceof CellInfoLte) {
                 CellInfoLte lteInfo = (CellInfoLte) cellInfo;
@@ -276,7 +273,7 @@ public class StatsActivity extends AppCompatActivity {
                 tx15.setText("RSRQ");
                 tx16.setText(lte_RSRQ + " dB");
                 tx17.setText("SINR");
-                tx18.setText(getLteSINR() + " dB");
+                tx18.setText(lte_SINR + " dB");
                 tx19.setText("CQI");
                 tx20.setText(String.valueOf(lte_CQI));
 
@@ -293,7 +290,7 @@ public class StatsActivity extends AppCompatActivity {
             // Log.e(Tag, "getAllCellInfo is null");
             return;
         }
-        //  Log.e(Tag, "getAllCellInfo size " + cellInfoList.size());
+         Log.e("getAllCellInfo", "getAllCellInfo size " + cellInfoList.size() +"\n"+ cellInfoList);
         for (CellInfo cellInfo : cellInfoList) {
             if (!cellInfo.isRegistered())
                 continue;
@@ -305,9 +302,6 @@ public class StatsActivity extends AppCompatActivity {
                 lte_PCI = lteinfo.getCellIdentity().getPci();
                 lte_TAC = lteinfo.getCellIdentity().getTac();
                 lte_Earfcn = lteinfo.getCellIdentity().getEarfcn();
-                lte_bandwith = lteinfo.getCellIdentity().getBandwidth();
-              // lte_band = lteinfo.getCellIdentity().getBands();
-
 
                 txsys.setText("LTE");
                 tx1.setText("MCC/MNC");
@@ -320,19 +314,18 @@ public class StatsActivity extends AppCompatActivity {
                 tx8.setText(String.valueOf(lte_Earfcn));
                 tx9.setText("PCI");
                 tx10.setText(String.valueOf(lte_PCI));
-                tx11.setText("DL/UL Freq");
-                tx12.setText(getGsmDLfrequency() + "/" + getGsmULfrequency());
-                txband.setText("Band (bandwith)");
-                txbandval.setText(String.valueOf(lte_bandwith ));
+                tx11.setVisibility(View.GONE);
+                tx12.setVisibility(View.GONE);
+                txband.setText("Band");
+                txbandval.setText(String.valueOf(getLTEDLband()));
                 tx21.setVisibility(View.VISIBLE);
                 tx22.setVisibility(View.VISIBLE);
                 tx21.setText("eNB/Sector ID");
-                tx22.setText(GetEnB()+"/"+getSectorId());
+                tx22.setText(GetEnB() + "/" + getSectorId());
                 txmodul.setText("Modulation");
                 txmodulval.setText(getLTEmodulation());
 
-            }
-            else if (cellInfo instanceof CellInfoGsm) {
+            } else if (cellInfo instanceof CellInfoGsm) {
                 CellInfoGsm gsmInfo = (CellInfoGsm) cellInfo;
 
                 gsm_MCC = gsmInfo.getCellIdentity().getMcc();
@@ -362,8 +355,7 @@ public class StatsActivity extends AppCompatActivity {
                 txmodul.setVisibility(View.GONE);
                 txmodulval.setVisibility(View.GONE);
 
-            }
-            else if (cellInfo instanceof CellInfoWcdma) {
+            } else if (cellInfo instanceof CellInfoWcdma) {
                 CellInfoWcdma wcdmaInfo = (CellInfoWcdma) cellInfo;
 
                 wcdma_MCC = wcdmaInfo.getCellIdentity().getMcc();
@@ -372,7 +364,6 @@ public class StatsActivity extends AppCompatActivity {
                 wcdma_LAC = wcdmaInfo.getCellIdentity().getLac();
                 wcdma_PSC = wcdmaInfo.getCellIdentity().getPsc();
                 wcdma_Uarfcn = wcdmaInfo.getCellIdentity().getUarfcn();
-
 
                 txsys.setText("WCDMA");
                 tx1.setText("MCC/MNC");
@@ -385,10 +376,10 @@ public class StatsActivity extends AppCompatActivity {
                 tx8.setText(String.valueOf(wcdma_Uarfcn));
                 tx9.setText("PSC");
                 tx10.setText(String.valueOf(wcdma_PSC));
-                tx11.setText("DL/UL Freq");
-                tx12.setText(getGsmDLfrequency() + "/" + getGsmULfrequency());
-                txband.setText("Band (bandwith)");
-                txbandval.setText(getGsmDLband().get(0) + " (" + getGsmDLband().get(1) + ")");
+                tx11.setVisibility(View.GONE);
+                tx12.setVisibility(View.GONE);
+                txband.setText("Band");
+                txbandval.setText(String.valueOf(getUMTSDLband()));
                 tx21.setVisibility(View.GONE);
                 tx22.setVisibility(View.GONE);
                 txmodul.setVisibility(View.GONE);
@@ -397,15 +388,22 @@ public class StatsActivity extends AppCompatActivity {
         }
     }
 
+    public int getWcdma_EcNo() {
+        return wcdma_Ecno = wcdma_RSCP - wcdma_RSSI;
+    }
+
+    public int getWcdma_CID() {
+        return wcdma_CID % 65536;
+    }
+
+    public int getLteCI() {
+        return lte_CI;
+    }
 
     public int GetEnB() {
-
         String cellidHex = DecToHex(getLteCI());
         String eNBHex = cellidHex.substring(0, cellidHex.length() - 2);
-
-
         return HexToDec(eNBHex);
-
     }
 
     public int getSectorId() {
@@ -430,20 +428,11 @@ public class StatsActivity extends AppCompatActivity {
     public static void get_Reflection_Method(Object r) {
         String TAG = "RadioInfo ";
         Log.d(TAG, "get_Reflection_Method begin!");
-
         Class temp = r.getClass();
         String className = temp.getName();
         Log.d(TAG, className);
-        /*
-         getDeclaredMethods() can only get all the methods defined by the current class, not the methods inherited from the parent class
-         The getMethods() method can not only obtain the public methods defined by the current class, but also the public methods
-         inherited from the parent class and have implemented interfaces
-         */
         Method[] methods = temp.getDeclaredMethods();
-//        Method[] methods = temp.getMethods();
-
         for (int i = 0; i < methods.length; i++) {
-
             int mod = methods[i].getModifiers();
             System.out.print(Modifier.toString(mod) + " ");
             System.out.print(methods[i].getReturnType().getName());
@@ -458,55 +447,19 @@ public class StatsActivity extends AppCompatActivity {
             }
             System.out.println(")");
         }
-
-
         Log.d(TAG, "get_Reflection_Method end!");
     }
 
 
-    public int getLteSINR() {
-        if (Build.VERSION.SDK_INT > 23) {
-            return lte_SINR / 10;
-        }
-        return lte_SINR;
-    }
-
-
-    public int getwcdm_RSCP() {
-
-        try {
-            wcdma_RSCP =  wcdma_ASU - 95 ;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return wcdma_RSCP;
-    }
-
-
-    public int getWcdma_EcNo() {
-        return wcdma_Ecno = wcdma_RSCP - wcdma_RSSI;
-    }
-
-    public int getWcdma_CID() {
-        return wcdma_CID % 65536;
-    }
-
-    public int getLteCI() {
-        return lte_CI;
-    }
+    public int getwcdm_RSCP() { return wcdma_RSCP = wcdma_ASU - 95;}
 
     public Double getGsmULfrequency() {
         double ULfreq = 0;
-
         if (gsm_Arfcn >= 0 && 124 >= gsm_Arfcn) {
-
             ULfreq = Float.valueOf(gsm_Arfcn) / 5 + 890;
-
         } else if (gsm_Arfcn >= 975 && gsm_Arfcn <= 1023) {
-
             ULfreq = 890 + Float.valueOf((float) (0.2 * (Float.valueOf(gsm_Arfcn) - 1024)));
         }
-
         BigDecimal bd = new BigDecimal(ULfreq).setScale(2, RoundingMode.HALF_UP);
         ULfreq = bd.doubleValue();
         return ULfreq;
@@ -515,15 +468,12 @@ public class StatsActivity extends AppCompatActivity {
     private Double getGsmDLfrequency() {
         double DLfreq = 0;
         return DLfreq = getGsmULfrequency() + 45;
-
     }
 
     public List<String> getGsmDLband() {
-
         List<String> gsmband_bandwith = new ArrayList<>();
         String gsm_dLband = null;
         String gsm_bandwith = null;
-
         if (gsm_Arfcn >= 0 && gsm_Arfcn <= 124 || gsm_Arfcn >= 975 && gsm_Arfcn <= 1023) {
             gsm_dLband = "GSM-900";
             gsm_bandwith = "34.6";
@@ -534,24 +484,43 @@ public class StatsActivity extends AppCompatActivity {
         }
         gsmband_bandwith.add(gsm_dLband);
         gsmband_bandwith.add(gsm_bandwith);
-
-
         return gsmband_bandwith;
     }
 
-    public String getLTEmodulation(){
-        String modulation =null;
+    public String getLTEDLband() {
+        String lte_dLband = null;
+        if (lte_Earfcn <= 599) {
+            lte_dLband = "LTE-2100";
+        } else if (lte_Earfcn >= 1200 && lte_Earfcn <= 1949) {
+            lte_dLband = "LTE-1800";
+        } else if (lte_Earfcn >= 6150 && lte_Earfcn <= 6449) {
+            lte_dLband = "LTE-800";
+        }
+        return lte_dLband;
+    }
 
-        if (lte_CQI==0){
-            modulation ="Out of range";
-        }else if (lte_CQI>=1 && lte_CQI <= 3){
+    public String getUMTSDLband() {
+        String umts_dLband = null;
+         if (wcdma_Uarfcn >= 10562  && wcdma_Uarfcn <= 10838) {
+            umts_dLband = "UMTS-2100";
+        } else if (wcdma_Uarfcn >= 2937  && wcdma_Uarfcn <= 3088) {
+            umts_dLband = "UMTS-900";
+        }
+        return umts_dLband;
+    }
+
+    public String getLTEmodulation() {
+        String modulation = null;
+        if (lte_CQI == 0) {
+            modulation = "Out of range";
+        } else if (lte_CQI >= 1 && lte_CQI <= 3) {
             modulation = "QPSK";
-        }else if (lte_CQI>=4 && lte_CQI <= 6){
-            modulation ="16QAM";
-        }else if (lte_CQI>=7 && lte_CQI <= 11){
-            modulation ="64QAM";
-        }else if (lte_CQI>=12){
-            modulation ="256QAM";
+        } else if (lte_CQI >= 4 && lte_CQI <= 6) {
+            modulation = "16QAM";
+        } else if (lte_CQI >= 7 && lte_CQI <= 11) {
+            modulation = "64QAM";
+        } else if (lte_CQI >= 12) {
+            modulation = "256QAM";
         }
         return modulation;
     }
