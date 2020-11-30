@@ -18,12 +18,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
-import tn.dev.netperf.Activities.StatsActivity;
-import tn.dev.netperf.Activities.SummActivity;
-import tn.dev.netperf.R;
+import tn.dev.netperf.Activities.StatActivity;
 
 public class RadioInfo {
-
+/*
     private static final int PERMISSION_REQUEST_CODE = 100;
     private int lte_MCC = Integer.MAX_VALUE;
     private int lte_MNC = Integer.MAX_VALUE;
@@ -230,7 +228,7 @@ public class RadioInfo {
                /* Method getLteRsrp = signalStrength.getClass().getDeclaredMethod("getLteRsrp");
                 getLteRsrp.setAccessible(true);
                 lte_RSRP = (int) getLteRsrp.invoke(signalStrength);*/
-
+/*
                 @SuppressLint("SoonBlockedPrivateApi") Method getLteRsrq = signalStrength.getClass().getDeclaredMethod("getLteRsrq");
                 getLteRsrq.setAccessible(true);
                 lte_RSRQ = (int) getLteRsrq.invoke(signalStrength);
@@ -255,7 +253,7 @@ public class RadioInfo {
                 getCellSignalStrength();
                 getCellIdentity();
 
-              ((SummActivity) mcontext).mSectionsPagerAdapter.notifyDataSetChanged();
+              ((StatActivity) mcontext).mSectionsPagerAdapter.notifyDataSetChanged();
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -316,7 +314,7 @@ public class RadioInfo {
                 }
             }
 
-           ((SummActivity) mcontext).mSectionsPagerAdapter.notifyDataSetChanged();
+           ((StatActivity) mcontext).mSectionsPagerAdapter.notifyDataSetChanged();
 
         }
 
@@ -440,8 +438,8 @@ public class RadioInfo {
          The getMethods() method can not only obtain the public methods defined by the current class, but also the public methods
          inherited from the parent class and have implemented interfaces
          */
-        Method[] methods = temp.getDeclaredMethods();
-//        Method[] methods = temp.getMethods();
+   /*       Method[] methods = temp.getDeclaredMethods();
+      Method[] methods = temp.getMethods();
 
         for (int i = 0; i < methods.length; i++) {
 
@@ -463,4 +461,6 @@ public class RadioInfo {
 
         Log.d(TAG, "get_Reflection_Method end!");
     }
+
+*/
 }

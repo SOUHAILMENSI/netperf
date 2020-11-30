@@ -1,6 +1,7 @@
 package tn.dev.netperf.Activities;
 
 import android.Manifest;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -82,11 +83,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(i);
                 break;
             case R.id.c2:
-                i = new Intent(this, SummActivity.class);
+                i = new Intent(this, SumActivity.class);
                 startActivity(i);
                 break;
             case R.id.c3:
-                i = new Intent(this, StatsActivity.class);
+                i = new Intent(this, StatActivity.class);
                 startActivity(i);
                 break;
             case R.id.c4:
@@ -98,7 +99,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(i);
                 break;
             case R.id.c6:
-                i = new Intent(this, ForceActivity.class);
+                i = new Intent();
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.setAction(android.provider.Settings.ACTION_DATA_ROAMING_SETTINGS);
                 startActivity(i);
                 break;
         }

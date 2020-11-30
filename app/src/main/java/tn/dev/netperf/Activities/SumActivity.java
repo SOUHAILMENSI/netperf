@@ -1,8 +1,6 @@
 package tn.dev.netperf.Activities;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
-import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.telephony.CellInfo;
@@ -29,10 +27,12 @@ import java.util.List;
 import tn.dev.netperf.R;
 
 
-public class StatsActivity extends AppCompatActivity {
-    private TextView txsys, tx1, tx2, tx3, tx4, tx5, tx6, tx7, tx8, tx9,
-            tx10, tx11, tx12, tx13, tx14, tx15, tx16, tx17, tx18, tx19, tx20, tx21, tx22, txband, txbandval, txmodul, txmodulval;
+public class SumActivity extends AppCompatActivity {
+    private TextView txsys, tx1, tx2, tx3, tx4, tx5, tx6, tx7, tx8, tx9,tx10, tx11, tx12, tx13, tx14, tx15, tx16, tx17,
+            tx18, tx19, tx20, tx21, tx22, txband, txbandval, txmodul, txmodulval;
 
+   // private TableLayout tableLayout;
+   // private Context context;
 
     private TelephonyManager telephonyManagerToListen = null;
 
@@ -41,7 +41,6 @@ public class StatsActivity extends AppCompatActivity {
     private int lte_CI = Integer.MAX_VALUE;
     private int lte_PCI = Integer.MAX_VALUE;
     private int lte_TAC = Integer.MAX_VALUE;
-    private int lte_RSRP = Integer.MAX_VALUE;
     private int lte_RSRQ = Integer.MAX_VALUE;
     private int lte_SINR = Integer.MAX_VALUE;
     private int lte_CQI = Integer.MAX_VALUE;
@@ -75,11 +74,10 @@ public class StatsActivity extends AppCompatActivity {
     private int wcdma_Ecno = Integer.MAX_VALUE;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_stats);
+        setContentView(R.layout.activity_sum);
 
         txsys = findViewById(R.id.system);
         tx1 = findViewById(R.id.txradio1);
@@ -109,34 +107,32 @@ public class StatsActivity extends AppCompatActivity {
         txmodul = findViewById(R.id.txmodulation);
         txmodulval = findViewById(R.id.txmodulval);
 
+       // tableLayout = findViewById(R.id.scheduleTable);
+
 
         /*******************************OnCreate ends here *******************************************/
 
-        Context mContext = this;
+       // context = this;
         telephonyManagerToListen = (TelephonyManager) this.getSystemService
                 (this.TELEPHONY_SERVICE);
         telephonyManagerToListen.listen(mPhoneStateListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS | PhoneStateListener.LISTEN_CELL_INFO | PhoneStateListener.LISTEN_CELL_LOCATION);
 
-
     }
+
 
     private PhoneStateListener mPhoneStateListener = new PhoneStateListener() {
 
 
-        @RequiresApi(api = Build.VERSION_CODES.P)
+        @RequiresApi(api = Build.VERSION_CODES.Q)
         @Override
         public void onSignalStrengthsChanged(SignalStrength signalStrength) {
-
             super.onSignalStrengthsChanged(signalStrength);
             //Log.e(Tag, signalStrength.toString());
-
             get_Reflection_Method(signalStrength);
-
             try {
                /* Method getLteRsrp = signalStrength.getClass().getDeclaredMethod("getLteRsrp");
                 getLteRsrp.setAccessible(true);
                 lte_RSRP = (int) getLteRsrp.invoke(signalStrength);*/
-
                 @SuppressLint("SoonBlockedPrivateApi") Method getLteRsrq = signalStrength.getClass().getDeclaredMethod("getLteRsrq");
                 getLteRsrq.setAccessible(true);
                 lte_RSRQ = (int) getLteRsrq.invoke(signalStrength);
@@ -160,36 +156,30 @@ public class StatsActivity extends AppCompatActivity {
 
                 getCellSignalStrength();
                 getCellIdentity();
+              //  getNeighbourCell();
 
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
         }
 
-        @TargetApi(Build.VERSION_CODES.N)
+
+        @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         public void onCellInfoChanged(List<CellInfo> cellInfoList) {
             super.onCellInfoChanged(cellInfoList);
-
-
             if (cellInfoList == null) {
                 //Log.e(Tag,"onCellInfoChanged is null");
                 return;
             }
-
             //Log.e(Tag,"onCellInfoChanged size "+cellInfoList.size());
-
             for (CellInfo cellInfo : cellInfoList) {
-
                 if (!cellInfo.isRegistered())
                     continue;
-
                 if (cellInfo instanceof CellInfoLte) {
 
                     CellInfoLte lteinfo = (CellInfoLte) cellInfo;
-
                     lte_MCC = lteinfo.getCellIdentity().getMcc();
                     lte_MNC = lteinfo.getCellIdentity().getMnc();
                     lte_CI = lteinfo.getCellIdentity().getCi();
@@ -198,7 +188,9 @@ public class StatsActivity extends AppCompatActivity {
                     lte_Earfcn = lteinfo.getCellIdentity().getEarfcn();
                     GetEnB();
                     getSectorId();
-                    //Log.e(Tag,lteinfo.toString());
+                    getLTEDLband();
+                    getLTEmodulation();
+
                 } else if (cellInfo instanceof CellInfoGsm) {
                     CellInfoGsm gsmInfo = (CellInfoGsm) cellInfo;
 
@@ -209,18 +201,21 @@ public class StatsActivity extends AppCompatActivity {
                     gsm_Arfcn = gsmInfo.getCellIdentity().getArfcn();
                     gsm_Bsic = gsmInfo.getCellIdentity().getBsic();
 
+                    getGsmDLband();
+                    getGsmDLfrequency();
+                    getGsmULfrequency();
+
                 } else if (cellInfo instanceof CellInfoWcdma) {
                     CellInfoWcdma wcdmaInfo = (CellInfoWcdma) cellInfo;
                     wcdma_MCC = wcdmaInfo.getCellIdentity().getMcc();
                     wcdma_MNC = wcdmaInfo.getCellIdentity().getMnc();
-                    wcdma_CID = wcdmaInfo.getCellIdentity().getCid() % 65536;
+                    wcdma_CID = wcdmaInfo.getCellIdentity().getCid();
                     wcdma_LAC = wcdmaInfo.getCellIdentity().getLac();
                     wcdma_PSC = wcdmaInfo.getCellIdentity().getPsc();
                     wcdma_Uarfcn = wcdmaInfo.getCellIdentity().getUarfcn();
+                    getUMTSDLband();
                 }
             }
-
-
         }
     };
 
@@ -231,7 +226,9 @@ public class StatsActivity extends AppCompatActivity {
             Log.e("TaggetCellSignalStrength", "getAllCellInfo is null");
             return;
         }
-        Log.e("TaggetCellSignalStrength", "getAllCellInfo: " + cellInfoList.size() + "\n" + cellInfoList);
+        for (int i = 0; i < cellInfoList.size(); i++) {
+            Log.e("TaggetCellSignalStrength", "getAllCellInfo: " + i + "\n" + cellInfoList.get(i) + "\n");
+        }
         for (CellInfo cellInfo : cellInfoList) {
             if (!cellInfo.isRegistered())    // Primary cell
                 continue;
@@ -247,7 +244,7 @@ public class StatsActivity extends AppCompatActivity {
                 tx17.setText("EcIo");
                 tx18.setText(getWcdma_EcNo() + " dB");
                 tx19.setText("RSCP");
-                tx20.setText(getwcdm_RSCP() + " dBm");
+                tx20.setText(getWcdm_RSCP() + " dBm");
 
 
             } else if (cellInfo instanceof CellInfoGsm) {
@@ -281,6 +278,66 @@ public class StatsActivity extends AppCompatActivity {
         }
     }
 
+/*
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    private void getNeighbourCell() {
+        @SuppressLint("MissingPermission") List<CellInfo> infos = telephonyManagerToListen.getAllCellInfo();
+        String list = "";
+        List<String> colText = new ArrayList<>();
+        for (int i = 0; i < infos.size(); ++i) {
+            try {
+                CellInfo info = infos.get(i);
+                if (!info.isRegistered()) {
+                    if (info instanceof CellInfoGsm) //if GSM connection
+                    {
+                        CellSignalStrengthGsm gsm = ((CellInfoGsm) info).getCellSignalStrength();
+                        CellIdentityGsm identityGsm = ((CellInfoGsm) info).getCellIdentity();
+
+                        String registred = String.valueOf(info.isRegistered());
+                        String arfcn = String.valueOf(identityGsm.getArfcn());
+                        String rxlev = String.valueOf(gsm.getDbm());
+                        String asu = String.valueOf(gsm.getAsuLevel());
+                        String bsic = String.valueOf(identityGsm.getBsic());
+
+
+                        colText.add(registred);
+                        colText.add(arfcn);
+                        colText.add(rxlev);
+                        colText.add(asu);
+                        colText.add(bsic);
+
+
+                        //call whatever you want from gsm / identitydGsm
+                    } else if (info instanceof CellInfoLte)  //if LTE connection
+                    {
+                        CellSignalStrengthLte lte = ((CellInfoLte) info).getCellSignalStrength();
+                        CellIdentityLte identityLte = ((CellInfoLte) info).getCellIdentity();
+
+                        list += "Site_" + i + "\r\n";
+                        list += "Registered: " + info.isRegistered() + "\r\n";
+                        list += "RSRP: " + lte.getRsrp() + "\r\n";
+                        list += "RSRQ: " + lte.getRsrq() + "\r\n";
+                        list += "Earfcn: " + identityLte.getEarfcn() + "\r\n";
+                        list += "PCI: " + identityLte.getPci() + "\r\n";
+                        //call whatever you want from lte / identityLte
+                    } else if (info instanceof CellInfoWcdma)  //if wcdma connection
+                    {
+                        CellSignalStrengthWcdma wcdmaS = ((CellInfoWcdma) info).getCellSignalStrength();
+                        CellIdentityWcdma wcdmaid = ((CellInfoWcdma) info).getCellIdentity();
+                        list += "Site_" + i + "\r\n";
+                        list += "Registered: " + info.isRegistered() + "\r\n";
+                        //call whatever you want from wcdmaS / wcdmaid
+
+                    }
+                }
+
+            } catch (Exception ex) {
+                Log.e("neighboringerror2: ", ex.getMessage());
+            }
+        }
+        Log.e("Infodisplay", String.valueOf(colText.size()));  //display everything.
+    }
+*/
 
     @androidx.annotation.RequiresApi(api = Build.VERSION_CODES.P)
     private void getCellIdentity() {
@@ -290,7 +347,7 @@ public class StatsActivity extends AppCompatActivity {
             // Log.e(Tag, "getAllCellInfo is null");
             return;
         }
-         Log.e("getAllCellInfo", "getAllCellInfo size " + cellInfoList.size() +"\n"+ cellInfoList);
+        Log.e("getAllCellInfo", "getAllCellInfo size " + cellInfoList.size() + "\n" + cellInfoList);
         for (CellInfo cellInfo : cellInfoList) {
             if (!cellInfo.isRegistered())
                 continue;
@@ -388,25 +445,30 @@ public class StatsActivity extends AppCompatActivity {
         }
     }
 
-    public int getWcdma_EcNo() {
+    private int getWcdma_EcNo() {
         return wcdma_Ecno = wcdma_RSCP - wcdma_RSSI;
     }
 
-    public int getWcdma_CID() {
+    private int getWcdma_CID() {
         return wcdma_CID % 65536;
     }
 
-    public int getLteCI() {
+    private int getWcdm_RSCP() {
+        return wcdma_RSCP = wcdma_ASU - 95;
+    }
+
+    private int getLteCI() {
         return lte_CI;
     }
 
-    public int GetEnB() {
+
+    private int GetEnB() {
         String cellidHex = DecToHex(getLteCI());
         String eNBHex = cellidHex.substring(0, cellidHex.length() - 2);
         return HexToDec(eNBHex);
     }
 
-    public int getSectorId() {
+    private int getSectorId() {
         String cellidHex = DecToHex(getLteCI());
         String eNBHex = cellidHex.substring(0, cellidHex.length() - 2);
         Log.e("SectorID", String.valueOf(getLteCI() - (256 * HexToDec(eNBHex))));
@@ -415,17 +477,16 @@ public class StatsActivity extends AppCompatActivity {
     }
 
     // Decimal -> hexadecimal
-    public String DecToHex(int dec) {
+    private String DecToHex(int dec) {
         return String.format("%x", dec);
     }
 
     // hex -> decimal
-    public int HexToDec(String hex) {
+    private int HexToDec(String hex) {
         return Integer.parseInt(hex, 16);
     }
 
-
-    public static void get_Reflection_Method(Object r) {
+    private static void get_Reflection_Method(Object r) {
         String TAG = "RadioInfo ";
         Log.d(TAG, "get_Reflection_Method begin!");
         Class temp = r.getClass();
@@ -450,10 +511,7 @@ public class StatsActivity extends AppCompatActivity {
         Log.d(TAG, "get_Reflection_Method end!");
     }
 
-
-    public int getwcdm_RSCP() { return wcdma_RSCP = wcdma_ASU - 95;}
-
-    public Double getGsmULfrequency() {
+    private Double getGsmULfrequency() {
         double ULfreq = 0;
         if (gsm_Arfcn >= 0 && 124 >= gsm_Arfcn) {
             ULfreq = Float.valueOf(gsm_Arfcn) / 5 + 890;
@@ -466,8 +524,7 @@ public class StatsActivity extends AppCompatActivity {
     }
 
     private Double getGsmDLfrequency() {
-        double DLfreq = 0;
-        return DLfreq = getGsmULfrequency() + 45;
+        return getGsmULfrequency() + 45;
     }
 
     public List<String> getGsmDLband() {
@@ -488,22 +545,23 @@ public class StatsActivity extends AppCompatActivity {
     }
 
     public String getLTEDLband() {
-        String lte_dLband = null;
+        String lteband = null;
+
         if (lte_Earfcn <= 599) {
-            lte_dLband = "LTE-2100";
+            lteband = "LTE-2100";
         } else if (lte_Earfcn >= 1200 && lte_Earfcn <= 1949) {
-            lte_dLband = "LTE-1800";
+            lteband = "LTE-1800";
         } else if (lte_Earfcn >= 6150 && lte_Earfcn <= 6449) {
-            lte_dLband = "LTE-800";
+            lteband = "LTE-800";
         }
-        return lte_dLband;
+        return lteband;
     }
 
     public String getUMTSDLband() {
         String umts_dLband = null;
-         if (wcdma_Uarfcn >= 10562  && wcdma_Uarfcn <= 10838) {
+        if (wcdma_Uarfcn >= 10562 && wcdma_Uarfcn <= 10838) {
             umts_dLband = "UMTS-2100";
-        } else if (wcdma_Uarfcn >= 2937  && wcdma_Uarfcn <= 3088) {
+        } else if (wcdma_Uarfcn >= 2937 && wcdma_Uarfcn <= 3088) {
             umts_dLband = "UMTS-900";
         }
         return umts_dLband;

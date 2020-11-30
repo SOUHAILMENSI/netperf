@@ -25,9 +25,9 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".Activities.ForceActivity" />
         <activity android:name=".Activities.TestActivity" />
-        <activity android:name=".Activities.SummActivity" />
+        <activity android:name=".Activities.StatActivity" />
         <activity android:name=".Activities.InfoActivity" />
-        <activity android:name=".Activities.StatsActivity" />
+        <activity android:name=".Activities.SumActivity" />
         <activity android:name=".Activities.MapActivity" />
         <activity android:name=".Activities.MainActivity">
             <intent-filter>
