@@ -22,7 +22,7 @@ import tn.dev.netperf.R;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     int Permission_All = 1;
-    public CardView card1, card2, card3, card4, card5, card6;
+    CardView card1, card2, card3, card4, card5, card6;
 
 
     @Override

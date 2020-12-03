@@ -87,7 +87,9 @@
     <string name="gsm_cellular_info">GSM Cellular Info\n\n</string>
     <string name="cdma_cellular_info">CDMA Cellular Info\n\n</string>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_Youtube_fragment">Hello youtube fragment</string>
+    <string name="hello_Browsing_fragment">Hello Browsing fragment</string>
+    <string name="hello_Speed_fragment">Hello Speed fragment</string>
 
 
 </resources>

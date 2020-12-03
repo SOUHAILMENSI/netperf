@@ -3,14 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="tn.dev.netperf.Activities.MainFragment">
-
+    tools:context=".Fragments.SpeedFragment">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/text_view"
-        android:textSize="50sp"
+        android:text="@string/hello_Speed_fragment" android:textSize="50sp"
         android:fontFamily="@font/montserrat_bold"
         android:gravity="center"/>
 

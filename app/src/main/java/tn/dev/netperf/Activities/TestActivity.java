@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tn.dev.netperf.R;
+import tn.dev.netperf.Fragments.*;
+
 
 public class TestActivity extends AppCompatActivity {
     TabLayout tabLayout;
@@ -42,15 +44,17 @@ public class TestActivity extends AppCompatActivity {
     private void prepareViewpager(ViewPager viewPager, ArrayList<String> arrayList) {
 
         MainAdapter adapter = new MainAdapter(getSupportFragmentManager());
-        MainFragment fragment = new MainFragment();
-        for (int i = 0; i < arrayList.size(); i++) {
-            Bundle bundle = new Bundle();
-            bundle.putString("title", arrayList.get(i));
-            fragment.setArguments(bundle);
-            adapter.addFragment(fragment, arrayList.get(i));
-            fragment = new MainFragment();
+        BrowsingFragment fragment = new BrowsingFragment();
+        YoutubeFragment youtubeFragment = new YoutubeFragment();
+        SpeedFragment speedFragment = new SpeedFragment();
 
-        }
+
+        adapter.addFragment(fragment, arrayList.get(0));
+        adapter.addFragment(youtubeFragment, arrayList.get(1));
+        adapter.addFragment(speedFragment, arrayList.get(2));
+
+
+
         viewPager.setAdapter(adapter);
     }
 
@@ -86,4 +90,6 @@ public class TestActivity extends AppCompatActivity {
             return arrayList.get(position);
         }
     }
+
+
 }
