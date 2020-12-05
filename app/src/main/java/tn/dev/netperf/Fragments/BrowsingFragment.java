@@ -1,15 +1,10 @@
 package tn.dev.netperf.Fragments;
 
-import android.app.Application;
-import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.net.TrafficStats;
 import android.net.http.SslError;
-import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +12,6 @@ import android.view.ViewGroup;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageButton;
@@ -28,6 +22,9 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Date;
 
 import tn.dev.netperf.R;
@@ -38,10 +35,12 @@ public class BrowsingFragment extends Fragment implements View.OnClickListener {
 
     WebView webView;
     TextInputEditText editText;
-    ImageButton img1, img2, img3, img4, img5,img6;
+    ImageButton img1, img2, img3, img4, img5, img6;
 
-    TextView tv1, tv2, tv3;
+    TextView tv1, tv2, tv3, tv4;
     long a, b;
+    int counter;
+    int size;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -66,17 +65,21 @@ public class BrowsingFragment extends Fragment implements View.OnClickListener {
         img6.setOnClickListener(this);
 
         tv1 = myView.findViewById(R.id.tv_load);
-
         tv2 = myView.findViewById(R.id.tv_con_tent);
         tv3 = myView.findViewById(R.id.tv_per_ctge);
+        tv4 = myView.findViewById(R.id.tv_Red);
 
         webView.setWebViewClient(new MyBrowser());
         webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setLoadsImagesAutomatically(true);
+        webView.getSettings().setUseWideViewPort(true);
+        webView.getSettings().setLoadWithOverviewMode(true);
 
-        if (Build.VERSION.SDK_INT >= 21) {
+      /*  if (Build.VERSION.SDK_INT >= 21) {
             webView.getSettings().setMixedContentMode( WebSettings.MIXED_CONTENT_ALWAYS_ALLOW );
-        }
-        webView.loadUrl("https://www.google.com/");
+        }*/
+
+        webView.loadUrl("https://www.google.tn/");
 
         editText.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -103,6 +106,7 @@ public class BrowsingFragment extends Fragment implements View.OnClickListener {
 
                 if (newProgress == 100) {
                     tv3.setText("100%");
+
                 }
             }
         });
@@ -115,7 +119,6 @@ public class BrowsingFragment extends Fragment implements View.OnClickListener {
 
         boolean loadingFinished = true;
         boolean redirect = false;
-
 
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
@@ -136,18 +139,21 @@ public class BrowsingFragment extends Fragment implements View.OnClickListener {
                 WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
             loadingFinished = false;
-
             a = (new Date()).getTime();
+            counter = 1;
+            size = 0;
         }
 
         @Override
         public void onPageFinished(WebView view, String url) {
             if (!redirect) {
+
                 loadingFinished = true;
                 b = (new Date()).getTime();
-
                 tv1.setText(String.valueOf(b - a));
-                tv2.setText(""+(TrafficStats.getUidRxBytes(myUid())/1024));
+
+                webView.clearHistory();
+                webView.clearCache(true);
 
             } else {
                 redirect = false;
@@ -155,21 +161,46 @@ public class BrowsingFragment extends Fragment implements View.OnClickListener {
         }
 
         @Override
-        public void onLoadResource(WebView view, String url) {
+        public void onLoadResource(WebView view, final String url) {
             super.onLoadResource(view, url);
+
+            counter++;
+            Log.e("counter", counter + " AND URL: " + url);
+            tv4.setText(String.valueOf(counter));
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+
+                        URL myUrl = new URL(url);
+                        URLConnection urlConnection = myUrl.openConnection();
+                        urlConnection.connect();
+                        int file_size = urlConnection.getContentLength();
+                        size = size + file_size;
+
+                        Log.e("file_Size", size + " AND " + file_size);
+                        tv2.setText(String.valueOf(size / 10));
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }).start();
+
         }
 
         @Override
         public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
             handler.proceed(); // Ignore SSL certificate errors
         }
-
     }
 
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.google:
-                webView.loadUrl("https://www.google.tn/");
+                webView.loadUrl("https://www.google.com/");
                 break;
             case R.id.fb:
                 webView.loadUrl("https://www.facebook.com/");
@@ -184,19 +215,8 @@ public class BrowsingFragment extends Fragment implements View.OnClickListener {
                 webView.loadUrl("https://www.mosaiquefm.net/amp/fr/");
                 break;
             case R.id.jum_ia:
-                webView.loadUrl("https://www.jumia.com.tn/");
+                webView.loadUrl("https://www.tunisianet.com.tn/");
                 break;
         }
-    }
-
-    public int myUid(){
-        int uid = 0;
-        try {
-            uid = getContext().getPackageManager().getApplicationInfo("tn.dev.netperf", 0).uid;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return uid;
-
     }
 }
