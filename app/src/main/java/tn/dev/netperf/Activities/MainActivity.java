@@ -1,10 +1,10 @@
 package tn.dev.netperf.Activities;
 
 import android.Manifest;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -56,7 +56,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         MakeDirectories();
+
+
+        WifiManager wifiManager = (WifiManager) this.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        wifiManager.setWifiEnabled(false);
     }
+
 
     public static boolean hasPermissions(Context context, String... permissions) {
 
@@ -133,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             f2.mkdirs();
             Log.i("DirectoryMaker", String.valueOf(f2));
         } else {
-            Log.i("DirectoryMaker", "failed to make " + f2 +"directory" );
+            Log.i("DirectoryMaker", "failed to make " + f2 + "directory");
         }
 
 

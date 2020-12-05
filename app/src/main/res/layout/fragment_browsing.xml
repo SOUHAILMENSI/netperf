@@ -1,255 +1,241 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="tn.dev.netperf.Fragments.BrowsingFragment">
 
-
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:fillViewport="true">
+        android:orientation="vertical">
 
-        <FrameLayout
-            android:id="@+id/frameLayout"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="1dp"
+            android:layout_margin="7dp"
+            android:layout_weight="0.5">
+
+            <ImageButton
+                android:id="@+id/google"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:background="#00FFFFFF"
+                android:clickable="true"
+                android:onClick="onClick"
+                android:padding="20dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/google" />
+
+            <ImageButton
+                android:id="@+id/fb"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:adjustViewBounds="true"
+                android:background="#00FFFFFF"
+                android:clickable="true"
+                android:onClick="onClick"
+                android:padding="20dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/fb" />
+
+            <ImageButton
+                android:id="@+id/kep_ler"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:adjustViewBounds="true"
+                android:background="#00FFFFFF"
+                android:clickable="true"
+                android:onClick="onClick"
+                android:padding="20dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/kepler" />
+
+            <ImageButton
+                android:id="@+id/cnn"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:background="#00FFFFFF"
+                android:clickable="true"
+                android:onClick="onClick"
+                android:padding="20dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/cnn" />
+
+            <ImageButton
+                android:id="@+id/jum_ia"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:background="#00FFFFFF"
+                android:clickable="true"
+                android:onClick="onClick"
+                android:padding="20dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/jumia" />
+
+            <ImageButton
+                android:id="@+id/mos_aik"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:background="#00FFFFFF"
+                android:clickable="true"
+                android:onClick="onClick"
+                android:padding="20dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/mosaiquefm" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="7dp"
+            android:layout_weight="0.5"
+            android:orientation="horizontal"
+            android:padding="2dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:fontFamily="@font/montserrat_bold"
+                android:hint="Enter Url"
+                android:inputType="textUri"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+        <WebView
+            android:id="@+id/web_View_Brow"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="7dp"
+            android:layout_weight="4"/>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="7dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_weight="2"
                 android:orientation="vertical">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="7dp"
-                    android:layout_weight="1">
-
-                    <ImageButton
-                        android:id="@+id/google"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2"
-                        android:background="#00FFFFFF"
-                        android:clickable="true"
-                        android:onClick="onClick"
-                        android:padding="20dp"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/google" />
-
-                    <ImageButton
-                        android:id="@+id/fb"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2"
-                        android:adjustViewBounds="true"
-                        android:background="#00FFFFFF"
-                        android:clickable="true"
-                        android:onClick="onClick"
-                        android:padding="20dp"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/fb" />
-
-                    <ImageButton
-                        android:id="@+id/kep_ler"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2"
-                        android:adjustViewBounds="true"
-                        android:background="#00FFFFFF"
-                        android:clickable="true"
-                        android:onClick="onClick"
-                        android:padding="20dp"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/kepler" />
-
-                    <ImageButton
-                        android:id="@+id/cnn"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2"
-                        android:background="#00FFFFFF"
-                        android:clickable="true"
-                        android:onClick="onClick"
-                        android:padding="20dp"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/cnn" />
-
-                    <ImageButton
-                        android:id="@+id/jum_ia"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2"
-                        android:background="#00FFFFFF"
-                        android:clickable="true"
-                        android:onClick="onClick"
-                        android:padding="20dp"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/jumia" />
-
-                    <ImageButton
-                        android:id="@+id/mos_aik"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2"
-                        android:background="#00FFFFFF"
-                        android:clickable="true"
-                        android:onClick="onClick"
-                        android:padding="20dp"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/mosaiquefm" />
-
-
-                </LinearLayout>
-
-                <LinearLayout
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_margin="5sp"
-                    android:layout_marginTop="20dp"
                     android:layout_weight="1"
-                    android:orientation="horizontal"
-                    android:padding="2dp">
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center"
+                    android:text="Load time (ms)"
+                    android:textSize="10sp" />
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/input_text"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:fontFamily="@font/montserrat_bold"
-                        android:hint="Enter Url"
-                        android:inputType="textUri"
-                        android:textSize="16sp" />
-
-                </LinearLayout>
-
-                <WebView
-                    android:id="@+id/web_View_Brow"
+                <TextView
+                    android:id="@+id/tv_load"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_weight="5" />
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginTop="20dp"
                     android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_weight="1"
-                            android:fontFamily="@font/montserrat_bold"
-                            android:gravity="center"
-                            android:text="Load time (ms)"
-                            android:textSize="10sp" />
-
-                        <TextView
-                            android:id="@+id/tv_load"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_weight="1"
-                            android:fontFamily="@font/montserrat_bold"
-                            android:gravity="center"
-                            android:textSize="10sp" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_weight="1"
-                            android:fontFamily="@font/montserrat_bold"
-                            android:gravity="center"
-                            android:text="Size (Bytes)"
-                            android:textSize="10sp" />
-
-                        <TextView
-                            android:id="@+id/tv_con_tent"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_weight="1"
-                            android:fontFamily="@font/montserrat_bold"
-                            android:gravity="center"
-                            android:textSize="10sp" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_weight="1"
-                            android:fontFamily="@font/montserrat_bold"
-                            android:gravity="center"
-                            android:text="Redirect"
-                            android:textSize="10sp" />
-
-                        <TextView
-                            android:id="@+id/tv_Red"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_weight="1"
-                            android:fontFamily="@font/montserrat_bold"
-                            android:gravity="center"
-                            android:textSize="10sp" />
-                    </LinearLayout>
-
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_weight="1"
-                            android:fontFamily="@font/montserrat_bold"
-                            android:gravity="center"
-                            android:text="Loaded %"
-                            android:textSize="10sp" />
-
-                        <TextView
-                            android:id="@+id/tv_per_ctge"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_weight="1"
-                            android:fontFamily="@font/montserrat_bold"
-                            android:gravity="center"
-                            android:textSize="10sp" />
-                    </LinearLayout>
-                </LinearLayout>
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center"
+                    android:textSize="10sp" />
 
             </LinearLayout>
 
-        </FrameLayout>
-    </ScrollView>
-</LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center"
+                    android:text="Size (Bytes)"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/tv_con_tent"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center"
+                    android:textSize="10sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center"
+                    android:text="Redirect"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/tv_Red"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center"
+                    android:textSize="10sp" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center"
+                    android:text="Loaded %"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/tv_per_ctge"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center"
+                    android:textSize="10sp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>
+

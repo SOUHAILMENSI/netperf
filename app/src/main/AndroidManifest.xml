@@ -12,32 +12,59 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
-
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
 
 
     <application
-        android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Activities.ForceActivity" />
-        <activity android:name=".Activities.TestActivity" />
-        <activity android:name=".Activities.StatActivity" />
-        <activity android:name=".Activities.InfoActivity" />
-        <activity android:name=".Activities.SumActivity" />
-        <activity android:name=".Activities.MapActivity" />
-        <activity android:name=".Activities.MainActivity">
+        <activity
+            android:name=".Activities.ForceActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.TestActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.StatActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.InfoActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.SumActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.MapActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.MainActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
+
             android:name=".Activities.SplashScreen"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -50,7 +77,6 @@
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
             </intent-filter>
-
         </receiver>
 
         <meta-data
@@ -58,9 +84,8 @@
             android:resource="@array/preloaded_fonts" />
 
         <service
-        android:name=".Services.GpsService"
-        android:permission="android.permission.BIND_JOB_SERVICE" />
-
+            android:name=".Services.GpsService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 
 </manifest>

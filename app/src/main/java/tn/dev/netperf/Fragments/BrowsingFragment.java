@@ -94,7 +94,6 @@ public class BrowsingFragment extends Fragment implements View.OnClickListener {
                             break;
                     }
                 }
-
                 return false;
             }
         });
@@ -102,15 +101,13 @@ public class BrowsingFragment extends Fragment implements View.OnClickListener {
 
         webView.setWebChromeClient(new WebChromeClient() {
             public void onProgressChanged(WebView view, int newProgress) {
-                tv3.setText(newProgress + "%");
 
+                tv3.setText(newProgress + "%");
                 if (newProgress == 100) {
                     tv3.setText("100%");
-
                 }
             }
         });
-
         return myView;
     }
 
@@ -127,7 +124,6 @@ public class BrowsingFragment extends Fragment implements View.OnClickListener {
             if (!loadingFinished) {
                 redirect = true;
             }
-
             loadingFinished = false;
             webView.loadUrl(request.getUrl().toString());
             return true;
