@@ -1,6 +1,10 @@
 package tn.dev.netperf.Fragments;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
@@ -32,6 +36,7 @@ import tn.dev.netperf.R;
 
 public class BrowsingFragment extends Fragment implements View.OnClickListener {
 
+    private static final String TAG = BrowsingFragment.class.getSimpleName();
 
     WebView webView;
     TextInputEditText editText;
@@ -41,6 +46,7 @@ public class BrowsingFragment extends Fragment implements View.OnClickListener {
     long a, b;
     int counter;
     int size;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -74,11 +80,6 @@ public class BrowsingFragment extends Fragment implements View.OnClickListener {
         webView.getSettings().setLoadsImagesAutomatically(true);
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setLoadWithOverviewMode(true);
-
-      /*  if (Build.VERSION.SDK_INT >= 21) {
-            webView.getSettings().setMixedContentMode( WebSettings.MIXED_CONTENT_ALWAYS_ALLOW );
-        }*/
-
         webView.loadUrl("https://www.google.tn/");
 
         editText.setOnKeyListener(new View.OnKeyListener() {
@@ -108,6 +109,7 @@ public class BrowsingFragment extends Fragment implements View.OnClickListener {
                 }
             }
         });
+
         return myView;
     }
 
@@ -116,6 +118,7 @@ public class BrowsingFragment extends Fragment implements View.OnClickListener {
 
         boolean loadingFinished = true;
         boolean redirect = false;
+
 
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
@@ -173,10 +176,11 @@ public class BrowsingFragment extends Fragment implements View.OnClickListener {
                         URLConnection urlConnection = myUrl.openConnection();
                         urlConnection.connect();
                         int file_size = urlConnection.getContentLength();
-                        size = size + file_size;
 
+                        size = size + file_size;
                         Log.e("file_Size", size + " AND " + file_size);
                         tv2.setText(String.valueOf(size / 10));
+
 
                     } catch (IOException e) {
                         e.printStackTrace();
