@@ -176,7 +176,8 @@ public class PingFragment extends Fragment {
                     if (line.contains(count + " packets transmitted")) log.append(line + "\n");
                     if (line.contains("rtt")) log.append(line + "\n");
 
-                    Toast.makeText(mContext, "host pinged " + count + " times with size of " + size, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, ip+" pinged " + count +
+                            " times with size of " + size, Toast.LENGTH_SHORT).show();
                 }
                 log.append("-----------------------------\n");
                 tv.setText(log.toString());
