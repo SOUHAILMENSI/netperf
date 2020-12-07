@@ -17,6 +17,7 @@ import java.util.List;
 
 import tn.dev.netperf.R;
 import tn.dev.netperf.Fragments.*;
+import tn.dev.netperf.ThroughputFragment;
 
 
 public class TestActivity extends AppCompatActivity {
@@ -33,8 +34,9 @@ public class TestActivity extends AppCompatActivity {
 
         ArrayList<String> arrayList = new ArrayList<>();
         arrayList.add("Browsing");
-        arrayList.add("Streaming");
-        arrayList.add("Throughput");
+        arrayList.add("YouTube");
+        arrayList.add("Ping");
+        arrayList.add("Speed");
 
         prepareViewpager(viewPager, arrayList);
         tabLayout.setupWithViewPager(viewPager);
@@ -46,12 +48,14 @@ public class TestActivity extends AppCompatActivity {
         MainAdapter adapter = new MainAdapter(getSupportFragmentManager());
         BrowsingFragment fragment = new BrowsingFragment();
         YoutubeFragment youtubeFragment = new YoutubeFragment();
-        SpeedFragment speedFragment = new SpeedFragment();
+        PingFragment pingFragment = new PingFragment();
+        ThroughputFragment throughputFragment = new ThroughputFragment();
 
 
         adapter.addFragment(fragment, arrayList.get(0));
         adapter.addFragment(youtubeFragment, arrayList.get(1));
-        adapter.addFragment(speedFragment, arrayList.get(2));
+        adapter.addFragment(pingFragment, arrayList.get(2));
+        adapter.addFragment(throughputFragment, arrayList.get(3));
 
 
 
