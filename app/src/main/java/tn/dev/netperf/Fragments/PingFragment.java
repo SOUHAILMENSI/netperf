@@ -158,7 +158,7 @@ public class PingFragment extends Fragment {
             Toast.makeText(mContext, "COUNT SHOULDN'T BE NULL", Toast.LENGTH_SHORT).show();
         } else {
             try {
-                log.append(strDate + "\n");
+                log.append(strDate + "\n" + ip +" ("+size+")"+ "\n");
                 String command = "/system/bin/ping -c" + " " + count + " " + "-s" + " " + size + " " + ip;
 
                 Runtime runtime = Runtime.getRuntime();
@@ -176,7 +176,7 @@ public class PingFragment extends Fragment {
                     if (line.contains(count + " packets transmitted")) log.append(line + "\n");
                     if (line.contains("rtt")) log.append(line + "\n");
 
-                    Toast.makeText(mContext, ip+" pinged " + count +
+                    Toast.makeText(mContext, ip + " pinged " + count +
                             " times with size of " + size, Toast.LENGTH_SHORT).show();
                 }
                 log.append("-----------------------------\n");
