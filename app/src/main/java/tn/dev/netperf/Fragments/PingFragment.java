@@ -40,7 +40,6 @@ public class PingFragment extends Fragment {
     MaterialSpinner spinner;
     List<String> listItems = new ArrayList<>();
 
-    // ArrayAdapter<String> adapter;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -57,10 +56,6 @@ public class PingFragment extends Fragment {
         initItems();
 
 
-        //adapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_dropdown_item, listItems);
-        // adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        // spinner.setAdapter(adapter);
         MySpinnerAdapter adapter = new MySpinnerAdapter
                 (mContext, android.R.layout.simple_spinner_dropdown_item, listItems);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -103,26 +98,19 @@ public class PingFragment extends Fragment {
     }
 
     private static class MySpinnerAdapter extends ArrayAdapter<String> {
-        // Initialise custom font, for example:
+
         final Typeface font = ResourcesCompat.getFont(getContext(),
                 R.font.montserrat_bold);
-
-        // (In reality I used a manager which caches the Typeface objects)
-        // Typeface font = FontManager.getInstance().getFont(getContext(), BLAMBOT);
-
         private MySpinnerAdapter(Context context, int resource, List<String> items) {
             super(context, resource, items);
         }
 
-        // Affects default (closed) state of the spinner
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             TextView view = (TextView) super.getView(position, convertView, parent);
             view.setTypeface(font);
             return view;
         }
-
-        // Affects opened state of the spinner
         @Override
         public View getDropDownView(int position, View convertView, ViewGroup parent) {
             TextView view = (TextView) super.getDropDownView(position, convertView, parent);
