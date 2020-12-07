@@ -36,7 +36,7 @@ public class TestActivity extends AppCompatActivity {
         arrayList.add("Browsing");
         arrayList.add("YouTube");
         arrayList.add("Ping");
-        arrayList.add("Throughput");
+        arrayList.add("Speed");
 
         prepareViewpager(viewPager, arrayList);
         tabLayout.setupWithViewPager(viewPager);
