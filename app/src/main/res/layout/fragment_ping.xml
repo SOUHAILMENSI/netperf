@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -20,30 +21,38 @@
                 android:id="@+id/textBox1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="IP address" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_margin="7dp"
-            android:layout_weight="1">
-
-
-            <EditText
-                android:id="@+id/textBox2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/textBox1"
-                android:hint="packet size" />
+                android:layout_weight="3"
+                android:fontFamily="@font/montserrat_bold"
+                android:hint="IP address"
+                android:textSize="16dp" />
 
 
             <EditText
                 android:id="@+id/textBox3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/textBox2"
-                android:hint="count" />
+                android:layout_toRightOf="@id/textBox3"
+                android:layout_weight="0.25"
+                android:fontFamily="@font/montserrat_bold"
+                android:hint="count"
+                android:textSize="16dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="7dp"
+            android:layout_weight="2">
+
+            <fr.ganfra.materialspinner.MaterialSpinner
+                android:id="@+id/spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                app:ms_alignLabels="true"
+                app:ms_arrowSize="16dp"
+                app:ms_multiline="true"/>
         </LinearLayout>
 
         <LinearLayout
@@ -56,26 +65,40 @@
                 android:id="@+id/btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/textBox1"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="true"
-                android:text="Execute!" />
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/colorPrimary"
+                android:fontFamily="@font/montserrat_bold"
+                android:text="Execute!"
+                android:textSize="16dp"
+                app:cornerRadius="10dp" />
+
+            <Button
+                android:id="@+id/btn4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/colorPrimary"
+                android:fontFamily="@font/montserrat_bold"
+                android:text="Save output"
+                android:textSize="16dp"
+                app:cornerRadius="10dp" />
         </LinearLayout>
 
 
-        <ScrollView
-            android:id="@+id/scrollView"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/text2"
-            android:layout_weight="8">
+            android:layout_height="1dp"
+            android:layout_margin="7dp"
+            android:layout_weight="10"
+            android:orientation="horizontal">
 
-            <LinearLayout
+            <ScrollView
+                android:id="@+id/scrollView"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_margin="7dp"
-
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/text2">
 
                 <TextView
                     android:id="@+id/text3"
@@ -83,16 +106,11 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentBottom="true"
-                    android:textSize="20sp" />
+                    android:fontFamily="sans-serif-condensed"
+                    android:textSize="16dp" />
 
-                <Button
-                    android:id="@+id/btn4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/text3"
-                    android:layout_alignParentLeft="true"
-                    android:text="Save output" />
-            </LinearLayout>
-        </ScrollView>
+            </ScrollView>
+
+        </LinearLayout>
     </LinearLayout>
 </FrameLayout>

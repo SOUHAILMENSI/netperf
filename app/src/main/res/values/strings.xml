@@ -88,8 +88,6 @@
     <string name="cdma_cellular_info">CDMA Cellular Info\n\n</string>
 
     <string name="hello_Youtube_fragment">Hello youtube fragment</string>
-    <string name="hello_Browsing_fragment">Hello Browsing fragment</string>
-    <string name="hello_Speed_fragment">Hello Speed fragment</string>
     <string name="video_load_delay">Video load delay (ms)</string>
     <string name="time_to_1st_picture">Time to 1st picture (ms)</string>
     <string name="video_start_delay">Video start delay (ms)</string>

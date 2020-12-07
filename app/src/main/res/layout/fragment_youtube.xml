@@ -32,7 +32,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/montserrat_bold"
-                            android:text="Start Test"
+                            android:text="Start"
                             android:clickable="true"
                             app:cornerRadius="10dp"
                             android:backgroundTint="@color/colorPrimary"

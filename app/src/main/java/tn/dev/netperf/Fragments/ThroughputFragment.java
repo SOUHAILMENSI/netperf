@@ -1,4 +1,4 @@
-package tn.dev.netperf;
+package tn.dev.netperf.Fragments;
 
 import android.os.Bundle;
 
@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import tn.dev.netperf.R;
 
 
 public class ThroughputFragment extends Fragment {

@@ -17,7 +17,7 @@ import java.util.List;
 
 import tn.dev.netperf.R;
 import tn.dev.netperf.Fragments.*;
-import tn.dev.netperf.ThroughputFragment;
+import tn.dev.netperf.Fragments.ThroughputFragment;
 
 
 public class TestActivity extends AppCompatActivity {

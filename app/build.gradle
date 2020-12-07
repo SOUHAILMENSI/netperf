@@ -41,9 +41,6 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 
-
+    implementation 'com.github.ganfra:material-spinner:1.1.1'
     implementation 'com.squareup.picasso:picasso:2.71828'
-
-   
-
 }
