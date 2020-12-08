@@ -43,13 +43,12 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_margin="7dp"
-            android:layout_weight="2">
+            android:layout_weight="1.5">
 
             <fr.ganfra.materialspinner.MaterialSpinner
                 android:id="@+id/spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
                 app:ms_alignLabels="true"
                 app:ms_arrowSize="16dp"
                 app:ms_multiline="true"/>

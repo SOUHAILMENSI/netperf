@@ -1,6 +1,7 @@
 package tn.dev.netperf.Fragments;
 
 import android.content.Context;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,6 +38,10 @@ public class YoutubeFragment extends Fragment implements View.OnClickListener {
 
     int buffCount;
     private String videoId = "";
+
+
+    private AudioManager audioManager;
+
 
 
     @Override
@@ -90,22 +95,21 @@ public class YoutubeFragment extends Fragment implements View.OnClickListener {
 
                     @Override
                     public void onAdStarted() {
+                        audioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+                        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,0,0);
                     }
 
                     @Override
                     public void onVideoStarted() {
                         _sV_Time_ = System.currentTimeMillis();
                         Log.e(TAG, "Started after : " + (_sV_Time_ - _initialTime_) + " ms");
-
-                        tv3.setText(String.valueOf(_sV_Time_ - _initialTime_));
-                    }
+                        tv3.setText(String.valueOf(_sV_Time_ - _initialTime_));}
 
                     @Override
                     public void onVideoEnded() {
                         Log.e(TAG, "details \n : " + (_lV_Time_ - _initialTime_) + " ms \n"
                                 + (_sV_Time_ - _initialTime_) + " ms \n"
-                                + buffCount + " times");
-                    }
+                                + buffCount + " times");}
 
                     @Override
                     public void onError(YouTubePlayer.ErrorReason errorReason) {
@@ -119,13 +123,6 @@ public class YoutubeFragment extends Fragment implements View.OnClickListener {
 
                     @Override
                     public void onPaused() {
-
-                        if (youTubePlayer != null) {
-                            if (youTubePlayer.isPlaying()) {
-                                long currentPlayerTime = youTubePlayer.getCurrentTimeMillis();
-                                youTubePlayer.pause();
-                            }
-                        }
                     }
 
                     @Override
@@ -134,11 +131,6 @@ public class YoutubeFragment extends Fragment implements View.OnClickListener {
 
                     @Override
                     public void onBuffering(boolean b) {
-                        if (!b) {
-                            _buff_sV_Time_ = System.currentTimeMillis();
-                        } else {
-                            _buff_fV_Time_ = System.currentTimeMillis();
-                        }
 
                         buffCount++;
                         long buff_Time_ = _buff_fV_Time_ - _buff_sV_Time_;
@@ -159,6 +151,7 @@ public class YoutubeFragment extends Fragment implements View.OnClickListener {
                     youTubePlayer = player;
                     youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.CHROMELESS);
                     youTubePlayer.loadVideo("USFf4TTc_ok");
+
 
                 }
             }
@@ -184,9 +177,9 @@ public class YoutubeFragment extends Fragment implements View.OnClickListener {
 
         youTubePlayerFragment.initialize(Config.getYoutubeApiKey(), new YouTubePlayer.OnInitializedListener() {
             @Override
-            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
+            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayerX, boolean b) {
                 if (!b) {
-                    youTubePlayer = youTubePlayer;
+                    youTubePlayer = youTubePlayerX;
                     youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.CHROMELESS);
                     youTubePlayer.cueVideo("USFf4TTc_ok");
 

@@ -141,6 +141,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Log.i("DirectoryMaker", "failed to make " + f2 + "directory");
         }
 
+        File f3 = new File(Environment.getExternalStorageDirectory() + "/" + folder_main, "pictures");
+        if (!f3.exists()) {
+            f3.mkdirs();
+            Log.i("DirectoryMaker", String.valueOf(f3));
+        } else {
+            Log.i("DirectoryMaker", "making directories " + f3 + " failed");
+        }
+
 
     }
 
