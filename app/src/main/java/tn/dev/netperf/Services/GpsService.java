@@ -1,77 +1,122 @@
 package tn.dev.netperf.Services;
 
 import android.annotation.SuppressLint;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Bundle;
+import android.os.Build;
 import android.os.IBinder;
-import android.provider.Settings;
+import android.os.Looper;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import tn.dev.netperf.R;
+import tn.dev.netperf.Utils.Iconstants;
+
 public class GpsService extends Service {
 
-    private LocationListener listener;
-    private LocationManager locationManager;
+    private LocationCallback locationCallback = new LocationCallback() {
 
+        @Override
+        public void onLocationResult(LocationResult locationResult) {
+            super.onLocationResult(locationResult);
+            if (locationResult != null && locationResult.getLastLocation() != null) {
+                double latitude = locationResult.getLastLocation().getLatitude();
+                double longitude = locationResult.getLastLocation().getLongitude();
+                float speed = locationResult.getLastLocation().getSpeed();
+                final Date date = new Date(locationResult.getLastLocation().getTime());
 
-    @Nullable
+                Log.d("LOCATION_UPDATE", latitude + "," + longitude + "\n" + speed + "\n" + date);
+            }
+        }
+    };
+
+   @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        throw new UnsupportedOperationException("not yet implemented");
     }
 
     @SuppressLint("MissingPermission")
-    @Override
-    public void onCreate() {
-        listener = new LocationListener() {
+    public void startLocationService() {
 
-            @Override
-            public void onLocationChanged(Location location) {
+        String channel_Id = "location_notification_channel";
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        Intent resultIntent = new Intent();
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                getApplicationContext(),
+                0,
+                resultIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+        );
 
-                Intent i = new Intent("location_update");
-                i.putExtra("Longitude", location.getLongitude());
-                i.putExtra("Latitude", location.getLatitude());
+        NotificationCompat.Builder builder = new NotificationCompat.Builder
+                (getApplicationContext(),
+                        channel_Id
+                );
 
-                final Date date = new Date(location.getTime());
-                final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        builder.setSmallIcon(R.mipmap.ic_launcher);
+        builder.setContentTitle("Location service");
+        builder.setContentText("Running");
+        builder.setDefaults(NotificationCompat.DEFAULT_ALL);
+        builder.setContentIntent(pendingIntent);
+        builder.setAutoCancel(false);
+        builder.setPriority(NotificationCompat.PRIORITY_MAX);
 
-                i.putExtra("time", sdf.format(date));
-                sendBroadcast(i);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (notificationManager != null && notificationManager.getNotificationChannel(channel_Id) == null) {
+                NotificationChannel notificationChannel = new NotificationChannel(
+                        channel_Id,
+                        "Location Service",
+                        NotificationManager.IMPORTANCE_HIGH
+                );
+                notificationChannel.setDescription("this channel is used by location service");
+                notificationManager.createNotificationChannel(notificationChannel);
             }
-            @Override
-            public void onStatusChanged(String s, int i, Bundle bundle) {
-
-            }
-            @Override
-            public void onProviderEnabled(String s) {
-            }
-            @Override
-            public void onProviderDisabled(String s) {
-                Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(i);
-            }
-        };
-        locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-        //noinspection MissingPermission
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 0, listener);
-    }
-    @SuppressLint("MissingPermission")
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (locationManager != null) {
-            //noinspection MissingPermission
-            locationManager.removeUpdates(listener);
         }
+
+        LocationRequest locationRequest = new LocationRequest();
+        locationRequest.setInterval(4000);
+        locationRequest.setFastestInterval(2000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        LocationServices.getFusedLocationProviderClient(this).requestLocationUpdates(
+                locationRequest,
+                locationCallback,
+                Looper.getMainLooper());
+
+        startForeground(Iconstants.LOCATION_SERVICE_ID, builder.build());
     }
+
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
+        if (intent != null) {
+            String action = intent.getAction();
+            if (action != null) {
+                if (action.equals(Iconstants.ACTION_START_LOCATION_SERVICE)) {
+                    startLocationService();
+                }
+            }
+        }
+
+        return super.onStartCommand(intent, flags, startId);
+    }
+
 }
 

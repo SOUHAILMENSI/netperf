@@ -1,82 +1,41 @@
 package tn.dev.netperf.Activities;
 
-import android.Manifest;
+import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.location.LocationManager;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
+import androidx.core.app.ActivityCompat;
 
 import tn.dev.netperf.R;
-
 import tn.dev.netperf.Services.GpsService;
+import tn.dev.netperf.Utils.Iconstants;
+
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 
 public class MapActivity extends AppCompatActivity {
 
+    private static final int PERMISSION_REQUEST_CODE = 100;
     TextView textView1;
     TextView textView2;
     TextView textView4;
     TextView Statusvalue;
     MediaPlayer player = null;
-
-    private LocationManager locationManager;
     private BroadcastReceiver broadcastReceiver = null;
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (broadcastReceiver == null) {
-            broadcastReceiver = new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
-
-                    textView1.setText("" + intent.getExtras().get("Latitude"));
-                    textView2.setText("" + intent.getExtras().get("Longitude"));
-                    textView4.setText("" + intent.getExtras().get("time"));
-
-                    Log.e("ADebugTag", "Value: " + textView1.getText() + "," + textView2.getText());
-
-                    if (textView1.getText() == null || textView2.getText() == null || textView1.getText() == "" || textView2.getText() == "") {
-                        if (player != null) {
-                            release();
-                            play(R.raw.ns_gps_fix_lost);
-                        }
-                        play(R.raw.ns_gps_fix_lost);
-                    }
-                    Statusvalue.setText(R.string.connected);
-
-                }
-            };
-        }
-        registerReceiver(broadcastReceiver, new IntentFilter("location_update"));
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (broadcastReceiver != null) {
-            unregisterReceiver(broadcastReceiver);
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-
 
         this.textView1 = findViewById(R.id.text_view1);
         this.textView2 = findViewById(R.id.text_view2);
@@ -84,76 +43,41 @@ public class MapActivity extends AppCompatActivity {
         this.Statusvalue = findViewById(R.id.Statusvalue);
 
 
-        if (!runtime_permissions()) {
-            configure_location();
-        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ActivityCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION},
+                        PERMISSION_REQUEST_CODE);
 
-
-        /**********************************onCreate(Bundle savedInstanceState) Ends here****************************/
-
-    }
-
-    private void configure_location() {
-        Intent i = new Intent(getApplicationContext(), GpsService.class);
-        startService(i);
-
-
-    }
-
-
-    private boolean runtime_permissions() {
-        if (Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 100);
-            Statusvalue.setText(R.string.disconnected);
-
-            return true;
-        }
-
-        if (player != null) {
-            release();
-            play(R.raw.ns_gps_connected);
-        }
-        play(R.raw.ns_gps_connected);
-
-        Statusvalue.setText(R.string.connected);
-
-        return false;
-    }
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 100) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                configure_location();
-
-                if (player != null) {
-                    release();
-                    play(R.raw.ns_gps_connected);
-                }
-                play(R.raw.ns_gps_connected);
-
-                Statusvalue.setText(R.string.connected);
-
+                Statusvalue.setText(R.string.disconnected);
 
             } else {
-                runtime_permissions();
+                startLocationService();
             }
         }
     }
 
-    public void play(int raw) {
-
-        player = MediaPlayer.create(MapActivity.this, raw);
-        player.setVolume(5, 5);
-        player.start();
+    private boolean isLocationServiceRunning() {
+        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        if (activityManager != null) {
+            for (ActivityManager.RunningServiceInfo service : activityManager.getRunningServices(Integer.MAX_VALUE)) {
+                if (GpsService.class.getName().equals(service.service.getClassName())) {
+                    if (service.foreground) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        return false;
     }
 
-    public void release() {
-        player.release();
-
+    private void startLocationService() {
+        if (!isLocationServiceRunning()) {
+            Intent intent = new Intent(getApplicationContext(), GpsService.class);
+            intent.setAction(Iconstants.ACTION_START_LOCATION_SERVICE);
+            startService(intent);
+            Toast.makeText(this, "Location service started", Toast.LENGTH_SHORT).show();
+        }
     }
-
-
 }
