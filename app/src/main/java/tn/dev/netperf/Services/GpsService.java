@@ -31,16 +31,20 @@ import tn.dev.netperf.Utils.Iconstants;
 
 public class GpsService extends Service {
 
+    double latitude,longitude;
+    float speed;
+    Date date;
+
     private LocationCallback locationCallback = new LocationCallback() {
 
         @Override
         public void onLocationResult(LocationResult locationResult) {
             super.onLocationResult(locationResult);
             if (locationResult != null && locationResult.getLastLocation() != null) {
-                double latitude = locationResult.getLastLocation().getLatitude();
-                double longitude = locationResult.getLastLocation().getLongitude();
-                float speed = locationResult.getLastLocation().getSpeed();
-                final Date date = new Date(locationResult.getLastLocation().getTime());
+                 latitude = locationResult.getLastLocation().getLatitude();
+                 longitude = locationResult.getLastLocation().getLongitude();
+                 speed = locationResult.getLastLocation().getSpeed();
+                 date = new Date(locationResult.getLastLocation().getTime());
 
                 Log.d("LOCATION_UPDATE", latitude + "," + longitude + "\n" + speed + "\n" + date);
             }
