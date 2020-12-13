@@ -34,6 +34,7 @@ public class DownloadTask {
     private String downloadUrl = "", downloadFileName = "";
     private TextView text_;
 
+
     StringBuilder log = new StringBuilder();
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -60,6 +61,7 @@ public class DownloadTask {
             buttonText.setEnabled(false);
             buttonText.setTextColor(Color.WHITE);
             buttonText.setText(R.string.downloadStarted);
+
         }
 
         /***********************************doInBackground*******************************/
@@ -68,9 +70,7 @@ public class DownloadTask {
         @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         protected Void doInBackground(Void... arg0) {
-
             try {
-
                 URL url = new URL(downloadUrl);
 
                 DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
@@ -150,12 +150,14 @@ public class DownloadTask {
                                     "\n size / 1024 : " + size1 / 1024 +
                                     "\n (endTime - startTime) / 1000 : " + (endTime - startTime) / 1000 +
                                     "\ndownload speed: " + ratevalue);
+
+                    c.disconnect();
+
                 }
             } catch (Exception e) {
                 e.printStackTrace();
                 Log.e(TAG, "Download Error Exception " + e.getMessage());
             }
-
             return null;
         }
 
@@ -163,6 +165,7 @@ public class DownloadTask {
 
         @Override
         protected void onPostExecute(Void result) {
+
 
             buttonText.setEnabled(true);
             text_.append(log.toString());

@@ -10,12 +10,14 @@ import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationListener;
@@ -33,7 +35,6 @@ public class GpsService extends Service {
 
     double latitude,longitude;
     float speed;
-    Date date;
 
     private LocationCallback locationCallback = new LocationCallback() {
 
@@ -44,9 +45,18 @@ public class GpsService extends Service {
                  latitude = locationResult.getLastLocation().getLatitude();
                  longitude = locationResult.getLastLocation().getLongitude();
                  speed = locationResult.getLastLocation().getSpeed();
-                 date = new Date(locationResult.getLastLocation().getTime());
 
-                Log.d("LOCATION_UPDATE", latitude + "," + longitude + "\n" + speed + "\n" + date);
+                Log.d("LOCATION_UPDATE", latitude + "," + longitude + "\n" + speed );
+
+                Intent intent = new Intent("location_update");
+                Bundle bundle = new Bundle();
+
+                bundle.putDouble("Longitude", longitude);
+                bundle.putDouble("Latitude", latitude);
+                bundle.putFloat("Speed", speed);
+                intent.putExtras(bundle);
+                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+
             }
         }
     };
@@ -76,7 +86,7 @@ public class GpsService extends Service {
                 );
 
         builder.setSmallIcon(R.mipmap.ic_launcher);
-        builder.setContentTitle("Location service");
+        builder.setContentTitle("gps service");
         builder.setContentText("Running");
         builder.setDefaults(NotificationCompat.DEFAULT_ALL);
         builder.setContentIntent(pendingIntent);
@@ -87,7 +97,7 @@ public class GpsService extends Service {
             if (notificationManager != null && notificationManager.getNotificationChannel(channel_Id) == null) {
                 NotificationChannel notificationChannel = new NotificationChannel(
                         channel_Id,
-                        "Location Service",
+                        "gps Service",
                         NotificationManager.IMPORTANCE_HIGH
                 );
                 notificationChannel.setDescription("this channel is used by location service");

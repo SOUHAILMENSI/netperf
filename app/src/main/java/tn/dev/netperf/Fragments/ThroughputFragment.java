@@ -38,7 +38,7 @@ public class ThroughputFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         View view = inflater.inflate(R.layout.fragment_throughput, container, false);
         tv = view.findViewById(R.id.tv);
         edit_Tv = view.findViewById(R.id.edit_Tv);

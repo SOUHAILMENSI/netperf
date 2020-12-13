@@ -1,15 +1,18 @@
 package tn.dev.netperf.Activities;
 
 import android.Manifest;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -18,11 +21,14 @@ import androidx.core.app.ActivityCompat;
 import java.io.File;
 
 import tn.dev.netperf.R;
+import tn.dev.netperf.Services.GpsService;
+import tn.dev.netperf.Utils.Iconstants;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     int Permission_All = 1;
     CardView card1, card2, card3, card4, card5, card6;
+    MediaPlayer player = null;
 
 
     @Override
@@ -56,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         MakeDirectories();
+        startLocationService();
 
 
         WifiManager wifiManager = (WifiManager) this.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
@@ -140,16 +147,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             Log.i("DirectoryMaker", "failed to make " + f2 + "directory");
         }
-
-        File f3 = new File(Environment.getExternalStorageDirectory() + "/" + folder_main, "pictures");
-        if (!f3.exists()) {
-            f3.mkdirs();
-            Log.i("DirectoryMaker", String.valueOf(f3));
-        } else {
-            Log.i("DirectoryMaker", "making directories " + f3 + " failed");
-        }
-
-
     }
 
+    private boolean isLocationServiceRunning() {
+        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        if (activityManager != null) {
+            for (ActivityManager.RunningServiceInfo service : activityManager.getRunningServices(Integer.MAX_VALUE)) {
+                if (GpsService.class.getName().equals(service.service.getClassName())) {
+                    if (service.foreground) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        return false;
+    }
+
+    private void startLocationService() {
+        if (!isLocationServiceRunning()) {
+            Intent intent = new Intent(getApplicationContext(), GpsService.class);
+            intent.setAction(Iconstants.ACTION_START_LOCATION_SERVICE);
+            startService(intent);
+        }
+        Toast.makeText(this, "gps service running", Toast.LENGTH_SHORT).show();
+    }
 }

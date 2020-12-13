@@ -35,7 +35,6 @@
     <string name="GPs_info">GPS information</string>
     <string name="latitude">Latitude</string>
     <string name="langitude">Langitude</string>
-    <string name="time">DateTime</string>
 
     <string name="idle">Idle</string>
     <string name="connected">Connected</string>
