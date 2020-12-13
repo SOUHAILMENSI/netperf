@@ -1,10 +1,10 @@
 package tn.dev.netperf.Utils;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
-import android.os.Handler;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
@@ -21,12 +21,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Random;
 
 import tn.dev.netperf.R;
 
-/**
- * Created by SONU on 29/10/15.
- */
+
 public class DownloadTask {
 
     private static final String TAG = "Download Task";
@@ -44,11 +43,6 @@ public class DownloadTask {
         this.downloadUrl = downloadUrl;
         this.text_ = text_;
 
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
-        LocalDateTime now = LocalDateTime.now();
-
-        downloadFileName = dtf.format(now);
-        Log.e(TAG, downloadFileName);
         new DownloadingTask().execute();
     }
 
@@ -58,70 +52,82 @@ public class DownloadTask {
 
     private class DownloadingTask extends AsyncTask<Void, Void, Void> {
 
-        File outputFile = null;
+        /***********************************onPreExecute*******************************/
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             buttonText.setEnabled(false);
+            buttonText.setTextColor(Color.WHITE);
             buttonText.setText(R.string.downloadStarted);
         }
+
+        /***********************************doInBackground*******************************/
+
 
         @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         protected Void doInBackground(Void... arg0) {
+
             try {
+
+                URL url = new URL(downloadUrl);
 
                 DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
                 LocalDateTime now = LocalDateTime.now();
-                log.append("\n Date Time" + dtf.format(now) +"\n");
+                log.append("\n Date Time" + dtf.format(now) + "\n");
 
-                URL url = new URL(downloadUrl);
-                long startTime = System.currentTimeMillis();
-
-                Log.d("DownloadManager", "download begining: " + startTime);
                 Log.d("DownloadManager", "download url:" + url);
                 Log.d("DownloadManager", "downloaded file name:" + downloadFileName);
+                log.append("\n Host: " + url.getHost() +
+                        "\n Protocol: " + url.getProtocol() +
+                        "\n Port: " + url.getDefaultPort() + "\n");
 
                 long time_connect_start = System.currentTimeMillis();
                 HttpURLConnection c = (HttpURLConnection) url.openConnection();
+
+                Log.d("HttpURLConnectionCache", "downloaded file name:" + c.getDefaultUseCaches() + "  " + c.getUseCaches());
+
+                c.setUseCaches(false);
+                c.setDefaultUseCaches(false);
+                c.addRequestProperty("Cache-Control", "no-cache");
+                c.addRequestProperty("Cache-Control", "max-age=0");
+
+
+                Log.d("HttpURLConnectionCache", "downloaded file name:" + c.getDefaultUseCaches() + "  " +
+                        "" + c.getUseCaches());
+
                 c.setRequestMethod("GET");
                 c.connect();
                 long time_connect_finish = System.currentTimeMillis();
 
 
-
                 if (c.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                    log.append("\n HTTP " + c.getResponseCode()
+                    log.append("\n HTTP Req: " + c.getResponseCode()
                             + " " + c.getResponseMessage());
-
 
                     InputStream is = c.getInputStream();
 
                     int lenghtOfFile = c.getContentLength();
                     BufferedInputStream bis = new BufferedInputStream(is);
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+
                     long size1 = 0;
                     int red = 0;
                     int currentValue = 0;
-                    byte[] buf = new byte[2048];
+                    byte[] buf = new byte[128000];
+                    new Random().nextBytes(buf);
 
+                    long startTime = System.currentTimeMillis();
                     while ((red = bis.read(buf)) != -1) {
                         size1 += red;
                         currentValue = (int) (size1 * 100 / lenghtOfFile);
                         buttonText.setText((int) ((size1 * 100) / lenghtOfFile) + "%");
                     }
 
-
                     is.close();
                     long endTime = System.currentTimeMillis();
-
-                    File done = new File(context.getFilesDir() + "/temp/" + downloadFileName);
-                    Log.d("DownloadManager", "Location being searched: " + context.getFilesDir() + "/temp/" + downloadFileName);
-                    // double size = done.length();
-                    if (done.exists()) {
-                        done.delete();
-                    }
 
                     Log.d("DownloadManager", "download ended: " + ((endTime - startTime) / 1000) + " secs");
                     double rate = (((size1 / 1024) / ((endTime - startTime) / 1000)) * 8);
@@ -133,9 +139,9 @@ public class DownloadTask {
                     } else
                         ratevalue = String.valueOf(rate).concat(" Kbps");
 
-                            log.append("\n Server connection time: "+(time_connect_finish-time_connect_start)+"ms"+
-                            "\n File size : " + (size1 / 1024) / 1024 +"M" +
-                            " | Download time: " + (endTime - startTime) / 1000 +"s"+
+                    log.append("\n Server connection time: " + (time_connect_finish - time_connect_start) + "ms" +
+                            "\n File size : " + (size1 / 1024) / 1024 + "M" +
+                            " | Download time: " + (endTime - startTime) / 1000 + "s" +
                             " \n Download speed: " + ratevalue);
                     log.append("\n-----------------------");
 
@@ -147,50 +153,22 @@ public class DownloadTask {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                outputFile = null;
                 Log.e(TAG, "Download Error Exception " + e.getMessage());
             }
+
             return null;
         }
 
+        /***********************************onPostExecute*******************************/
 
         @Override
         protected void onPostExecute(Void result) {
-            try {
-                if (outputFile == null) {
-                    buttonText.setEnabled(true);
-                    text_.append(log.toString());
-                } else {
-                    buttonText.setText(R.string.downloadFailed);
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            buttonText.setEnabled(true);
-                        }
-                    }, 2000);
 
-                    Log.e(TAG, "Download Failed");
-
-                }
-                buttonText.setText(R.string.downloadAgain);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-
-                buttonText.setText(R.string.downloadFailed);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        buttonText.setEnabled(true);
-                        buttonText.setText(R.string.downloadAgain);
-                    }
-                }, 3000);
-                Log.e(TAG, "Download Failed with Exception - " + e.getLocalizedMessage());
-
-            }
-
-
+            buttonText.setEnabled(true);
+            text_.append(log.toString());
+            buttonText.setText(R.string.downloadAgain);
             super.onPostExecute(result);
+
         }
     }
 
@@ -206,8 +184,6 @@ public class DownloadTask {
             writer.append(sBody);
             writer.flush();
             writer.close();
-
-            //Toast.makeText(context, "Successfully saved", Toast.LENGTH_SHORT).show();
 
         } catch (IOException e) {
             e.printStackTrace();

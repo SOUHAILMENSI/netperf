@@ -58,13 +58,12 @@ public class ThroughputFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (connected()) {
-                    new DownloadTask(mContext, download, edit_Tv.getText().toString(), tv);
+                        new DownloadTask(mContext, download, edit_Tv.getText().toString(), tv);
                 }
             }
         });
 
         save.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
 
@@ -76,6 +75,21 @@ public class ThroughputFragment extends Fragment {
                 downloadTask.generateNoteOnSD(mContext, "HTTP_DL_Throughput" + formatter.format(date) + ".txt", textToSaveString);
                 Toast.makeText(mContext, "Logfile successfully saved", Toast.LENGTH_SHORT).show();
 
+            }
+        });
+
+
+        tv.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'_'HH:mm:ss");
+                Date date = new Date(System.currentTimeMillis());
+
+                String textToSaveString = tv.getText().toString();
+                DownloadTask downloadTask = new DownloadTask();
+                downloadTask.generateNoteOnSD(mContext, "HTTP_DL_Throughput" + formatter.format(date) + ".txt", textToSaveString);
+                Toast.makeText(mContext, "Logfile successfully saved", Toast.LENGTH_SHORT).show();
+                return true;
             }
         });
 
