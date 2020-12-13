@@ -14,35 +14,38 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="1dp"
+            android:layout_margin="7dp"
             android:layout_weight="1"
-            android:layout_margin="7dp">
+            android:orientation="horizontal">
 
 
             <!--
             https://bouygues.testdebit.info/50M/50M.iso
             https://bouygues.testdebit.info/100M/100M.iso
 
+            http://aix-marseille.testdebit.info/100M/100M.iso
+
              -->
             <EditText
                 android:id="@+id/edit_Tv"
-                android:layout_width="fill_parent"
+                android:layout_width="1dp"
                 android:layout_height="match_parent"
+                android:layout_weight="5"
                 android:fontFamily="@font/montserrat_bold"
                 android:hint="Enter Url"
-                android:text="https://bouygues.testdebit.info/50M/50M.iso"
+                android:text="http://aix-marseille.testdebit.info/100M/100M.iso"
                 android:textSize="12dp" />
-
 
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_margin="7dp"
-            android:orientation="horizontal"
-            android:weightSum="2"
             android:layout_height="1dp"
-            android:layout_weight="1">
+            android:layout_margin="7dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:weightSum="2">
 
             <!--  Download Zip File Layout  -->
             <Button

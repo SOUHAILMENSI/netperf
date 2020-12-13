@@ -35,6 +35,7 @@ public class ThroughputFragment extends Fragment {
     Context mContext;
 
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -51,7 +52,6 @@ public class ThroughputFragment extends Fragment {
         if (!hasPermissions(mContext, Permissions)) {
             ActivityCompat.requestPermissions(getActivity(), Permissions, Permission_All);
         }
-
 
         download.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
@@ -74,6 +74,7 @@ public class ThroughputFragment extends Fragment {
                 DownloadTask downloadTask = new DownloadTask();
                 downloadTask.generateNoteOnSD(mContext, "HTTP_DL_Throughput" + formatter.format(date) + ".txt", textToSaveString);
                 Toast.makeText(mContext, "Logfile successfully saved", Toast.LENGTH_SHORT).show();
+
 
             }
         });

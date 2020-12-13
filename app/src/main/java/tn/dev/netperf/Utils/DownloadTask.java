@@ -35,6 +35,7 @@ public class DownloadTask {
     private TextView text_;
 
 
+
     StringBuilder log = new StringBuilder();
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -44,7 +45,9 @@ public class DownloadTask {
         this.downloadUrl = downloadUrl;
         this.text_ = text_;
 
-        new DownloadingTask().execute();
+            new DownloadingTask().execute();
+
+
     }
 
     public DownloadTask() {
@@ -101,7 +104,7 @@ public class DownloadTask {
                 c.connect();
                 long time_connect_finish = System.currentTimeMillis();
 
-
+                long startTime = System.currentTimeMillis();
                 if (c.getResponseCode() == HttpURLConnection.HTTP_OK) {
                     log.append("\n HTTP Req: " + c.getResponseCode()
                             + " " + c.getResponseMessage());
@@ -118,8 +121,6 @@ public class DownloadTask {
                     int currentValue = 0;
                     byte[] buf = new byte[128000];
                     new Random().nextBytes(buf);
-
-                    long startTime = System.currentTimeMillis();
                     while ((red = bis.read(buf)) != -1) {
                         size1 += red;
                         currentValue = (int) (size1 * 100 / lenghtOfFile);
