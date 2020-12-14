@@ -3,6 +3,7 @@
 ===============================================	
 
 It provides : 
+-----
 
 - Phone, battery and SIM information, 
 
