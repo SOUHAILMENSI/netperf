@@ -2,10 +2,8 @@
 # Cellular network performance
 ===============================================	
 
-It provides : 
------
-
-- Phone, battery and SIM information, 
+-Functionalities: 
+-Phone, battery and SIM information, 
 
 -Radio parameters (LTE,WCMA and GSM)  
 
