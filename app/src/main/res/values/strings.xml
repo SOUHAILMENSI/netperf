@@ -92,12 +92,15 @@
     <string name="video_start_delay">Video start delay (ms)</string>
     <string name="buffering_count">Buffering \n count</string>
 
-    <string name="download">"Download "</string>
-    <string name="save">"Save output"</string>
+    <string name="download">Download</string>
+    <string name="save">Save output</string>
 
     <string name="downloadStarted">Started…</string>
     <string name="downloadCompleted">Completed…</string>
     <string name="downloadFailed">Failed…</string>
     <string name="downloadAgain">Again</string>
+
+
+    <string name="title_activity_map">Map</string>
 
 </resources>

@@ -86,12 +86,13 @@ public class BrowsingFragment extends Fragment implements View.OnClickListener {
                     switch (keyCode) {
                         case KeyEvent.KEYCODE_DPAD_CENTER:
                         case KeyEvent.KEYCODE_ENTER:
-                            webView.loadUrl("https://" + editText.getText().toString());
+                            webView.loadUrl("http://"+editText.getText().toString());
                             return true;
                         default:
                             break;
                     }
                 }
+                editText.setText("");
                 return false;
             }
         });
