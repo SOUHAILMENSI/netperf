@@ -53,17 +53,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         card6.setOnClickListener(this);
 
 
-        String[] Permissions = {Manifest.permission.READ_SMS, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.CAMERA, Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_PHONE_NUMBERS,
-                Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET,
-                Manifest.permission.READ_EXTERNAL_STORAGE,};
-        if (!hasPermissions(this, Permissions)) {
-            ActivityCompat.requestPermissions(this, Permissions, Permission_All);
-        }
-
-        MakeDirectories();
-        startLocationService();
-
+            String[] Permissions = {Manifest.permission.READ_SMS, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.CAMERA, Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_PHONE_NUMBERS,
+                    Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,};
+            if (!hasPermissions(this, Permissions)) {
+                ActivityCompat.requestPermissions(this, Permissions, Permission_All);
+            }
+            MakeDirectories();
+            startLocationService();
 
         WifiManager wifiManager = (WifiManager) this.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         wifiManager.setWifiEnabled(false);
@@ -128,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (!f.exists()) {
             f.mkdirs();
             Log.i("DirectoryMaker", folder_main);
+
         } else {
             Log.i("DirectoryMaker", "making directories failed");
         }
@@ -136,6 +135,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (!f1.exists()) {
             f1.mkdirs();
             Log.i("DirectoryMaker", String.valueOf(f1));
+
         } else {
             Log.i("DirectoryMaker", "making directories " + f1 + " failed");
         }
@@ -144,6 +144,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (!f2.exists()) {
             f2.mkdirs();
             Log.i("DirectoryMaker", String.valueOf(f2));
+
         } else {
             Log.i("DirectoryMaker", "failed to make " + f2 + "directory");
         }

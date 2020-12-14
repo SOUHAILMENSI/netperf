@@ -34,7 +34,6 @@ import tn.dev.netperf.Utils.Iconstants;
 public class GpsService extends Service {
 
     double latitude,longitude;
-    float speed;
 
     private LocationCallback locationCallback = new LocationCallback() {
 
@@ -44,16 +43,14 @@ public class GpsService extends Service {
             if (locationResult != null && locationResult.getLastLocation() != null) {
                  latitude = locationResult.getLastLocation().getLatitude();
                  longitude = locationResult.getLastLocation().getLongitude();
-                 speed = locationResult.getLastLocation().getSpeed();
 
-                Log.d("LOCATION_UPDATE", latitude + "," + longitude + "\n" + speed );
+                Log.d("LOCATION_UPDATE", latitude + "," + longitude  );
 
                 Intent intent = new Intent("location_update");
                 Bundle bundle = new Bundle();
 
                 bundle.putDouble("Longitude", longitude);
                 bundle.putDouble("Latitude", latitude);
-                bundle.putFloat("Speed", speed);
                 intent.putExtras(bundle);
                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
 
@@ -105,10 +102,16 @@ public class GpsService extends Service {
             }
         }
 
-        LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setInterval(4000);
-        locationRequest.setFastestInterval(2000);
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        //LocationRequest locationRequest = new LocationRequest();
+        //locationRequest.setInterval(4000);
+       // locationRequest.setFastestInterval(2000);
+       // locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+
+        LocationRequest locationRequest = LocationRequest.create()
+                .setInterval(4000)
+                .setFastestInterval(2000)
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         LocationServices.getFusedLocationProviderClient(this).requestLocationUpdates(
                 locationRequest,
