@@ -58,9 +58,7 @@ public class YoutubeFragment extends Fragment implements View.OnClickListener {
         tv4 = myView.findViewById(R.id.tv_buff_count);
 
         CueVideo();
-
         mContext = getActivity().getApplicationContext();
-
         return myView;
     }
 
