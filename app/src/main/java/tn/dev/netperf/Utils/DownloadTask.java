@@ -35,7 +35,6 @@ public class DownloadTask {
     private TextView text_;
 
 
-
     StringBuilder log = new StringBuilder();
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -45,7 +44,7 @@ public class DownloadTask {
         this.downloadUrl = downloadUrl;
         this.text_ = text_;
 
-            new DownloadingTask().execute();
+        new DownloadingTask().execute();
 
 
     }
@@ -131,12 +130,12 @@ public class DownloadTask {
                     long endTime = System.currentTimeMillis();
 
                     Log.d("DownloadManager", "download ended: " + ((endTime - startTime) / 1000) + " secs");
-                    double rate = (((size1 / 1024) / ((endTime - startTime) / 1000)) * 8);
+                    double rate = (((size1 / 1000) / ((endTime - startTime) / 1000)) * 8);
                     rate = Math.round(rate * 100.0) / 100.0;
                     String ratevalue;
 
                     if (rate > 1000) {
-                        ratevalue = String.valueOf(rate / 1024).concat(" Mbps");
+                        ratevalue = String.valueOf(rate / 1000).concat(" Mbps");
                     } else
                         ratevalue = String.valueOf(rate).concat(" Kbps");
 
@@ -154,10 +153,14 @@ public class DownloadTask {
 
                     c.disconnect();
 
+                } else {
+                    log.append("\n HTTP Req: " + c.getResponseCode()
+                            + " " + c.getResponseMessage());
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.e(TAG, "Download Error Exception " + e.getMessage());
+                Log.e(TAG,  e.getMessage());
+                log.append("\n"+e.getMessage());
             }
             return null;
         }

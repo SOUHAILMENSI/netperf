@@ -28,6 +28,7 @@ import com.google.android.gms.location.LocationServices;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import tn.dev.netperf.Activities.MainActivity;
 import tn.dev.netperf.R;
 import tn.dev.netperf.Utils.Iconstants;
 
@@ -69,7 +70,7 @@ public class GpsService extends Service {
 
         String channel_Id = "location_notification_channel";
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        Intent resultIntent = new Intent();
+        Intent resultIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(
                 getApplicationContext(),
                 0,
