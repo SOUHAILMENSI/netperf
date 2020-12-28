@@ -1,8 +1,13 @@
 package tn.dev.netperf.Activities;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.telephony.CellInfo;
 import android.telephony.CellInfoGsm;
 import android.telephony.CellInfoLte;
@@ -12,29 +17,48 @@ import android.telephony.SignalStrength;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.opencsv.CSVWriter;
+
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import tn.dev.netperf.R;
+import tn.dev.netperf.Utils.Time;
 
 
 public class SumActivity extends AppCompatActivity {
-    private TextView txsys, tx1, tx2, tx3, tx4, tx5, tx6, tx7, tx8, tx9,tx10, tx11, tx12, tx13, tx14, tx15, tx16, tx17,
+
+    private static final String TAG = "android.telephony.CellInfo";
+    double Latitude;
+    double Longitude;
+    private TextView txsys, tx1, tx2, tx3, tx4, tx5, tx6, tx7, tx8, tx9, tx10, tx11, tx12, tx13, tx14, tx15, tx16, tx17,
             tx18, tx19, tx20, tx21, tx22, txband, txbandval, txmodul, txmodulval;
 
-   // private TableLayout tableLayout;
-   // private Context context;
-
     private TelephonyManager telephonyManagerToListen = null;
+    private Button btn, btn1;
+    private Timer timer;
+    private String radio = null;
+    private String time;
+    private MyBroadcastReceiver myBroadcastReceiver;
+
 
     private int lte_MCC = Integer.MAX_VALUE;
     private int lte_MNC = Integer.MAX_VALUE;
@@ -72,54 +96,6 @@ public class SumActivity extends AppCompatActivity {
     private int wcdma_RSCP = Integer.MAX_VALUE;
     private int wcdma_ASU = Integer.MAX_VALUE;
     private int wcdma_Ecno = Integer.MAX_VALUE;
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sum);
-
-        txsys = findViewById(R.id.system);
-        tx1 = findViewById(R.id.txradio1);
-        tx2 = findViewById(R.id.txradio2);
-        tx3 = findViewById(R.id.txradio3);
-        tx4 = findViewById(R.id.txradio4);
-        tx5 = findViewById(R.id.txradio5);
-        tx6 = findViewById(R.id.txradio6);
-        tx7 = findViewById(R.id.txradio7);
-        tx8 = findViewById(R.id.txradio8);
-        tx9 = findViewById(R.id.txradio9);
-        tx10 = findViewById(R.id.txradio10);
-        tx11 = findViewById(R.id.txradio11);
-        tx12 = findViewById(R.id.txradio12);
-        tx13 = findViewById(R.id.txradio13);
-        tx14 = findViewById(R.id.txradio14);
-        tx15 = findViewById(R.id.txradio15);
-        tx16 = findViewById(R.id.txradio16);
-        tx17 = findViewById(R.id.txradio17);
-        tx18 = findViewById(R.id.txradio18);
-        tx19 = findViewById(R.id.txradio19);
-        tx20 = findViewById(R.id.txradio20);
-        tx21 = findViewById(R.id.txradio21);
-        tx22 = findViewById(R.id.txradio22);
-        txband = findViewById(R.id.txradioband);
-        txbandval = findViewById(R.id.txradiobandval);
-        txmodul = findViewById(R.id.txmodulation);
-        txmodulval = findViewById(R.id.txmodulval);
-
-       // tableLayout = findViewById(R.id.scheduleTable);
-
-
-        /*******************************OnCreate ends here *******************************************/
-
-       // context = this;
-        telephonyManagerToListen = (TelephonyManager) this.getSystemService
-                (this.TELEPHONY_SERVICE);
-        telephonyManagerToListen.listen(mPhoneStateListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS | PhoneStateListener.LISTEN_CELL_INFO | PhoneStateListener.LISTEN_CELL_LOCATION);
-
-    }
-
-
     private PhoneStateListener mPhoneStateListener = new PhoneStateListener() {
 
 
@@ -127,7 +103,6 @@ public class SumActivity extends AppCompatActivity {
         @Override
         public void onSignalStrengthsChanged(SignalStrength signalStrength) {
             super.onSignalStrengthsChanged(signalStrength);
-            //Log.e(Tag, signalStrength.toString());
             get_Reflection_Method(signalStrength);
             try {
                /* Method getLteRsrp = signalStrength.getClass().getDeclaredMethod("getLteRsrp");
@@ -156,8 +131,7 @@ public class SumActivity extends AppCompatActivity {
 
                 getCellSignalStrength();
                 getCellIdentity();
-              //  getNeighbourCell();
-
+                //  getNeighbourCell();
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -165,15 +139,16 @@ public class SumActivity extends AppCompatActivity {
         }
 
 
+        @SuppressLint("LongLogTag")
         @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         public void onCellInfoChanged(List<CellInfo> cellInfoList) {
             super.onCellInfoChanged(cellInfoList);
             if (cellInfoList == null) {
-                //Log.e(Tag,"onCellInfoChanged is null");
+                Log.d(TAG, "onCellInfoChanged is null");
                 return;
             }
-            //Log.e(Tag,"onCellInfoChanged size "+cellInfoList.size());
+            Log.d(TAG, "onCellInfoChanged size " + cellInfoList.size());
             for (CellInfo cellInfo : cellInfoList) {
                 if (!cellInfo.isRegistered())
                     continue;
@@ -216,66 +191,113 @@ public class SumActivity extends AppCompatActivity {
                     getUMTSDLband();
                 }
             }
+
         }
+
+
     };
 
     @SuppressLint("LongLogTag")
-    private void getCellSignalStrength() {
-        @SuppressLint("MissingPermission") List<CellInfo> cellInfoList = telephonyManagerToListen.getAllCellInfo();
-        if (cellInfoList == null) {
-            Log.e("TaggetCellSignalStrength", "getAllCellInfo is null");
-            return;
-        }
-        for (int i = 0; i < cellInfoList.size(); i++) {
-            Log.e("TaggetCellSignalStrength", "getAllCellInfo: " + i + "\n" + cellInfoList.get(i) + "\n");
-        }
-        for (CellInfo cellInfo : cellInfoList) {
-            if (!cellInfo.isRegistered())    // Primary cell
-                continue;
-            if (cellInfo instanceof CellInfoWcdma) {
-                CellInfoWcdma wcdmaInfo = (CellInfoWcdma) cellInfo;
-                wcdma_RSSI = wcdmaInfo.getCellSignalStrength().getDbm();
-                wcdma_ASU = wcdmaInfo.getCellSignalStrength().getAsuLevel();
+    private static void get_Reflection_Method(Object r) {
+        Log.d(TAG, "get_Reflection_Method begin!");
+        Class temp = r.getClass();
+        String className = temp.getName();
+        Log.d(TAG, className);
+        Method[] methods = temp.getDeclaredMethods();
+        for (int i = 0; i < methods.length; i++) {
+            int mod = methods[i].getModifiers();
+            System.out.print(Modifier.toString(mod) + " ");
+            System.out.print(methods[i].getReturnType().getName());
+            System.out.print(" " + methods[i].getName() + "(");
+            Class[] parameterTypes = methods[i].getParameterTypes();
+            for (int j = 0; j < parameterTypes.length; j++) {
+                System.out.print(parameterTypes[j].getName());
 
-                tx13.setText("RSSI");
-                tx14.setText(wcdma_RSSI + " dBm");
-                tx15.setText("ASU");
-                tx16.setText(wcdma_ASU + " dBm");
-                tx17.setText("EcIo");
-                tx18.setText(getWcdma_EcNo() + " dB");
-                tx19.setText("RSCP");
-                tx20.setText(getWcdm_RSCP() + " dBm");
-
-
-            } else if (cellInfo instanceof CellInfoGsm) {
-                CellInfoGsm gsmInfo = (CellInfoGsm) cellInfo;
-                gsm_Asu = gsmInfo.getCellSignalStrength().getAsuLevel();
-                tx13.setText("RSSI");
-                tx14.setText(gsm_RSSI + " dBm");
-                tx15.setText("BER");
-                tx16.setText(String.valueOf(gsm_Berror));
-                tx17.setText("ASU");
-                tx18.setText(String.valueOf(gsm_Asu + " dBm"));
-                tx19.setText("Rxlev");
-                tx20.setText(gsm_rxlev + " dBm");
-
-            } else if (cellInfo instanceof CellInfoLte) {
-                CellInfoLte lteInfo = (CellInfoLte) cellInfo;
-                Lte_Asu = lteInfo.getCellSignalStrength().getAsuLevel();
-                lte_dbm = lteInfo.getCellSignalStrength().getDbm();
-                Log.e("LTEASU/DBM", "" + Lte_Asu + "\n" + lte_dbm);
-
-                tx13.setText("RSRP");
-                tx14.setText(lte_dbm + " dBm");
-                tx15.setText("RSRQ");
-                tx16.setText(lte_RSRQ + " dB");
-                tx17.setText("SINR");
-                tx18.setText(lte_SINR + " dB");
-                tx19.setText("CQI");
-                tx20.setText(String.valueOf(lte_CQI));
-
+                if (parameterTypes.length > j + 1) {
+                    System.out.print(", ");
+                }
             }
+            System.out.println(")");
         }
+        Log.d(TAG, "get_Reflection_Method end!");
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_sum);
+
+        txsys = findViewById(R.id.system);
+        tx1 = findViewById(R.id.txradio1);
+        tx2 = findViewById(R.id.txradio2);
+        tx3 = findViewById(R.id.txradio3);
+        tx4 = findViewById(R.id.txradio4);
+        tx5 = findViewById(R.id.txradio5);
+        tx6 = findViewById(R.id.txradio6);
+        tx7 = findViewById(R.id.txradio7);
+        tx8 = findViewById(R.id.txradio8);
+        tx9 = findViewById(R.id.txradio9);
+        tx10 = findViewById(R.id.txradio10);
+        tx11 = findViewById(R.id.txradio11);
+        tx12 = findViewById(R.id.txradio12);
+        tx13 = findViewById(R.id.txradio13);
+        tx14 = findViewById(R.id.txradio14);
+        tx15 = findViewById(R.id.txradio15);
+        tx16 = findViewById(R.id.txradio16);
+        tx17 = findViewById(R.id.txradio17);
+        tx18 = findViewById(R.id.txradio18);
+        tx19 = findViewById(R.id.txradio19);
+        tx20 = findViewById(R.id.txradio20);
+        tx21 = findViewById(R.id.txradio21);
+        tx22 = findViewById(R.id.txradio22);
+        txband = findViewById(R.id.txradioband);
+        txbandval = findViewById(R.id.txradiobandval);
+        txmodul = findViewById(R.id.txmodulation);
+        txmodulval = findViewById(R.id.txmodulval);
+
+
+        btn = findViewById(R.id.btnStart);
+        btn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                timer = new Timer();
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        if (radio != "") {
+                            try {
+                                btn.setText("REC");
+                                writeToFile();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                }, 5, 2000);
+            }
+        });
+
+
+        btn1 = findViewById(R.id.btnStop);
+        btn1.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                timer.cancel();
+                Toast.makeText(SumActivity.this, "Recording Stopped", Toast.LENGTH_SHORT).show();
+                btn.setText("Start");
+            }
+        });
+
+
+        // tableLayout = findViewById(R.id.scheduleTable);
+
+
+        /*******************************OnCreate ends here *******************************************/
+
+        // context = this;
+        telephonyManagerToListen = (TelephonyManager) this.getSystemService
+                (this.TELEPHONY_SERVICE);
+        telephonyManagerToListen.listen(mPhoneStateListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS | PhoneStateListener.LISTEN_CELL_INFO | PhoneStateListener.LISTEN_CELL_LOCATION);
+
     }
 
 /*
@@ -339,15 +361,99 @@ public class SumActivity extends AppCompatActivity {
     }
 */
 
+    @SuppressLint("LongLogTag")
+    private void getCellSignalStrength() {
+        @SuppressLint("MissingPermission") List<CellInfo> cellInfoList = telephonyManagerToListen.getAllCellInfo();
+        if (cellInfoList == null) {
+            Log.d(TAG, "getAllCellInfo is null");
+            return;
+        }
+        for (int i = 0; i < cellInfoList.size(); i++) {
+            Log.d(TAG, "getAllCellInfo: " + i + "\n" + cellInfoList.get(i) + "\n");
+        }
+        for (CellInfo cellInfo : cellInfoList) {
+            if (!cellInfo.isRegistered())    // Primary cell
+                continue;
+            if (cellInfo instanceof CellInfoWcdma) {
+                CellInfoWcdma wcdmaInfo = (CellInfoWcdma) cellInfo;
+                wcdma_RSSI = wcdmaInfo.getCellSignalStrength().getDbm();
+                wcdma_ASU = wcdmaInfo.getCellSignalStrength().getAsuLevel();
+
+                tx13.setText("RSSI");
+                tx14.setText(wcdma_RSSI + " dBm");
+                tx15.setText("ASU");
+                tx16.setText(wcdma_ASU + " dBm");
+                tx17.setText("EcIo");
+                tx18.setText(getWcdma_EcNo() + " dB");
+                tx19.setText("RSCP");
+                tx20.setText(getWcdm_RSCP() + " dBm");
+
+
+            } else if (cellInfo instanceof CellInfoGsm) {
+                CellInfoGsm gsmInfo = (CellInfoGsm) cellInfo;
+                gsm_Asu = gsmInfo.getCellSignalStrength().getAsuLevel();
+                tx13.setText("RSSI");
+                tx14.setText(gsm_RSSI + " dBm");
+                tx15.setText("BER");
+                tx16.setText(String.valueOf(gsm_Berror));
+                tx17.setText("ASU");
+                tx18.setText(String.valueOf(gsm_Asu + " dBm"));
+                tx19.setText("Rxlev");
+                tx20.setText(gsm_rxlev + " dBm");
+
+            } else if (cellInfo instanceof CellInfoLte) {
+                CellInfoLte lteInfo = (CellInfoLte) cellInfo;
+                Lte_Asu = lteInfo.getCellSignalStrength().getAsuLevel();
+                lte_dbm = lteInfo.getCellSignalStrength().getDbm();
+                Log.d("LTEASU/DBM", "" + Lte_Asu + "\n" + lte_dbm);
+
+                tx13.setText("RSRP");
+                tx14.setText(lte_dbm + " dBm");
+                tx15.setText("RSRQ");
+                tx16.setText(lte_RSRQ + " dB");
+                tx17.setText("SINR");
+                tx18.setText(lte_SINR + " dB");
+                tx19.setText("CQI");
+                tx20.setText(String.valueOf(lte_CQI));
+
+            }
+        }
+
+    }
+
+    private int getWcdma_EcNo() {
+        return wcdma_Ecno = wcdma_RSCP - wcdma_RSSI;
+    }
+
+    private int getWcdma_CID() {
+        return wcdma_CID % 65536;
+    }
+
+    private int getWcdm_RSCP() {
+        return wcdma_RSCP = wcdma_ASU - 95;
+    }
+
+    private int getLteCI() {
+        return lte_CI;
+    }
+
+
+    private int GetEnB() {
+        String cellidHex = DecToHex(getLteCI());
+        String eNBHex = cellidHex.substring(0, cellidHex.length() - 2);
+        return HexToDec(eNBHex);
+    }
+
+    @SuppressLint("LongLogTag")
     @androidx.annotation.RequiresApi(api = Build.VERSION_CODES.P)
     private void getCellIdentity() {
         @SuppressLint("MissingPermission") List<CellInfo> cellInfoList = telephonyManagerToListen.getAllCellInfo();
 
         if (cellInfoList == null) {
-            // Log.e(Tag, "getAllCellInfo is null");
+            Log.d(TAG, "getAllCellInfo is null");
             return;
         }
-        Log.e("getAllCellInfo", "getAllCellInfo size " + cellInfoList.size() + "\n" + cellInfoList);
+        Log.d(TAG, "getAllCellInfo size " + cellInfoList.size() + "\n" + cellInfoList);
         for (CellInfo cellInfo : cellInfoList) {
             if (!cellInfo.isRegistered())
                 continue;
@@ -360,7 +466,7 @@ public class SumActivity extends AppCompatActivity {
                 lte_TAC = lteinfo.getCellIdentity().getTac();
                 lte_Earfcn = lteinfo.getCellIdentity().getEarfcn();
 
-                txsys.setText("LTE");
+                radio = "LTE";
                 tx1.setText("MCC/MNC");
                 tx2.setText(lte_MCC + "/" + lte_MNC);
                 tx3.setText("CID");
@@ -392,7 +498,7 @@ public class SumActivity extends AppCompatActivity {
                 gsm_Arfcn = gsmInfo.getCellIdentity().getArfcn();
                 gsm_Bsic = gsmInfo.getCellIdentity().getBsic();
 
-                txsys.setText("GSM");
+                radio = "GSM";
                 tx1.setText("MCC/MNC");
                 tx2.setText(gsm_MCC + "/" + gsm_MNC);
                 tx3.setText("CID");
@@ -406,7 +512,7 @@ public class SumActivity extends AppCompatActivity {
                 tx11.setText("DL/UL Freq");
                 tx12.setText(getGsmDLfrequency() + "/" + getGsmULfrequency());
                 txband.setText("Band (bandwith)");
-                txbandval.setText(getGsmDLband().get(0) + " (" + getGsmDLband().get(1) + ")");
+                txbandval.setText(String.valueOf(getGsmDLband()));
                 tx21.setVisibility(View.GONE);
                 tx22.setVisibility(View.GONE);
                 txmodul.setVisibility(View.GONE);
@@ -422,7 +528,7 @@ public class SumActivity extends AppCompatActivity {
                 wcdma_PSC = wcdmaInfo.getCellIdentity().getPsc();
                 wcdma_Uarfcn = wcdmaInfo.getCellIdentity().getUarfcn();
 
-                txsys.setText("WCDMA");
+                radio = "UMTS";
                 tx1.setText("MCC/MNC");
                 tx2.setText(wcdma_MCC + "/" + wcdma_MNC);
                 tx3.setText("CID");
@@ -443,37 +549,9 @@ public class SumActivity extends AppCompatActivity {
                 txmodulval.setVisibility(View.GONE);
             }
         }
-    }
 
-    private int getWcdma_EcNo() {
-        return wcdma_Ecno = wcdma_RSCP - wcdma_RSSI;
-    }
+        txsys.setText(radio);
 
-    private int getWcdma_CID() {
-        return wcdma_CID % 65536;
-    }
-
-    private int getWcdm_RSCP() {
-        return wcdma_RSCP = wcdma_ASU - 95;
-    }
-
-    private int getLteCI() {
-        return lte_CI;
-    }
-
-
-    private int GetEnB() {
-        String cellidHex = DecToHex(getLteCI());
-        String eNBHex = cellidHex.substring(0, cellidHex.length() - 2);
-        return HexToDec(eNBHex);
-    }
-
-    private int getSectorId() {
-        String cellidHex = DecToHex(getLteCI());
-        String eNBHex = cellidHex.substring(0, cellidHex.length() - 2);
-        Log.e("SectorID", String.valueOf(getLteCI() - (256 * HexToDec(eNBHex))));
-
-        return getLteCI() - (256 * HexToDec(eNBHex));
     }
 
     // Decimal -> hexadecimal
@@ -486,29 +564,12 @@ public class SumActivity extends AppCompatActivity {
         return Integer.parseInt(hex, 16);
     }
 
-    private static void get_Reflection_Method(Object r) {
-        String TAG = "RadioInfo ";
-        Log.d(TAG, "get_Reflection_Method begin!");
-        Class temp = r.getClass();
-        String className = temp.getName();
-        Log.d(TAG, className);
-        Method[] methods = temp.getDeclaredMethods();
-        for (int i = 0; i < methods.length; i++) {
-            int mod = methods[i].getModifiers();
-            System.out.print(Modifier.toString(mod) + " ");
-            System.out.print(methods[i].getReturnType().getName());
-            System.out.print(" " + methods[i].getName() + "(");
-            Class[] parameterTypes = methods[i].getParameterTypes();
-            for (int j = 0; j < parameterTypes.length; j++) {
-                System.out.print(parameterTypes[j].getName());
+    private int getSectorId() {
+        String cellidHex = DecToHex(getLteCI());
+        String eNBHex = cellidHex.substring(0, cellidHex.length() - 2);
+        Log.d("SectorID", String.valueOf(getLteCI() - (256 * HexToDec(eNBHex))));
 
-                if (parameterTypes.length > j + 1) {
-                    System.out.print(", ");
-                }
-            }
-            System.out.println(")");
-        }
-        Log.d(TAG, "get_Reflection_Method end!");
+        return getLteCI() - (256 * HexToDec(eNBHex));
     }
 
     private Double getGsmULfrequency() {
@@ -527,21 +588,15 @@ public class SumActivity extends AppCompatActivity {
         return getGsmULfrequency() + 45;
     }
 
-    public List<String> getGsmDLband() {
-        List<String> gsmband_bandwith = new ArrayList<>();
+    public String getGsmDLband() {
         String gsm_dLband = null;
-        String gsm_bandwith = null;
         if (gsm_Arfcn >= 0 && gsm_Arfcn <= 124 || gsm_Arfcn >= 975 && gsm_Arfcn <= 1023) {
             gsm_dLband = "GSM-900";
-            gsm_bandwith = "34.6";
 
         } else if (gsm_Arfcn >= 515 && gsm_Arfcn <= 885) {
             gsm_dLband = "GSM-1800";
-            gsm_bandwith = "74.6";
         }
-        gsmband_bandwith.add(gsm_dLband);
-        gsmband_bandwith.add(gsm_bandwith);
-        return gsmband_bandwith;
+        return gsm_dLband;
     }
 
     public String getLTEDLband() {
@@ -581,6 +636,96 @@ public class SumActivity extends AppCompatActivity {
             modulation = "256QAM";
         }
         return modulation;
+    }
+
+
+    public String getTime() {
+        Time myTime = new Time();
+        time = myTime.getTime();
+        return time;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        myBroadcastReceiver = new MyBroadcastReceiver();
+        final IntentFilter intentFilter = new IntentFilter("location_update");
+        LocalBroadcastManager.getInstance(this).registerReceiver(myBroadcastReceiver, intentFilter);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (myBroadcastReceiver != null)
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(myBroadcastReceiver);
+        myBroadcastReceiver = null;
+    }
+
+    @SuppressLint("LongLogTag")
+    public void writeToFile() throws IOException {
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH");
+        String[] data = new String[0];
+        Date date = new Date(System.currentTimeMillis());
+        String filePath = Environment.getExternalStorageDirectory() + "/netPerf/cellmeans/data" + formatter.format(date) + ".csv";
+        File file = new File(filePath);
+
+        CSVWriter writer;
+        if (file.exists() && !file.isDirectory()) {
+            java.io.FileWriter myFileWriter = new java.io.FileWriter(filePath, true);
+            writer = new CSVWriter(myFileWriter, ',', CSVWriter.NO_QUOTE_CHARACTER, CSVWriter.NO_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
+        } else {
+            writer = new CSVWriter(new java.io.FileWriter(filePath), ',', CSVWriter.NO_QUOTE_CHARACTER, CSVWriter.NO_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
+            String[] header = {"Time", "System", "Latitude", "Longitude", "MCC", "MNC", "CELL ID", "PCI", "TAC", "ENB",
+                    "SectorID", "frequency", "Band", "Modulation", "RSRP", "RSRQ", "SINR", "CQI",
+                    "LAC", "PSC", "RSSI", "ASU", "EcN0", "RSCP", "Bit error", "Rx Level", "GSM DL feq", "GSM UL freq"};
+            writer.writeNext(header);
+        }
+        if (radio == "LTE") {
+
+            data = new String[]{getTime(), radio, String.valueOf(Latitude), String.valueOf(Longitude), String.valueOf(lte_MCC), String.valueOf(lte_MNC),
+                    String.valueOf(lte_CI), String.valueOf(lte_PCI), String.valueOf(lte_TAC), String.valueOf(GetEnB()), String.valueOf(getSectorId()),
+                    String.valueOf(lte_Earfcn), getLTEDLband(), getLTEmodulation(), String.valueOf(lte_dbm), String.valueOf(lte_RSRQ),
+                    String.valueOf(lte_SINR), String.valueOf(lte_CQI)};
+
+        } else if (radio == "UMTS") {
+
+            data = new String[]{getTime(), radio, String.valueOf(Latitude), String.valueOf(Longitude), String.valueOf(wcdma_MCC), String.valueOf(wcdma_MNC),
+                    String.valueOf(wcdma_CID), null, null, null, null, String.valueOf(wcdma_Uarfcn), getUMTSDLband(), null, null, null, null, null,
+                    String.valueOf(wcdma_LAC), String.valueOf(wcdma_PSC), String.valueOf(wcdma_RSSI), String.valueOf(wcdma_ASU), String.valueOf(wcdma_Ecno),
+                    String.valueOf(wcdma_RSCP)};
+
+        } else if (radio == "GSM") {
+            data = new String[]{getTime(), radio, String.valueOf(Latitude), String.valueOf(Longitude), String.valueOf(gsm_MCC), String.valueOf(gsm_MNC), String.valueOf(gsm_CID),
+                    null, null, null, null, String.valueOf(gsm_Arfcn), String.valueOf(getGsmDLband()), null, null, null, null, null, String.valueOf(gsm_LAC), null,
+                    String.valueOf(gsm_RSSI), String.valueOf(gsm_Asu), null, null, String.valueOf(gsm_Berror), String.valueOf(gsm_rxlev), String.valueOf(getGsmDLfrequency()),
+                    String.valueOf(getGsmULfrequency())};
+        }
+
+        writer.writeNext(data);
+
+        runOnUiThread(new Runnable() {
+            public void run() {
+                Toast.makeText(getApplicationContext(), "Recording...", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+        writer.close();
+    }
+
+    private class MyBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle b = intent.getExtras();
+            Latitude = b.getDouble("Latitude");
+            Longitude = b.getDouble("Longitude");
+
+            LatLng newLocation = new LatLng(Latitude, Longitude);
+
+            Log.i("LOCATIONFROMACTIVITYSUM", String.valueOf(newLocation));
+
+        }
     }
 
 }

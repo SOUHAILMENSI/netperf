@@ -186,16 +186,13 @@ public class InfoActivity extends AppCompatActivity {
         txradiotype.setText(getRadioType());
         simState.setText(getSimState());
 
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
+        swipeRefreshLayout.setOnRefreshListener(() -> {
 
-                getRadioType();
-                getSimState();
-                simState.setText(getSimState());
-                txradiotype.setText(getRadioType());
-                swipeRefreshLayout.setRefreshing(false);
-            }
+            getRadioType();
+            getSimState();
+            simState.setText(getSimState());
+            txradiotype.setText(getRadioType());
+            swipeRefreshLayout.setRefreshing(false);
         });
 
 
@@ -309,12 +306,8 @@ public class InfoActivity extends AppCompatActivity {
                     player.start();
                     Toast.makeText(getApplicationContext(), "Packet technology changed " + txsystem.getText(), Toast.LENGTH_LONG).show();
 
-
                 }
-
             }
-
-
         };
         telephonyManager.listen(callStateListener1, PhoneStateListener.LISTEN_DATA_CONNECTION_STATE);
 
@@ -529,9 +522,6 @@ public class InfoActivity extends AppCompatActivity {
             if (status == BatteryManager.BATTERY_STATUS_UNKNOWN) {
                 btrystatus_val.setText(R.string.unknown);
             }
-
         }
     };
-
-
 }

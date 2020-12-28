@@ -15,9 +15,11 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-import tn.dev.netperf.R;
-import tn.dev.netperf.Fragments.*;
+import tn.dev.netperf.Fragments.BrowsingFragment;
+import tn.dev.netperf.Fragments.PingFragment;
 import tn.dev.netperf.Fragments.ThroughputFragment;
+import tn.dev.netperf.Fragments.YoutubeFragment;
+import tn.dev.netperf.R;
 
 
 public class TestActivity extends AppCompatActivity {
@@ -94,6 +96,4 @@ public class TestActivity extends AppCompatActivity {
             return arrayList.get(position);
         }
     }
-
-
 }

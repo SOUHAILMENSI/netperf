@@ -45,11 +45,18 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 
+
+    implementation 'com.opencsv:opencsv:4.1'
+
     implementation 'com.github.ganfra:material-spinner:1.1.1'
     implementation 'com.squareup.picasso:picasso:2.71828'
 
-
-    implementation 'com.google.android.gms:play-services-location:17.1.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation 'com.google.android.gms:play-services-places:17.0.0'
+    implementation 'com.google.android.gms:play-services-location:17.1.0'
+    implementation 'com.google.android.gms:play-services-base:17.5.0'
+
 
 }
+
+

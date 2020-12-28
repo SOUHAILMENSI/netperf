@@ -82,15 +82,14 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_margin="7dp"
-            android:layout_weight="0.5"
             android:orientation="horizontal"
+            android:layout_weight="0.7"
             android:padding="2dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/input_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:fontFamily="@font/montserrat_bold"
                 android:hint="Enter Url"
                 android:inputType="textUri"

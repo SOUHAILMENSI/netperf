@@ -79,22 +79,19 @@ public class BrowsingFragment extends Fragment implements View.OnClickListener {
 
         webView.loadUrl("https://www.google.tn/");
 
-        editText.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                    switch (keyCode) {
-                        case KeyEvent.KEYCODE_DPAD_CENTER:
-                        case KeyEvent.KEYCODE_ENTER:
-                            webView.loadUrl("http://"+editText.getText().toString());
-                            return true;
-                        default:
-                            break;
-                    }
+        editText.setOnKeyListener((v, keyCode, event) -> {
+            if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                switch (keyCode) {
+                    case KeyEvent.KEYCODE_DPAD_CENTER:
+                    case KeyEvent.KEYCODE_ENTER:
+                        webView.loadUrl("http://" + editText.getText().toString());
+                        return true;
+                    default:
+                        break;
                 }
-                editText.setText("");
-                return false;
             }
+            editText.setText("");
+            return false;
         });
 
 
@@ -173,25 +170,23 @@ public class BrowsingFragment extends Fragment implements View.OnClickListener {
             Log.e("counter", counter + " AND URL: " + url);
             tv4.setText(String.valueOf(counter));
 
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        URL myUrl = new URL(url);
-                        URLConnection urlConnection = myUrl.openConnection();
-                        urlConnection.connect();
-                        int file_size = urlConnection.getContentLength();
+            new Thread(() -> {
+                try {
+                    URL myUrl = new URL(url);
+                    URLConnection urlConnection = myUrl.openConnection();
+                    urlConnection.connect();
+                    int file_size = urlConnection.getContentLength();
 
-                        size = size + file_size;
-                        Log.e("file_Size", size + " AND " + file_size);
-                        tv2.setText(String.valueOf(size / 10));
+                    size = size + file_size;
+                    Log.e("file_Size", size + " AND " + file_size);
 
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-
             }).start();
+
+            tv2.setText(String.valueOf(size / 10));
         }
 
         @Override

@@ -7,6 +7,7 @@ import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -30,6 +31,8 @@ import java.util.List;
 
 import fr.ganfra.materialspinner.MaterialSpinner;
 import tn.dev.netperf.R;
+
+import static android.content.Context.INPUT_METHOD_SERVICE;
 
 
 public class PingFragment extends Fragment {
@@ -79,6 +82,7 @@ public class PingFragment extends Fragment {
 
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                hideKeybaord(v);
                 executeCommand();
             }
         });
@@ -97,40 +101,6 @@ public class PingFragment extends Fragment {
         return view;
     }
 
-    private static class MySpinnerAdapter extends ArrayAdapter<String> {
-
-        final Typeface font = ResourcesCompat.getFont(getContext(),
-                R.font.montserrat_bold);
-        private MySpinnerAdapter(Context context, int resource, List<String> items) {
-            super(context, resource, items);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            TextView view = (TextView) super.getView(position, convertView, parent);
-            view.setTypeface(font);
-            return view;
-        }
-        @Override
-        public View getDropDownView(int position, View convertView, ViewGroup parent) {
-            TextView view = (TextView) super.getDropDownView(position, convertView, parent);
-            view.setTypeface(font);
-            return view;
-        }
-    }
-
-    private void initItems() {
-        listItems.add("32");
-        listItems.add("64");
-        listItems.add("128");
-    }
-
-    Calendar calendar = Calendar.getInstance();
-    SimpleDateFormat dmformat = new SimpleDateFormat("yyyy/dd/MM HH:mm:ss");
-    String strDate = dmformat.format(calendar.getTime());
-    StringBuilder log = new StringBuilder();
-    String line;
-
     private boolean executeCommand() {
 
         String size = spinner.getSelectedItem().toString();
@@ -146,7 +116,7 @@ public class PingFragment extends Fragment {
             Toast.makeText(mContext, "COUNT SHOULDN'T BE NULL", Toast.LENGTH_SHORT).show();
         } else {
             try {
-                log.append(strDate + "\n" + ip +" ("+size+")"+ "\n");
+                log.append(strDate + "\n" + ip + " (" + size + ")" + "\n");
                 String command = "/system/bin/ping -c" + " " + count + " " + "-s" + " " + size + " " + ip;
 
                 Runtime runtime = Runtime.getRuntime();
@@ -187,6 +157,23 @@ public class PingFragment extends Fragment {
         return false;
     }
 
+    private void initItems() {
+        listItems.add("32");
+        listItems.add("64");
+        listItems.add("128");
+    }
+
+    Calendar calendar = Calendar.getInstance();
+    SimpleDateFormat dmformat = new SimpleDateFormat("yyyy/dd/MM HH:mm:ss");
+    String strDate = dmformat.format(calendar.getTime());
+    StringBuilder log = new StringBuilder();
+    String line;
+
+    private void hideKeybaord(View v) {
+        InputMethodManager inputMethodManager = (InputMethodManager) mContext.getSystemService(INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
+    }
+
 
     public void generateNoteOnSD(Context context, String sFileName, String sBody) {
 
@@ -204,6 +191,30 @@ public class PingFragment extends Fragment {
             Toast.makeText(context, "Successfully saved", Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private static class MySpinnerAdapter extends ArrayAdapter<String> {
+
+        final Typeface font = ResourcesCompat.getFont(getContext(),
+                R.font.montserrat_bold);
+
+        private MySpinnerAdapter(Context context, int resource, List<String> items) {
+            super(context, resource, items);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            TextView view = (TextView) super.getView(position, convertView, parent);
+            view.setTypeface(font);
+            return view;
+        }
+
+        @Override
+        public View getDropDownView(int position, View convertView, ViewGroup parent) {
+            TextView view = (TextView) super.getDropDownView(position, convertView, parent);
+            view.setTypeface(font);
+            return view;
         }
     }
 }

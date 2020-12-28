@@ -15,7 +15,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
@@ -28,12 +27,13 @@ import tn.dev.netperf.Utils.DownloadTask;
 
 public class ThroughputFragment extends Fragment {
 
-    EditText edit_Tv;
-    Button download, save;
-    TextView tv;
-    int Permission_All = 1;
-    Context mContext;
+    private EditText edit_Tv;
+    private Button download, save;
+    private TextView tv;
+    private int Permission_All = 1;
+    private Context mContext;
 
+    private String time;
 
 
     @Override
@@ -53,45 +53,35 @@ public class ThroughputFragment extends Fragment {
             ActivityCompat.requestPermissions(getActivity(), Permissions, Permission_All);
         }
 
-        download.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onClick(View v) {
-                if (connected()) {
-                        new DownloadTask(mContext, download, edit_Tv.getText().toString(), tv);
+        download.setOnClickListener(v -> {
+            if (connected()) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    new DownloadTask(mContext, download, edit_Tv.getText().toString(), tv);
                 }
             }
         });
 
-        save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        save.setOnClickListener(v -> {
 
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'_'HH:mm:ss");
-                Date date = new Date(System.currentTimeMillis());
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'_'HH:mm:ss");
+            Date date = new Date(System.currentTimeMillis());
 
-                String textToSaveString = tv.getText().toString();
-                DownloadTask downloadTask = new DownloadTask();
-                downloadTask.generateNoteOnSD(mContext, "HTTP_DL_Throughput" + formatter.format(date) + ".txt", textToSaveString);
-                Toast.makeText(mContext, "Logfile successfully saved", Toast.LENGTH_SHORT).show();
+            String textToSaveString = tv.getText().toString();
+            DownloadTask downloadTask = new DownloadTask();
+            downloadTask.generateNoteOnSD(mContext, "HTTP_DL_Throughput" + formatter.format(date) + ".txt", textToSaveString);
+            Toast.makeText(mContext, "Logfile successfully saved", Toast.LENGTH_SHORT).show();
 
 
-            }
         });
 
 
-        tv.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'_'HH:mm:ss");
-                Date date = new Date(System.currentTimeMillis());
+        tv.setOnLongClickListener(v -> {
 
-                String textToSaveString = tv.getText().toString();
-                DownloadTask downloadTask = new DownloadTask();
-                downloadTask.generateNoteOnSD(mContext, "HTTP_DL_Throughput" + formatter.format(date) + ".txt", textToSaveString);
-                Toast.makeText(mContext, "Logfile successfully saved", Toast.LENGTH_SHORT).show();
-                return true;
-            }
+            String textToSaveString = tv.getText().toString();
+            DownloadTask downloadTask = new DownloadTask();
+            downloadTask.generateNoteOnSD(mContext, "HTTP_DL_Throughput" + time + ".txt", textToSaveString);
+            Toast.makeText(mContext, "Logfile successfully saved", Toast.LENGTH_SHORT).show();
+            return true;
         });
 
 
@@ -122,4 +112,5 @@ public class ThroughputFragment extends Fragment {
         }
         return connected;
     }
+
 }
