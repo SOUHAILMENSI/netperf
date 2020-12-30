@@ -2,7 +2,6 @@
 # Cellular network performance
 ===============================================	
 
-
 - Functionalities: 
 
 -Phone, battery and SIM information, 
