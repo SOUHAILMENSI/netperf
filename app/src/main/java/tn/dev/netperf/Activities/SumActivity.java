@@ -184,6 +184,7 @@ public class SumActivity extends AppCompatActivity {
         public void onSignalStrengthsChanged(SignalStrength signalStrength) {
             super.onSignalStrengthsChanged(signalStrength);
             get_Reflection_Method(signalStrength);
+
             try {
                /* Method getLteRsrp = signalStrength.getClass().getDeclaredMethod("getLteRsrp");
                 getLteRsrp.setAccessible(true);
