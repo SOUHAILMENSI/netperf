@@ -55,7 +55,7 @@ public class SumActivity extends AppCompatActivity {
     private TelephonyManager telephonyManagerToListen = null;
     private Button btn, btn1;
     private Timer timer;
-    private String radio = null;
+    private String radio = null,imei,imsi;
     private String time;
     private MyBroadcastReceiver myBroadcastReceiver;
 
@@ -96,6 +96,86 @@ public class SumActivity extends AppCompatActivity {
     private int wcdma_RSCP = Integer.MAX_VALUE;
     private int wcdma_ASU = Integer.MAX_VALUE;
     private int wcdma_Ecno = Integer.MAX_VALUE;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_sum);
+
+        txsys = findViewById(R.id.system);
+        tx1 = findViewById(R.id.txradio1);
+        tx2 = findViewById(R.id.txradio2);
+        tx3 = findViewById(R.id.txradio3);
+        tx4 = findViewById(R.id.txradio4);
+        tx5 = findViewById(R.id.txradio5);
+        tx6 = findViewById(R.id.txradio6);
+        tx7 = findViewById(R.id.txradio7);
+        tx8 = findViewById(R.id.txradio8);
+        tx9 = findViewById(R.id.txradio9);
+        tx10 = findViewById(R.id.txradio10);
+        tx11 = findViewById(R.id.txradio11);
+        tx12 = findViewById(R.id.txradio12);
+        tx13 = findViewById(R.id.txradio13);
+        tx14 = findViewById(R.id.txradio14);
+        tx15 = findViewById(R.id.txradio15);
+        tx16 = findViewById(R.id.txradio16);
+        tx17 = findViewById(R.id.txradio17);
+        tx18 = findViewById(R.id.txradio18);
+        tx19 = findViewById(R.id.txradio19);
+        tx20 = findViewById(R.id.txradio20);
+        tx21 = findViewById(R.id.txradio21);
+        tx22 = findViewById(R.id.txradio22);
+        txband = findViewById(R.id.txradioband);
+        txbandval = findViewById(R.id.txradiobandval);
+        txmodul = findViewById(R.id.txmodulation);
+        txmodulval = findViewById(R.id.txmodulval);
+
+
+        btn = findViewById(R.id.btnStart);
+        btn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                timer = new Timer();
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        if (radio != null) {
+                            try {
+                                btn.setText("REC");
+                                writeToFile();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                }, 5, 2000);
+            }
+        });
+
+
+        btn1 = findViewById(R.id.btnStop);
+        btn1.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                timer.cancel();
+                Toast.makeText(SumActivity.this, "Recording Stopped", Toast.LENGTH_SHORT).show();
+                btn.setText("Start");
+            }
+        });
+
+        telephonyManagerToListen = (TelephonyManager) this.getSystemService
+                (this.TELEPHONY_SERVICE);
+        telephonyManagerToListen.listen(mPhoneStateListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS | PhoneStateListener.LISTEN_CELL_INFO | PhoneStateListener.LISTEN_CELL_LOCATION);
+
+
+        imsi = telephonyManagerToListen.getSubscriberId();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            imei = telephonyManagerToListen.getImei();
+        }
+
+
+    }
+
     private PhoneStateListener mPhoneStateListener = new PhoneStateListener() {
 
 
@@ -222,84 +302,6 @@ public class SumActivity extends AppCompatActivity {
         Log.d(TAG, "get_Reflection_Method end!");
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sum);
-
-        txsys = findViewById(R.id.system);
-        tx1 = findViewById(R.id.txradio1);
-        tx2 = findViewById(R.id.txradio2);
-        tx3 = findViewById(R.id.txradio3);
-        tx4 = findViewById(R.id.txradio4);
-        tx5 = findViewById(R.id.txradio5);
-        tx6 = findViewById(R.id.txradio6);
-        tx7 = findViewById(R.id.txradio7);
-        tx8 = findViewById(R.id.txradio8);
-        tx9 = findViewById(R.id.txradio9);
-        tx10 = findViewById(R.id.txradio10);
-        tx11 = findViewById(R.id.txradio11);
-        tx12 = findViewById(R.id.txradio12);
-        tx13 = findViewById(R.id.txradio13);
-        tx14 = findViewById(R.id.txradio14);
-        tx15 = findViewById(R.id.txradio15);
-        tx16 = findViewById(R.id.txradio16);
-        tx17 = findViewById(R.id.txradio17);
-        tx18 = findViewById(R.id.txradio18);
-        tx19 = findViewById(R.id.txradio19);
-        tx20 = findViewById(R.id.txradio20);
-        tx21 = findViewById(R.id.txradio21);
-        tx22 = findViewById(R.id.txradio22);
-        txband = findViewById(R.id.txradioband);
-        txbandval = findViewById(R.id.txradiobandval);
-        txmodul = findViewById(R.id.txmodulation);
-        txmodulval = findViewById(R.id.txmodulval);
-
-
-        btn = findViewById(R.id.btnStart);
-        btn.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                timer = new Timer();
-                timer.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        if (radio != "") {
-                            try {
-                                btn.setText("REC");
-                                writeToFile();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-
-                }, 5, 2000);
-            }
-        });
-
-
-        btn1 = findViewById(R.id.btnStop);
-        btn1.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                timer.cancel();
-                Toast.makeText(SumActivity.this, "Recording Stopped", Toast.LENGTH_SHORT).show();
-                btn.setText("Start");
-            }
-        });
-
-
-        // tableLayout = findViewById(R.id.scheduleTable);
-
-
-        /*******************************OnCreate ends here *******************************************/
-
-        // context = this;
-        telephonyManagerToListen = (TelephonyManager) this.getSystemService
-                (this.TELEPHONY_SERVICE);
-        telephonyManagerToListen.listen(mPhoneStateListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS | PhoneStateListener.LISTEN_CELL_INFO | PhoneStateListener.LISTEN_CELL_LOCATION);
-
-    }
-
 /*
     @RequiresApi(api = Build.VERSION_CODES.Q)
     private void getNeighbourCell() {
@@ -314,27 +316,21 @@ public class SumActivity extends AppCompatActivity {
                     {
                         CellSignalStrengthGsm gsm = ((CellInfoGsm) info).getCellSignalStrength();
                         CellIdentityGsm identityGsm = ((CellInfoGsm) info).getCellIdentity();
-
                         String registred = String.valueOf(info.isRegistered());
                         String arfcn = String.valueOf(identityGsm.getArfcn());
                         String rxlev = String.valueOf(gsm.getDbm());
                         String asu = String.valueOf(gsm.getAsuLevel());
                         String bsic = String.valueOf(identityGsm.getBsic());
-
-
                         colText.add(registred);
                         colText.add(arfcn);
                         colText.add(rxlev);
                         colText.add(asu);
                         colText.add(bsic);
-
-
                         //call whatever you want from gsm / identitydGsm
                     } else if (info instanceof CellInfoLte)  //if LTE connection
                     {
                         CellSignalStrengthLte lte = ((CellInfoLte) info).getCellSignalStrength();
                         CellIdentityLte identityLte = ((CellInfoLte) info).getCellIdentity();
-
                         list += "Site_" + i + "\r\n";
                         list += "Registered: " + info.isRegistered() + "\r\n";
                         list += "RSRP: " + lte.getRsrp() + "\r\n";
@@ -349,10 +345,8 @@ public class SumActivity extends AppCompatActivity {
                         list += "Site_" + i + "\r\n";
                         list += "Registered: " + info.isRegistered() + "\r\n";
                         //call whatever you want from wcdmaS / wcdmaid
-
                     }
                 }
-
             } catch (Exception ex) {
                 Log.e("neighboringerror2: ", ex.getMessage());
             }
@@ -554,12 +548,10 @@ public class SumActivity extends AppCompatActivity {
 
     }
 
-    // Decimal -> hexadecimal
     private String DecToHex(int dec) {
         return String.format("%x", dec);
     }
 
-    // hex -> decimal
     private int HexToDec(String hex) {
         return Integer.parseInt(hex, 16);
     }
@@ -667,7 +659,7 @@ public class SumActivity extends AppCompatActivity {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH");
         String[] data = new String[0];
         Date date = new Date(System.currentTimeMillis());
-        String filePath = Environment.getExternalStorageDirectory() + "/netPerf/cellmeans/data" + formatter.format(date) + ".csv";
+        String filePath = Environment.getExternalStorageDirectory() + "/netPerf/cellmeans/"+imei+"_"+ formatter.format(date) + ".csv";
         File file = new File(filePath);
 
         CSVWriter writer;
@@ -676,27 +668,27 @@ public class SumActivity extends AppCompatActivity {
             writer = new CSVWriter(myFileWriter, ',', CSVWriter.NO_QUOTE_CHARACTER, CSVWriter.NO_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
         } else {
             writer = new CSVWriter(new java.io.FileWriter(filePath), ',', CSVWriter.NO_QUOTE_CHARACTER, CSVWriter.NO_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
-            String[] header = {"Time", "System", "Latitude", "Longitude", "MCC", "MNC", "CELL ID", "PCI", "TAC", "ENB",
+            String[] header = {"Time","IMEI","IMSI", "System", "Latitude", "Longitude", "MCC", "MNC", "CELL ID", "PCI", "TAC", "ENB",
                     "SectorID", "frequency", "Band", "Modulation", "RSRP", "RSRQ", "SINR", "CQI",
                     "LAC", "PSC", "RSSI", "ASU", "EcN0", "RSCP", "Bit error", "Rx Level", "GSM DL feq", "GSM UL freq"};
             writer.writeNext(header);
         }
         if (radio == "LTE") {
 
-            data = new String[]{getTime(), radio, String.valueOf(Latitude), String.valueOf(Longitude), String.valueOf(lte_MCC), String.valueOf(lte_MNC),
+            data = new String[]{getTime(),imei,imsi, radio, String.valueOf(Latitude), String.valueOf(Longitude), String.valueOf(lte_MCC), String.valueOf(lte_MNC),
                     String.valueOf(lte_CI), String.valueOf(lte_PCI), String.valueOf(lte_TAC), String.valueOf(GetEnB()), String.valueOf(getSectorId()),
                     String.valueOf(lte_Earfcn), getLTEDLband(), getLTEmodulation(), String.valueOf(lte_dbm), String.valueOf(lte_RSRQ),
                     String.valueOf(lte_SINR), String.valueOf(lte_CQI)};
 
         } else if (radio == "UMTS") {
 
-            data = new String[]{getTime(), radio, String.valueOf(Latitude), String.valueOf(Longitude), String.valueOf(wcdma_MCC), String.valueOf(wcdma_MNC),
+            data = new String[]{getTime(),imei,imsi, radio, String.valueOf(Latitude), String.valueOf(Longitude), String.valueOf(wcdma_MCC), String.valueOf(wcdma_MNC),
                     String.valueOf(wcdma_CID), null, null, null, null, String.valueOf(wcdma_Uarfcn), getUMTSDLband(), null, null, null, null, null,
                     String.valueOf(wcdma_LAC), String.valueOf(wcdma_PSC), String.valueOf(wcdma_RSSI), String.valueOf(wcdma_ASU), String.valueOf(wcdma_Ecno),
                     String.valueOf(wcdma_RSCP)};
 
         } else if (radio == "GSM") {
-            data = new String[]{getTime(), radio, String.valueOf(Latitude), String.valueOf(Longitude), String.valueOf(gsm_MCC), String.valueOf(gsm_MNC), String.valueOf(gsm_CID),
+            data = new String[]{getTime(),imei,imsi, radio, String.valueOf(Latitude), String.valueOf(Longitude), String.valueOf(gsm_MCC), String.valueOf(gsm_MNC), String.valueOf(gsm_CID),
                     null, null, null, null, String.valueOf(gsm_Arfcn), String.valueOf(getGsmDLband()), null, null, null, null, null, String.valueOf(gsm_LAC), null,
                     String.valueOf(gsm_RSSI), String.valueOf(gsm_Asu), null, null, String.valueOf(gsm_Berror), String.valueOf(gsm_rxlev), String.valueOf(getGsmDLfrequency()),
                     String.valueOf(getGsmULfrequency())};
