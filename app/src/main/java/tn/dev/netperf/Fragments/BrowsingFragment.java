@@ -266,7 +266,7 @@ public class BrowsingFragment extends Fragment implements View.OnClickListener {
 
 
         writer.writeNext(data);
-        Toast.makeText(getContext(), "data saved..", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), "Data saved", Toast.LENGTH_SHORT).show();
         writer.close();
     }
 

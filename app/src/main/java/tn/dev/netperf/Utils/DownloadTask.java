@@ -257,7 +257,7 @@ public class DownloadTask {
 
 
         writer.writeNext(data);
-        Toast.makeText(context, "data saved..", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "Data saved", Toast.LENGTH_SHORT).show();
         writer.close();
     }
 }
