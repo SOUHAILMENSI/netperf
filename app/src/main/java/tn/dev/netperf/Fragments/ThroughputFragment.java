@@ -47,7 +47,7 @@ public class ThroughputFragment extends Fragment {
         save = view.findViewById(R.id.save);
 
         mContext = getActivity().getApplicationContext();
-        String[] Permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET,
+        String[] Permissions = {Manifest.permission.READ_PHONE_STATE,Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET,
                 Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.ACCESS_NETWORK_STATE,};
         if (!hasPermissions(mContext, Permissions)) {
             ActivityCompat.requestPermissions(getActivity(), Permissions, Permission_All);
@@ -73,17 +73,6 @@ public class ThroughputFragment extends Fragment {
 
 
         });
-
-
-        tv.setOnLongClickListener(v -> {
-
-            String textToSaveString = tv.getText().toString();
-            DownloadTask downloadTask = new DownloadTask();
-            downloadTask.generateNoteOnSD(mContext, "HTTP_DL_Throughput" + time + ".txt", textToSaveString);
-            Toast.makeText(mContext, "Logfile successfully saved", Toast.LENGTH_SHORT).show();
-            return true;
-        });
-
 
         return view;
     }

@@ -1,8 +1,13 @@
 package tn.dev.netperf.Fragments;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.media.AudioManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +15,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -18,11 +25,19 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragmentX;
+import com.opencsv.CSVWriter;
 import com.squareup.picasso.LruCache;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import tn.dev.netperf.R;
 import tn.dev.netperf.Utils.Config;
+import tn.dev.netperf.Utils.Time;
 
 public class YoutubeFragment extends Fragment implements View.OnClickListener {
 
@@ -39,11 +54,13 @@ public class YoutubeFragment extends Fragment implements View.OnClickListener {
     int buffCount;
     private String videoId = "";
 
-
     private AudioManager audioManager;
+    private String time, imei, imsi;
+    int Permission_All = 1;
+    private TelephonyManager telephonyManager;
 
 
-
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -56,6 +73,16 @@ public class YoutubeFragment extends Fragment implements View.OnClickListener {
         tv2 = myView.findViewById(R.id.tv_load_delay);
         tv3 = myView.findViewById(R.id.tv_start_delay);
         tv4 = myView.findViewById(R.id.tv_buff_count);
+
+        telephonyManager = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+
+        String[] Permissions = {Manifest.permission.READ_PHONE_STATE};
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), Permissions, Permission_All);
+        }
+        imsi = telephonyManager.getSubscriberId();
+        imei = telephonyManager.getImei();
+
 
         CueVideo();
         mContext = getActivity().getApplicationContext();
@@ -94,20 +121,28 @@ public class YoutubeFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onAdStarted() {
                         audioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
-                        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,0,0);
+                        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
                     }
 
                     @Override
                     public void onVideoStarted() {
                         _sV_Time_ = System.currentTimeMillis();
                         Log.e(TAG, "Started after : " + (_sV_Time_ - _initialTime_) + " ms");
-                        tv3.setText(String.valueOf(_sV_Time_ - _initialTime_));}
+                        tv3.setText(String.valueOf(_sV_Time_ - _initialTime_));
+                    }
 
                     @Override
                     public void onVideoEnded() {
                         Log.e(TAG, "details \n : " + (_lV_Time_ - _initialTime_) + " ms \n"
                                 + (_sV_Time_ - _initialTime_) + " ms \n"
-                                + buffCount + " times");}
+                                + buffCount + " times");
+
+                        try {
+                            writeToFile();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
 
                     @Override
                     public void onError(YouTubePlayer.ErrorReason errorReason) {
@@ -238,6 +273,12 @@ public class YoutubeFragment extends Fragment implements View.OnClickListener {
                         Log.e(TAG, "details \n : " + (_lV_Time_ - _initialTime_) + " ms \n"
                                 + (_sV_Time_ - _initialTime_) + " ms \n"
                                 + buffCount + " times");
+
+                        try {
+                            writeToFile();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
 
                     @Override
@@ -350,5 +391,43 @@ public class YoutubeFragment extends Fragment implements View.OnClickListener {
 
 
     }
+
+
+    public String getTime() {
+        Time myTime = new Time();
+        time = myTime.getTime();
+        return time;
+    }
+
+    public void writeToFile() throws IOException {
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH");
+        String[] data;
+        Date date = new Date(System.currentTimeMillis());
+        String filePath = Environment.getExternalStorageDirectory() + "/netPerf/perfmeans/" + imei + "_" + formatter.format(date) + ".csv";
+        File file = new File(filePath);
+
+        CSVWriter writer;
+        if (file.exists() && !file.isDirectory()) {
+            FileWriter myFileWriter = new FileWriter(filePath, true);
+            writer = new CSVWriter(myFileWriter, ';', CSVWriter.NO_QUOTE_CHARACTER, CSVWriter.NO_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
+        } else {
+            writer = new CSVWriter(new FileWriter(filePath), ';', CSVWriter.NO_QUOTE_CHARACTER, CSVWriter.NO_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
+            String[] header = {"Time", "IMEI", "IMSI", "Service", "Host", "URL", "Content size", "Page load time", "Redirection", "Video ID",
+                    "Time to 1st picture", "Video load delay", "Video start delay", "Buffering count", "Protocol", "Port", "Request code", "Status", "Server time to connect",
+                    "File Size", "Download time", "Avg throughput"};
+            writer.writeNext(header);
+        }
+
+
+        data = new String[]{getTime(), imei, imsi, "Streaming", null, null, null, null, null, videoId, String.valueOf(t_finish_first_pic - t_start_first_pic),
+                String.valueOf(_lV_Time_ - _initialTime_), String.valueOf(_sV_Time_ - _initialTime_), String.valueOf(buffCount)};
+
+
+        writer.writeNext(data);
+        Toast.makeText(getContext(), "data saved..", Toast.LENGTH_SHORT).show();
+        writer.close();
+    }
+
 
 }

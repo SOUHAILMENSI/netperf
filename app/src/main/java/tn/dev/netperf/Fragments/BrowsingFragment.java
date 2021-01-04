@@ -1,33 +1,44 @@
 package tn.dev.netperf.Fragments;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.SslErrorHandler;
-import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.textfield.TextInputEditText;
+import com.opencsv.CSVWriter;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import tn.dev.netperf.R;
+import tn.dev.netperf.Utils.Time;
 
 
 public class BrowsingFragment extends Fragment implements View.OnClickListener {
@@ -43,7 +54,12 @@ public class BrowsingFragment extends Fragment implements View.OnClickListener {
     int counter;
     int size;
 
+    private String time;
+    int Permission_All = 1;
+    private TelephonyManager telephonyManager;
+    private String imei, imsi, website;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -71,13 +87,20 @@ public class BrowsingFragment extends Fragment implements View.OnClickListener {
         tv4 = myView.findViewById(R.id.tv_Red);
         tv5 = myView.findViewById(R.id.tv_website);
 
+        telephonyManager = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+
+        String[] Permissions = {Manifest.permission.READ_PHONE_STATE};
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), Permissions, Permission_All);
+        }
+        imsi = telephonyManager.getSubscriberId();
+        imei = telephonyManager.getImei();
+
         webView.setWebViewClient(new MyBrowser());
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setLoadsImagesAutomatically(true);
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setLoadWithOverviewMode(true);
-
-        webView.loadUrl("https://www.google.tn/");
 
         editText.setOnKeyListener((v, keyCode, event) -> {
             if (event.getAction() == KeyEvent.ACTION_DOWN) {
@@ -92,17 +115,6 @@ public class BrowsingFragment extends Fragment implements View.OnClickListener {
             }
             editText.setText("");
             return false;
-        });
-
-
-        webView.setWebChromeClient(new WebChromeClient() {
-            public void onProgressChanged(WebView view, int newProgress) {
-
-                tv3.setText(newProgress + "%");
-                if (newProgress == 100) {
-                    tv3.setText("100%");
-                }
-            }
         });
 
         return myView;
@@ -125,6 +137,7 @@ public class BrowsingFragment extends Fragment implements View.OnClickListener {
             loadingFinished = false;
             webView.loadUrl(request.getUrl().toString());
             return true;
+
         }
 
 
@@ -133,11 +146,9 @@ public class BrowsingFragment extends Fragment implements View.OnClickListener {
                 WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
 
-            if (view.getUrl().startsWith("https://m.facebook.com/")) {
-                tv5.setText("https://m.facebook.com/");
-            } else {
-                tv5.setText(view.getUrl());
-            }
+
+            website = webView.getUrl();
+            tv5.setText(website);
 
             loadingFinished = false;
             a = (new Date()).getTime();
@@ -151,15 +162,23 @@ public class BrowsingFragment extends Fragment implements View.OnClickListener {
 
                 loadingFinished = true;
                 b = (new Date()).getTime();
+                onLoadResource(view, url);
                 tv1.setText(String.valueOf(b - a));
-
+                tv3.setText(view.getProgress() + "%");
 
             } else {
                 redirect = false;
             }
+            if (view.getProgress() == 100) {
+                try {
+                    writeToFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
 
-            webView.clearHistory();
-            webView.clearCache(true);
+            view.clearCache(true);
+            view.clearFormData();
         }
 
         @Override
@@ -176,10 +195,8 @@ public class BrowsingFragment extends Fragment implements View.OnClickListener {
                     URLConnection urlConnection = myUrl.openConnection();
                     urlConnection.connect();
                     int file_size = urlConnection.getContentLength();
-
                     size = size + file_size;
                     Log.e("file_Size", size + " AND " + file_size);
-
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -187,6 +204,7 @@ public class BrowsingFragment extends Fragment implements View.OnClickListener {
             }).start();
 
             tv2.setText(String.valueOf(size / 10));
+
         }
 
         @Override
@@ -214,4 +232,43 @@ public class BrowsingFragment extends Fragment implements View.OnClickListener {
                 break;
         }
     }
+
+
+    public String getTime() {
+        Time myTime = new Time();
+        time = myTime.getTime();
+        return time;
+    }
+
+
+    public void writeToFile() throws IOException {
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH");
+        String[] data;
+        Date date = new Date(System.currentTimeMillis());
+        String filePath = Environment.getExternalStorageDirectory() + "/netPerf/perfmeans/" + imei + "_" + formatter.format(date) + ".csv";
+        File file = new File(filePath);
+
+        CSVWriter writer;
+        if (file.exists() && !file.isDirectory()) {
+            FileWriter myFileWriter = new FileWriter(filePath, true);
+            writer = new CSVWriter(myFileWriter, ';', CSVWriter.NO_QUOTE_CHARACTER, CSVWriter.NO_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
+        } else {
+            writer = new CSVWriter(new FileWriter(filePath), ';', CSVWriter.NO_QUOTE_CHARACTER, CSVWriter.NO_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
+            String[] header = {"Time", "IMEI", "IMSI", "Service", "Host", "URL", "Content size", "Page load time", "Redirection", "Video ID",
+                    "Time to 1st picture", "Video load delay", "Video start delay", "Buffering count", "Protocol", "Port", "Request code", "Status", "Server time to connect",
+                    "File Size", "Download time", "Avg throughput"};
+            writer.writeNext(header);
+        }
+
+
+        data = new String[]{getTime(), imei, imsi, "HTTP browsing", webView.getTitle(), website, String.valueOf(size), String.valueOf(b - a), String.valueOf(counter)};
+
+
+        writer.writeNext(data);
+        Toast.makeText(getContext(), "data saved..", Toast.LENGTH_SHORT).show();
+        writer.close();
+    }
+
+
 }
