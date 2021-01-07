@@ -246,7 +246,7 @@ public class BrowsingFragment extends Fragment implements View.OnClickListener {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH");
         String[] data;
         Date date = new Date(System.currentTimeMillis());
-        String filePath = Environment.getExternalStorageDirectory() + "/netPerf/perfmeans/" + imei + "_" + formatter.format(date) + ".csv";
+        String filePath = Environment.getExternalStorageDirectory() + "/netPerf/Results/PerfMeans_" + imei + "_" + formatter.format(date) + ".csv";
         File file = new File(filePath);
 
         CSVWriter writer;

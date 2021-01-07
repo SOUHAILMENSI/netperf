@@ -670,7 +670,7 @@ public class SumActivity extends AppCompatActivity {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH");
         String[] data = new String[0];
         Date date = new Date(System.currentTimeMillis());
-        String filePath = Environment.getExternalStorageDirectory() + "/netPerf/cellmeans/" + imei + "_" + formatter.format(date) + ".csv";
+        String filePath = Environment.getExternalStorageDirectory() + "/netPerf/Results/CellMeans_" + imei + "_" + formatter.format(date) + ".csv";
         File file = new File(filePath);
 
         CSVWriter writer;
@@ -726,7 +726,7 @@ public class SumActivity extends AppCompatActivity {
 
             LatLng newLocation = new LatLng(Latitude, Longitude);
 
-            Log.i("LOCATIONFROMACTIVITYSUM", String.valueOf(newLocation));
+            Log.i("LOC_FROM_ACTIVITY_SUM", String.valueOf(newLocation));
 
         }
     }

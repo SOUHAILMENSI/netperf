@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(i);
                 break;
             case R.id.c3:
-                i = new Intent(this, StatActivity.class);
+                i = new Intent(this, FtpActivity.class);
                 startActivity(i);
                 break;
             case R.id.c4:
@@ -131,22 +131,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Log.i("DirectoryMaker", "making directories failed");
         }
 
-        File f1 = new File(Environment.getExternalStorageDirectory() + "/" + folder_main, "cellmeans");
+        File f1 = new File(Environment.getExternalStorageDirectory() + "/" + folder_main, "Results");
         if (!f1.exists()) {
             f1.mkdirs();
             Log.i("DirectoryMaker", String.valueOf(f1));
 
         } else {
             Log.i("DirectoryMaker", "making directories " + f1 + " failed");
-        }
-
-        File f2 = new File(Environment.getExternalStorageDirectory() + "/" + folder_main, "perfmeans");
-        if (!f2.exists()) {
-            f2.mkdirs();
-            Log.i("DirectoryMaker", String.valueOf(f2));
-
-        } else {
-            Log.i("DirectoryMaker", "failed to make " + f2 + "directory");
         }
     }
 

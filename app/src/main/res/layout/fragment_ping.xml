@@ -66,10 +66,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:layout_weight="1"
-                android:backgroundTint="@color/colorPrimary"
-                android:fontFamily="@font/montserrat_bold"
                 android:text="Run"
                 android:textSize="16dp"
+                android:backgroundTint="@color/colorPrimary"
+                android:fontFamily="@font/montserrat_bold"
                 app:cornerRadius="10dp" />
 
             <Button
