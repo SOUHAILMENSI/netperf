@@ -6,13 +6,17 @@
 
 -Phone, battery and SIM information, 
 
--Radio parameters (LTE,WCMA and GSM)  
+-Radio parameters (LTE,WCMA and GSM),  
 
--Testing (Browsing, Streaming and Throughput) 
+-Testing (Browsing, Streaming and Throughput), 
 
--Display current location on Map  
+-Display current location on Map,  
 
--switching between network modes (Auto, 2G/3G/,2G)  
+-switching between network modes (Auto, 2G/3G/,2G),
+
+- Recording cell and network measurement files,
+
+-Upload measurement files to FTP.
 
 
 
