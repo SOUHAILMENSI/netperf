@@ -14,7 +14,7 @@
 
 -switching between network modes (Auto, 2G/3G/,2G),
 
-- Recording cell and network measurement files,
+-Recording cell and network measurement files,
 
 -Upload measurement files to FTP.
 
