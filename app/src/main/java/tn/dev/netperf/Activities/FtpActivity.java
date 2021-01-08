@@ -74,7 +74,7 @@ public class FtpActivity extends AppCompatActivity implements View.OnClickListen
             case R.id.button:
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                     new UploadTask(etUrl.getText().toString(), etusername.getText().toString(), etpwd.getText().toString(),
-                            Integer.parseInt(etport.getText().toString()), etRemFolder.getText().toString());
+                            Integer.parseInt(etport.getText().toString()), etRemFolder.getText().toString(),FtpActivity.this);
                 }
                 break;
 
