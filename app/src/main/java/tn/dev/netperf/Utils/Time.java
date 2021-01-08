@@ -8,7 +8,7 @@ public class Time {
 
     public String getTime() {
         Calendar calendar = new GregorianCalendar();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         dateFormat.setCalendar(calendar);
         return dateFormat.format(calendar.getTime());
     }

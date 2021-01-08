@@ -38,7 +38,15 @@ public class DownloadTask {
     private static final String TAG = "Download Task";
     private Context context;
     private Button buttonText;
-    private String downloadUrl = "", downloadFileName = "", time, imei, imsi, host, protocol, requestmessage, downloadSpeed;
+    private String downloadUrl = "";
+    private String downloadFileName = "";
+    private String time;
+    private String imei;
+    private String imsi;
+    private String host;
+    private String protocol;
+    private String requestmessage;
+    private double downloadSpeed;
     private int port, requestCode;
     private long serverConnectionTime, fileSize, downloadtime;
     private TextView text_;
@@ -153,7 +161,7 @@ public class DownloadTask {
                     Log.d("DownloadManager", "download ended: " + ((endTime - startTime) / 1000) + " secs");
                     double rate = (((size1 / 1000) / ((endTime - startTime) / 1000)) * 8);
                     rate = Math.round(rate * 100.0) / 100.0;
-                    String ratevalue = String.valueOf(rate / 1000);
+                    double ratevalue = rate / 1000;
 
                     log.append("\n Server connection time: " + (time_connect_finish - time_connect_start) + "ms" +
                             "\n File size : " + (size1 / 1000) / 1000 + "M" +
