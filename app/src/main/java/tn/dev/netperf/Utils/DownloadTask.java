@@ -30,26 +30,23 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Random;
 
+import tn.dev.netperf.Fragments.ThroughputFragment;
 import tn.dev.netperf.R;
 
 
-public class DownloadTask {
+public class DownloadTask extends ThroughputFragment{
 
     private static final String TAG = "Download Task";
     private Context context;
     private Button buttonText;
     private String downloadUrl = "";
     private String downloadFileName = "";
-    private String time;
-    private String imei;
-    private String imsi;
-    private String host;
-    private String protocol;
-    private String requestmessage;
+    private String imei,imsi,host,protocol,time,requestmessage,operator;
     private double downloadSpeed;
     private int port, requestCode;
     private long serverConnectionTime, fileSize, downloadtime;
     private TextView text_;
+
 
 
     StringBuilder log = new StringBuilder();
@@ -83,6 +80,8 @@ public class DownloadTask {
             buttonText.setTextColor(Color.WHITE);
             buttonText.setText(R.string.downloadStarted);
 
+
+
         }
 
         /***********************************doInBackground*******************************/
@@ -96,6 +95,7 @@ public class DownloadTask {
             TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
             imsi = telephonyManager.getSubscriberId();
             imei = telephonyManager.getImei();
+            operator = telephonyManager.getSimOperatorName();
 
 
             try {
@@ -233,12 +233,19 @@ public class DownloadTask {
 
 
     public String getTime() {
-        Time myTime = new Time();
+        DateTime myTime = new DateTime();
         time = myTime.getTime();
         return time;
     }
 
+    public String getDate() {
+        DateTime myTime = new DateTime();
+        time = myTime.getDate();
+        return time;
+    }
+
     public void writeToFile() throws IOException {
+
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH");
         String[] data;
@@ -252,14 +259,15 @@ public class DownloadTask {
             writer = new CSVWriter(myFileWriter, ';', CSVWriter.NO_QUOTE_CHARACTER, CSVWriter.NO_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
         } else {
             writer = new CSVWriter(new FileWriter(filePath), ';', CSVWriter.NO_QUOTE_CHARACTER, CSVWriter.NO_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
-            String[] header = {"Time", "IMEI", "IMSI", "Service", "Host", "URL", "Content size", "Page load time", "Redirection", "Video ID",
+            String[] header = {"Date","Time", "IMEI", "IMSI","Operator", "Service", "Host", "URL", "Content size", "Page load time", "Redirection", "Video ID",
                     "Time to 1st picture", "Video load delay", "Video start delay", "Buffering count", "Protocol", "Port", "Request code", "Status", "Server time to connect",
                     "File Size", "Download time", "Avg throughput"};
             writer.writeNext(header);
         }
 
 
-        data = new String[]{getTime(), imei, imsi, "HTTP transfert", host, null, null, null, null, null, null, null, null, null, protocol, String.valueOf(port),
+
+        data = new String[]{getDate(),getTime(), imei, imsi,operator, "HTTP transfert", host, null, null, null, null, null, null, null, null, null, protocol, String.valueOf(port),
                 String.valueOf(requestCode), requestmessage, String.valueOf(serverConnectionTime), String.valueOf(fileSize), String.valueOf(downloadtime),
                 String.valueOf(downloadSpeed)};
 

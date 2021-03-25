@@ -102,5 +102,7 @@
 
 
     <string name="ftp_information">FTP information</string>
+    <string name="start">START</string>
+    <string name="stop">STOP</string>
 
 </resources>

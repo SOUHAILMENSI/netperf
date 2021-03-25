@@ -38,7 +38,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import tn.dev.netperf.R;
-import tn.dev.netperf.Utils.Time;
+import tn.dev.netperf.Utils.DateTime;
 
 
 public class BrowsingFragment extends Fragment implements View.OnClickListener {
@@ -46,18 +46,17 @@ public class BrowsingFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = BrowsingFragment.class.getSimpleName();
 
     WebView webView;
-    TextInputEditText editText;
+    TextInputEditText editText, editText1;
     ImageButton img1, img2, img3, img4, img5, img6;
 
     TextView tv1, tv2, tv3, tv4, tv5;
     long a, b;
     int counter;
     int size;
-
     private String time;
     int Permission_All = 1;
     private TelephonyManager telephonyManager;
-    private String imei, imsi, website;
+    private String imei, imsi, website, host;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -69,6 +68,7 @@ public class BrowsingFragment extends Fragment implements View.OnClickListener {
 
         webView = myView.findViewById(R.id.web_View_Brow);
         editText = myView.findViewById(R.id.input_text);
+        editText1 = myView.findViewById(R.id.input_text1);
         img1 = myView.findViewById(R.id.google);
         img1.setOnClickListener(this);
         img2 = myView.findViewById(R.id.fb);
@@ -104,18 +104,23 @@ public class BrowsingFragment extends Fragment implements View.OnClickListener {
 
         editText.setOnKeyListener((v, keyCode, event) -> {
             if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                switch (keyCode) {
-                    case KeyEvent.KEYCODE_DPAD_CENTER:
-                    case KeyEvent.KEYCODE_ENTER:
-                        webView.loadUrl("http://" + editText.getText().toString());
-                        return true;
-                    default:
-                        break;
+                if (editText1.getText().toString().isEmpty()) {
+                    Toast.makeText(getActivity(), "Host shouldn't be null", Toast.LENGTH_SHORT).show();
+                } else {
+                    switch (keyCode) {
+                        case KeyEvent.KEYCODE_DPAD_CENTER:
+                        case KeyEvent.KEYCODE_ENTER:
+                            webView.loadUrl("http://" + editText.getText().toString());
+                            return true;
+                        default:
+                            break;
+                    }
                 }
             }
-            editText.setText("");
+
             return false;
         });
+
 
         return myView;
     }
@@ -149,6 +154,8 @@ public class BrowsingFragment extends Fragment implements View.OnClickListener {
 
             website = webView.getUrl();
             tv5.setText(website);
+
+            host = editText1.getText().toString();
 
             loadingFinished = false;
             a = (new Date()).getTime();
@@ -217,29 +224,44 @@ public class BrowsingFragment extends Fragment implements View.OnClickListener {
         switch (view.getId()) {
             case R.id.google:
                 webView.loadUrl("https://www.google.com/");
+                editText.setText(webView.getUrl());
+                editText1.setText("Google");
                 break;
             case R.id.fb:
                 webView.loadUrl("https://www.facebook.com/");
+                editText.setText(webView.getUrl());
+                editText1.setText("Facebook");
                 break;
             case R.id.cnn:
                 webView.loadUrl("https://edition.cnn.com/");
+                editText.setText(webView.getUrl());
+                editText1.setText("CNN");
                 break;
             case R.id.mos_aik:
                 webView.loadUrl("https://www.mosaiquefm.net/amp/fr/");
+                editText.setText(webView.getUrl());
+                editText1.setText("Mosaiquefm");
                 break;
             case R.id.tunisia_net:
                 webView.loadUrl("https://www.tunisianet.com.tn/");
+                editText.setText(webView.getUrl());
+                editText1.setText("Tunisianet");
                 break;
         }
     }
 
 
     public String getTime() {
-        Time myTime = new Time();
+        DateTime myTime = new DateTime();
         time = myTime.getTime();
         return time;
     }
 
+    public String getDate() {
+        DateTime myTime = new DateTime();
+        time = myTime.getDate();
+        return time;
+    }
 
     public void writeToFile() throws IOException {
 
@@ -255,18 +277,23 @@ public class BrowsingFragment extends Fragment implements View.OnClickListener {
             writer = new CSVWriter(myFileWriter, ';', CSVWriter.NO_QUOTE_CHARACTER, CSVWriter.NO_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
         } else {
             writer = new CSVWriter(new FileWriter(filePath), ';', CSVWriter.NO_QUOTE_CHARACTER, CSVWriter.NO_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
-            String[] header = {"Time", "IMEI", "IMSI", "Service", "Host", "URL", "Content size", "Page load time", "Redirection", "Video ID",
+            String[] header = {"Date", "Time", "IMEI", "IMSI", "Operator", "Service", "Host", "URL", "Content size", "Page load time", "Redirection", "Video ID",
                     "Time to 1st picture", "Video load delay", "Video start delay", "Buffering count", "Protocol", "Port", "Request code", "Status", "Server time to connect",
                     "File Size", "Download time", "Avg throughput"};
             writer.writeNext(header);
         }
 
 
-        data = new String[]{getTime(), imei, imsi, "HTTP browsing", webView.getTitle(), website, String.valueOf(size), String.valueOf(b - a), String.valueOf(counter)};
+        data = new String[]{getDate(), getTime(), imei, imsi, telephonyManager.getSimOperatorName(), "HTTP browsing", host, website, String.valueOf(size),
+                String.valueOf(b - a), String.valueOf(counter)};
 
 
         writer.writeNext(data);
         Toast.makeText(getContext(), "Data saved", Toast.LENGTH_SHORT).show();
+
+        editText1.setText("");
+        editText.setText("");
+
         writer.close();
     }
 

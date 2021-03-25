@@ -1,6 +1,7 @@
 package tn.dev.netperf.Activities;
 
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,6 +27,8 @@ public class TestActivity extends AppCompatActivity {
     TabLayout tabLayout;
     ViewPager viewPager;
 
+    TelephonyManager telephonyManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +45,9 @@ public class TestActivity extends AppCompatActivity {
 
         prepareViewpager(viewPager, arrayList);
         tabLayout.setupWithViewPager(viewPager);
+
+
+
 
     }
 

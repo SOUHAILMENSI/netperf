@@ -37,7 +37,7 @@ import java.util.Date;
 
 import tn.dev.netperf.R;
 import tn.dev.netperf.Utils.Config;
-import tn.dev.netperf.Utils.Time;
+import tn.dev.netperf.Utils.DateTime;
 
 public class YoutubeFragment extends Fragment implements View.OnClickListener {
 
@@ -87,6 +87,8 @@ public class YoutubeFragment extends Fragment implements View.OnClickListener {
         CueVideo();
         mContext = getActivity().getApplicationContext();
         return myView;
+
+
     }
 
     private void initializeYoutubePlayer() {
@@ -394,8 +396,14 @@ public class YoutubeFragment extends Fragment implements View.OnClickListener {
 
 
     public String getTime() {
-        Time myTime = new Time();
+        DateTime myTime = new DateTime();
         time = myTime.getTime();
+        return time;
+    }
+
+    public String getDate() {
+        DateTime myTime = new DateTime();
+        time = myTime.getDate();
         return time;
     }
 
@@ -413,14 +421,14 @@ public class YoutubeFragment extends Fragment implements View.OnClickListener {
             writer = new CSVWriter(myFileWriter, ';', CSVWriter.NO_QUOTE_CHARACTER, CSVWriter.NO_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
         } else {
             writer = new CSVWriter(new FileWriter(filePath), ';', CSVWriter.NO_QUOTE_CHARACTER, CSVWriter.NO_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
-            String[] header = {"Time", "IMEI", "IMSI", "Service", "Host", "URL", "Content size", "Page load time", "Redirection", "Video ID",
+            String[] header = {"Date", "Time", "IMEI", "IMSI", "Operator", "Service", "Host", "URL", "Content size", "Page load time", "Redirection", "Video ID",
                     "Time to 1st picture", "Video load delay", "Video start delay", "Buffering count", "Protocol", "Port", "Request code", "Status", "Server time to connect",
                     "File Size", "Download time", "Avg throughput"};
             writer.writeNext(header);
         }
 
 
-        data = new String[]{getTime(), imei, imsi, "Streaming", null, null, null, null, null, videoId, String.valueOf(t_finish_first_pic - t_start_first_pic),
+        data = new String[]{getDate(), getTime(), imei, imsi, telephonyManager.getSimOperatorName(), "Streaming", null, null, null, null, null, videoId, String.valueOf(t_finish_first_pic - t_start_first_pic),
                 String.valueOf(_lV_Time_ - _initialTime_), String.valueOf(_sV_Time_ - _initialTime_), String.valueOf(buffCount)};
 
 

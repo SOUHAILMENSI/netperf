@@ -51,7 +51,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import tn.dev.netperf.R;
-import tn.dev.netperf.Utils.Time;
+import tn.dev.netperf.Utils.DateTime;
 
 
 public class SumActivity extends AppCompatActivity {
@@ -69,7 +69,6 @@ public class SumActivity extends AppCompatActivity {
     private String radio = null, imei, imsi;
     private String time;
     private MyBroadcastReceiver myBroadcastReceiver;
-
 
     private int lte_MCC = Integer.MAX_VALUE;
     private int lte_MNC = Integer.MAX_VALUE;
@@ -109,6 +108,7 @@ public class SumActivity extends AppCompatActivity {
     private int wcdma_Ecno = Integer.MAX_VALUE;
 
 
+    @SuppressLint("ResourceAsColor")
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,7 +142,6 @@ public class SumActivity extends AppCompatActivity {
         txbandval = findViewById(R.id.txradiobandval);
         txmodul = findViewById(R.id.txmodulation);
         txmodulval = findViewById(R.id.txmodulval);
-
 
         btn = findViewById(R.id.btnStart);
         btn.setOnClickListener(new View.OnClickListener() {
@@ -180,16 +179,16 @@ public class SumActivity extends AppCompatActivity {
         telephonyManagerToListen.listen(mPhoneStateListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS | PhoneStateListener.LISTEN_CELL_INFO | PhoneStateListener.LISTEN_CELL_LOCATION);
 
 
-        String[] Permissions ={Manifest.permission.READ_PHONE_STATE};
+        String[] Permissions = {Manifest.permission.READ_PHONE_STATE};
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,Permissions,Permission_All);
+            ActivityCompat.requestPermissions(this, Permissions, Permission_All);
             return;
         }
         imsi = telephonyManagerToListen.getSubscriberId();
         imei = telephonyManagerToListen.getImei();
 
-
     }
+
 
     private PhoneStateListener mPhoneStateListener = new PhoneStateListener() {
 
@@ -325,8 +324,7 @@ public class SumActivity extends AppCompatActivity {
             try {
                 CellInfo info = infos.get(i);
                 if (!info.isRegistered()) {
-                    if (info instanceof CellInfoGsm)
-                    {
+                    if (info instanceof CellInfoGsm) {
                         CellSignalStrengthGsm gsm = ((CellInfoGsm) info).getCellSignalStrength();
                         CellIdentityGsm identityGsm = ((CellInfoGsm) info).getCellIdentity();
                         String registred = String.valueOf(info.isRegistered());
@@ -339,8 +337,7 @@ public class SumActivity extends AppCompatActivity {
                         colText.add(rxlev);
                         colText.add(asu);
                         colText.add(bsic);
-                    } else if (info instanceof CellInfoLte)
-                    {
+                    } else if (info instanceof CellInfoLte) {
                         CellSignalStrengthLte lte = ((CellInfoLte) info).getCellSignalStrength();
                         CellIdentityLte identityLte = ((CellInfoLte) info).getCellIdentity();
                         list += "Site_" + i + "\r\n";
@@ -349,8 +346,7 @@ public class SumActivity extends AppCompatActivity {
                         list += "RSRQ: " + lte.getRsrq() + "\r\n";
                         list += "Earfcn: " + identityLte.getEarfcn() + "\r\n";
                         list += "PCI: " + identityLte.getPci() + "\r\n";
-                    } else if (info instanceof CellInfoWcdma)
-                    {
+                    } else if (info instanceof CellInfoWcdma) {
                         CellSignalStrengthWcdma wcdmaS = ((CellInfoWcdma) info).getCellSignalStrength();
                         CellIdentityWcdma wcdmaid = ((CellInfoWcdma) info).getCellIdentity();
                         list += "Site_" + i + "\r\n";
@@ -426,7 +422,15 @@ public class SumActivity extends AppCompatActivity {
     }
 
     private int getWcdma_EcNo() {
-        return wcdma_Ecno = wcdma_RSCP - wcdma_RSSI;
+
+        if (wcdma_RSCP < wcdma_RSSI) {
+            wcdma_Ecno = wcdma_RSCP - wcdma_RSSI;
+
+        } else {
+            wcdma_Ecno = 0;
+        }
+
+        return wcdma_Ecno;
     }
 
     private int getWcdma_CID() {
@@ -643,8 +647,14 @@ public class SumActivity extends AppCompatActivity {
 
 
     public String getTime() {
-        Time myTime = new Time();
+        DateTime myTime = new DateTime();
         time = myTime.getTime();
+        return time;
+    }
+
+    public String getDate() {
+        DateTime myTime = new DateTime();
+        time = myTime.getDate();
         return time;
     }
 
@@ -679,27 +689,27 @@ public class SumActivity extends AppCompatActivity {
             writer = new CSVWriter(myFileWriter, ';', CSVWriter.NO_QUOTE_CHARACTER, CSVWriter.NO_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
         } else {
             writer = new CSVWriter(new java.io.FileWriter(filePath), ';', CSVWriter.NO_QUOTE_CHARACTER, CSVWriter.NO_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
-            String[] header = {"Time", "IMEI", "IMSI", "System", "Latitude", "Longitude", "MCC", "MNC", "CELL ID", "PCI", "TAC", "ENB",
+            String[] header = {"Date", "Time", "IMEI", "IMSI", "Operator", "System", "Latitude", "Longitude", "MCC", "MNC", "CELL ID", "PCI", "TAC", "ENB",
                     "SectorID", "frequency", "Band", "Modulation", "RSRP", "RSRQ", "SINR", "CQI",
-                    "LAC", "PSC", "RSSI", "ASU", "EcN0", "RSCP","BSIC", "Bit error", "Rx Level", "GSM DL feq", "GSM UL freq"};
+                    "LAC", "PSC", "RSSI", "ASU", "EcN0", "RSCP", "BSIC", "Bit error", "Rx Level", "GSM DL feq", "GSM UL freq"};
             writer.writeNext(header);
         }
         if (radio == "LTE") {
 
-            data = new String[]{getTime(), imei, imsi, radio, String.valueOf(Latitude), String.valueOf(Longitude), String.valueOf(lte_MCC), String.valueOf(lte_MNC),
+            data = new String[]{getDate(), getTime(), imei, imsi, telephonyManagerToListen.getSimOperatorName(), radio, String.valueOf(Latitude), String.valueOf(Longitude), String.valueOf(lte_MCC), String.valueOf(lte_MNC),
                     String.valueOf(lte_CI), String.valueOf(lte_PCI), String.valueOf(lte_TAC), String.valueOf(GetEnB()), String.valueOf(getSectorId()),
                     String.valueOf(lte_Earfcn), getLTEDLband(), getLTEmodulation(), String.valueOf(lte_dbm), String.valueOf(lte_RSRQ),
                     String.valueOf(lte_SINR), String.valueOf(lte_CQI)};
 
         } else if (radio == "UMTS") {
 
-            data = new String[]{getTime(), imei, imsi, radio, String.valueOf(Latitude), String.valueOf(Longitude), String.valueOf(wcdma_MCC), String.valueOf(wcdma_MNC),
+            data = new String[]{getDate(), getTime(), imei, imsi, telephonyManagerToListen.getSimOperatorName(), radio, String.valueOf(Latitude), String.valueOf(Longitude), String.valueOf(wcdma_MCC), String.valueOf(wcdma_MNC),
                     String.valueOf(wcdma_CID), null, null, null, null, String.valueOf(wcdma_Uarfcn), getUMTSDLband(), null, null, null, null, null,
                     String.valueOf(wcdma_LAC), String.valueOf(wcdma_PSC), String.valueOf(wcdma_RSSI), String.valueOf(wcdma_ASU), String.valueOf(wcdma_Ecno),
                     String.valueOf(wcdma_RSCP)};
 
         } else if (radio == "GSM") {
-            data = new String[]{getTime(), imei, imsi, radio, String.valueOf(Latitude), String.valueOf(Longitude), String.valueOf(gsm_MCC), String.valueOf(gsm_MNC), String.valueOf(gsm_CID),
+            data = new String[]{getDate(), getTime(), imei, imsi, telephonyManagerToListen.getSimOperatorName(), radio, String.valueOf(Latitude), String.valueOf(Longitude), String.valueOf(gsm_MCC), String.valueOf(gsm_MNC), String.valueOf(gsm_CID),
                     null, null, null, null, String.valueOf(gsm_Arfcn), String.valueOf(getGsmDLband()), null, null, null, null, null, String.valueOf(gsm_LAC), null,
                     String.valueOf(gsm_RSSI), String.valueOf(gsm_Asu), null, null, String.valueOf(gsm_Bsic), String.valueOf(gsm_Berror), String.valueOf(gsm_rxlev), String.valueOf(getGsmDLfrequency()),
                     String.valueOf(getGsmULfrequency())};

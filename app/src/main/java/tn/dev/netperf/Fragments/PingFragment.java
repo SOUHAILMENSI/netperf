@@ -109,11 +109,11 @@ public class PingFragment extends Fragment {
 
 
         if (ip.matches("")) {
-            Toast.makeText(mContext, "HOST IP SHOULDN'T BE NULL", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "Host shouldn't be null ", Toast.LENGTH_SHORT).show();
         } else if (size.matches("")) {
-            Toast.makeText(mContext, "PACKET SIZE SHOULDN'T BE NULL", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "Packet size shouldn't be null", Toast.LENGTH_SHORT).show();
         } else if (count.matches("")) {
-            Toast.makeText(mContext, "COUNT SHOULDN'T BE NULL", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "Iteration shouldn't be null", Toast.LENGTH_SHORT).show();
         } else {
             try {
                 log.append(strDate + "\n" + ip + " (" + size + ")" + "\n");

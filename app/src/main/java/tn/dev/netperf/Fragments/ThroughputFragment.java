@@ -33,8 +33,6 @@ public class ThroughputFragment extends Fragment {
     private int Permission_All = 1;
     private Context mContext;
 
-    private String time;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -47,7 +45,7 @@ public class ThroughputFragment extends Fragment {
         save = view.findViewById(R.id.save);
 
         mContext = getActivity().getApplicationContext();
-        String[] Permissions = {Manifest.permission.READ_PHONE_STATE,Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET,
+        String[] Permissions = {Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET,
                 Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.ACCESS_NETWORK_STATE,};
         if (!hasPermissions(mContext, Permissions)) {
             ActivityCompat.requestPermissions(getActivity(), Permissions, Permission_All);

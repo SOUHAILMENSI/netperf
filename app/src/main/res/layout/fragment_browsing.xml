@@ -84,16 +84,29 @@
             android:layout_margin="7dp"
             android:orientation="horizontal"
             android:layout_weight="0.7"
-            android:padding="2dp">
+            android:padding="2dp"
+            android:weightSum="3">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_text1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/montserrat_bold"
+                android:hint="Host"
+                android:inputType="text"
+                android:textSize="16sp"
+                android:layout_weight="1"/>
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/input_text"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:fontFamily="@font/montserrat_bold"
                 android:hint="Enter Url"
                 android:inputType="textUri"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:layout_weight="2"/>
+
 
         </LinearLayout>
 
