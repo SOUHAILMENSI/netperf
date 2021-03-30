@@ -268,7 +268,8 @@ public class BrowsingFragment extends Fragment implements View.OnClickListener {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH");
         String[] data;
         Date date = new Date(System.currentTimeMillis());
-        String filePath = Environment.getExternalStorageDirectory() + "/netPerf/Results/PerfMeans_" + imei + "_" + formatter.format(date) + ".csv";
+        String logfileName = "PerfMeans_" + imei + "_" + formatter.format(date) + ".csv";
+        String filePath = Environment.getExternalStorageDirectory() + "/netPerf/Results/"+logfileName;
         File file = new File(filePath);
 
         CSVWriter writer;
@@ -279,13 +280,13 @@ public class BrowsingFragment extends Fragment implements View.OnClickListener {
             writer = new CSVWriter(new FileWriter(filePath), ';', CSVWriter.NO_QUOTE_CHARACTER, CSVWriter.NO_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
             String[] header = {"Date", "Time", "IMEI", "IMSI", "Operator", "Service", "Host", "URL", "Content size", "Page load time", "Redirection", "Video ID",
                     "Time to 1st picture", "Video load delay", "Video start delay", "Buffering count", "Protocol", "Port", "Request code", "Status", "Server time to connect",
-                    "File Size", "Download time", "Avg throughput"};
+                    "File Size", "Download time", "Avg throughput","File"};
             writer.writeNext(header);
         }
 
 
         data = new String[]{getDate(), getTime(), imei, imsi, telephonyManager.getSimOperatorName(), "HTTP browsing", host, website, String.valueOf(size),
-                String.valueOf(b - a), String.valueOf(counter)};
+                String.valueOf(b - a), String.valueOf(counter), null,null, null, null, null, null, null, null, null,null,null, null, null,logfileName};
 
 
         writer.writeNext(data);

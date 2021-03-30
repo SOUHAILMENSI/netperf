@@ -680,7 +680,8 @@ public class SumActivity extends AppCompatActivity {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH");
         String[] data = new String[0];
         Date date = new Date(System.currentTimeMillis());
-        String filePath = Environment.getExternalStorageDirectory() + "/netPerf/Results/CellMeans_" + imei + "_" + formatter.format(date) + ".csv";
+        String logfileName = "CellMeans_" + imei + "_" + formatter.format(date) + ".csv";
+        String filePath = Environment.getExternalStorageDirectory() + "/netPerf/Results/"+logfileName;
         File file = new File(filePath);
 
         CSVWriter writer;
@@ -691,7 +692,7 @@ public class SumActivity extends AppCompatActivity {
             writer = new CSVWriter(new java.io.FileWriter(filePath), ';', CSVWriter.NO_QUOTE_CHARACTER, CSVWriter.NO_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
             String[] header = {"Date", "Time", "IMEI", "IMSI", "Operator", "System", "Latitude", "Longitude", "MCC", "MNC", "CELL ID", "PCI", "TAC", "ENB",
                     "SectorID", "frequency", "Band", "Modulation", "RSRP", "RSRQ", "SINR", "CQI",
-                    "LAC", "PSC", "RSSI", "ASU", "EcN0", "RSCP", "BSIC", "Bit error", "Rx Level", "GSM DL feq", "GSM UL freq"};
+                    "LAC", "PSC", "RSSI", "ASU", "EcN0", "RSCP", "BSIC", "Bit error", "Rx Level", "GSM DL feq", "GSM UL freq","File"};
             writer.writeNext(header);
         }
         if (radio == "LTE") {
@@ -699,20 +700,20 @@ public class SumActivity extends AppCompatActivity {
             data = new String[]{getDate(), getTime(), imei, imsi, telephonyManagerToListen.getSimOperatorName(), radio, String.valueOf(Latitude), String.valueOf(Longitude), String.valueOf(lte_MCC), String.valueOf(lte_MNC),
                     String.valueOf(lte_CI), String.valueOf(lte_PCI), String.valueOf(lte_TAC), String.valueOf(GetEnB()), String.valueOf(getSectorId()),
                     String.valueOf(lte_Earfcn), getLTEDLband(), getLTEmodulation(), String.valueOf(lte_dbm), String.valueOf(lte_RSRQ),
-                    String.valueOf(lte_SINR), String.valueOf(lte_CQI)};
+                    String.valueOf(lte_SINR), String.valueOf(lte_CQI),null,null,null,null,null,null,null,null,null,null,null,logfileName};
 
         } else if (radio == "UMTS") {
 
             data = new String[]{getDate(), getTime(), imei, imsi, telephonyManagerToListen.getSimOperatorName(), radio, String.valueOf(Latitude), String.valueOf(Longitude), String.valueOf(wcdma_MCC), String.valueOf(wcdma_MNC),
                     String.valueOf(wcdma_CID), null, null, null, null, String.valueOf(wcdma_Uarfcn), getUMTSDLband(), null, null, null, null, null,
                     String.valueOf(wcdma_LAC), String.valueOf(wcdma_PSC), String.valueOf(wcdma_RSSI), String.valueOf(wcdma_ASU), String.valueOf(wcdma_Ecno),
-                    String.valueOf(wcdma_RSCP)};
+                    String.valueOf(wcdma_RSCP),null,null,null,null,null,logfileName};
 
         } else if (radio == "GSM") {
             data = new String[]{getDate(), getTime(), imei, imsi, telephonyManagerToListen.getSimOperatorName(), radio, String.valueOf(Latitude), String.valueOf(Longitude), String.valueOf(gsm_MCC), String.valueOf(gsm_MNC), String.valueOf(gsm_CID),
                     null, null, null, null, String.valueOf(gsm_Arfcn), String.valueOf(getGsmDLband()), null, null, null, null, null, String.valueOf(gsm_LAC), null,
                     String.valueOf(gsm_RSSI), String.valueOf(gsm_Asu), null, null, String.valueOf(gsm_Bsic), String.valueOf(gsm_Berror), String.valueOf(gsm_rxlev), String.valueOf(getGsmDLfrequency()),
-                    String.valueOf(getGsmULfrequency())};
+                    String.valueOf(getGsmULfrequency()),logfileName};
         }
 
         writer.writeNext(data);
