@@ -22,6 +22,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
@@ -268,7 +270,7 @@ public class BrowsingFragment extends Fragment implements View.OnClickListener {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH");
         String[] data;
         Date date = new Date(System.currentTimeMillis());
-        String logfileName = "PerfMeans_" + imei + "_" + formatter.format(date) + ".csv";
+        String logfileName = "PerfMeans_" + imei + "_" + formatter.format(date) + ".npmf";
         String filePath = Environment.getExternalStorageDirectory() + "/netPerf/Results/"+logfileName;
         File file = new File(filePath);
 

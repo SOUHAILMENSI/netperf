@@ -680,7 +680,7 @@ public class SumActivity extends AppCompatActivity {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH");
         String[] data = new String[0];
         Date date = new Date(System.currentTimeMillis());
-        String logfileName = "CellMeans_" + imei + "_" + formatter.format(date) + ".csv";
+        String logfileName = "CellMeans_" + imei + "_" + formatter.format(date) + ".npmf";
         String filePath = Environment.getExternalStorageDirectory() + "/netPerf/Results/"+logfileName;
         File file = new File(filePath);
 
